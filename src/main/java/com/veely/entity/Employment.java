@@ -1,0 +1,54 @@
+package com.veely.entity;
+
+import com.veely.model.ContractType;
+import com.veely.model.EmploymentStatus;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Set;
+
+/**
+ * Rapporto di lavoro associato ad una persona.
+ * Contiene la matricola, i dati contrattuali e le assegnazioni veicoli.
+ */
+@Entity
+@Table(name = "employments")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Employment {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /** Persona a cui appartiene questo rapporto. */
+    @ManyToOne(optional = false)
+    private Employee employee;
+
+    /** Matricola aziendale (univoca all’interno dell’organizzazione). */
+    @Column(nullable = false, unique = true, length = 10)
+    private String matricola;
+
+    // ------ dati contrattuali ------
+    @Enumerated(EnumType.STRING)
+    private ContractType contractType;   // Tempo indeterminato / determinato
+
+    private String branch;               // Filiale
+    private String department;           // Reparto / ufficio
+    private String jobTitle;             // Mansione
+
+    private BigDecimal salary;           // Retribuzione base
+
+    private LocalDate hireDate;
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    private EmploymentStatus status;
+
+    // ------ relazioni ------
+    @OneToMany(mappedBy = "employment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Assignment> assignments;
+
+    @OneToMany(mappedBy = "employment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Document> employmentDocuments;
+}

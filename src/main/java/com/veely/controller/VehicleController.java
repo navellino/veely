@@ -1,0 +1,125 @@
+package com.veely.controller;
+
+import com.veely.entity.Document;
+import com.veely.entity.Vehicle;
+import com.veely.model.DocumentType;
+import com.veely.model.VehicleStatus;
+import com.veely.repository.DocumentRepository;
+import com.veely.service.VehicleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
+@Controller
+@RequestMapping("/fleet/vehicles")
+@RequiredArgsConstructor
+public class VehicleController {
+
+    private final VehicleService vehicleService;
+    private final DocumentRepository documentRepo; // per paginare documenti in dettaglio
+
+    /** Mostra la lista (tabella) di tutti i veicoli */
+    @GetMapping
+    public String list(Model model) {
+        List<Vehicle> list = vehicleService.findAll();
+        model.addAttribute("vehicles", list);
+        return "fleet/vehicles/index";
+    }
+
+    /** Form di creazione veicolo */
+    @GetMapping("/new")
+    public String createForm(Model model) {
+        model.addAttribute("vehicle", new Vehicle());
+        model.addAttribute("statuses", VehicleStatus.values());
+        return "fleet/vehicles/form";
+    }
+
+    /** Salva un nuovo veicolo */
+    @PostMapping
+    public String saveNew(@Valid @ModelAttribute("vehicle") Vehicle vehicle,
+                          BindingResult binding) {
+        if (binding.hasErrors()) {
+            return "fleet/vehicles/form";
+        }
+        vehicleService.create(vehicle);
+        return "redirect:/fleet/vehicles";
+    }
+
+    /** Form di modifica veicolo */
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Vehicle v = vehicleService.findByIdOrThrow(id);
+        model.addAttribute("vehicle", v);
+        model.addAttribute("statuses", VehicleStatus.values());
+        return "fleet/vehicles/form";
+    }
+
+    /** Aggiorna un veicolo esistente */
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute("vehicle") Vehicle vehicle,
+                         BindingResult binding) {
+        if (binding.hasErrors()) {
+            return "fleet/vehicles/form";
+        }
+        vehicleService.update(id, vehicle);
+        return "redirect:/fleet/vehicles";
+    }
+
+    /** Elimina un veicolo */
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        vehicleService.delete(id);
+        return "redirect:/fleet/vehicles";
+    }
+
+    /** Mostra il dettaglio di un veicolo, con tab per foto e documenti */
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        Vehicle v = vehicleService.findByIdOrThrow(id);
+        List<Document> docs = documentRepo.findByVehicleId(id);
+        model.addAttribute("vehicle", v);
+        model.addAttribute("documents", docs);
+        model.addAttribute("docTypes", DocumentType.values());
+        return "fleet/vehicles/detail";
+    }
+
+    /** Upload foto veicolo */
+    @PostMapping("/{id}/photos")
+    public String uploadPhoto(@PathVariable Long id,
+                              @RequestParam("file") MultipartFile file) throws IOException {
+        vehicleService.uploadPhoto(id, file);
+        return "redirect:/fleet/vehicles/" + id;
+    }
+
+    /** Upload documento veicolo */
+    @PostMapping("/{id}/docs")
+    public String uploadDoc(@PathVariable Long id,
+                            @RequestParam("file") MultipartFile file,
+                            @RequestParam("type") DocumentType type,
+                            @RequestParam("issueDate") String issueDate,
+                            @RequestParam("expiryDate") String expiryDate) {
+        LocalDate issued = issueDate.isBlank() ? null : LocalDate.parse(issueDate);
+        LocalDate exp = expiryDate.isBlank() ? null : LocalDate.parse(expiryDate);
+        vehicleService.uploadDocument(id, file, type, issued, exp);
+        return "redirect:/fleet/vehicles/" + id;
+    }
+
+    /** Download di un file (foto o doc): restituirà il Resource e header content disposition */
+    @GetMapping("/files/{area}/{filename:.+}")
+    @ResponseBody
+    public Resource serveFile(@PathVariable String area,
+                              @PathVariable String filename) {
+        return vehicleService.loadDocument(Long.valueOf(area), filename);
+        // Si assume area = vehicleId, per foto cambiare loadPhoto se necessario.
+    }
+}

@@ -1,0 +1,46 @@
+spring:
+  # 1) DATASOURCE: MySQL / MariaDB
+  datasource:
+    url: jdbc:mysql://localhost:3306/veely?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Europe/Rome
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 20MB      # dimensione massima di un singolo file
+      max-request-size: 25MB   # dimensione complessiva della request (tutti i file + form fields)
+  # 2) JPA / HIBERNATE
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    # (opzionale) in alternativa o in aggiunta:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  # OAuth2 / OIDC Google (la tua configurazione esistente, senza modifiche)
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: YOUR_CLIENT_ID
+            client-secret: YOUR_CLIENT_SECRET
+            scope: openid,email,profile
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+server:
+  port: 8080
+
+storage:
+  location: uploads
+
+veely:
+  storage:
+    root: uploads

@@ -1,0 +1,378 @@
+<!-- src/main/resources/templates/fleet/employees/form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: commonHead(${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'})">
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+	<!-- Navbar -->
+	<div th:insert="fragments/navbar :: mainNavbar"></div>
+
+	<main class="container my-5 flex-fill">
+		<!-- Breadcrumb -->
+		<nav aria-label="breadcrumb" class="mb-4">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+				<li class="breadcrumb-item"><a
+					th:href="@{/fleet/employees/manage}">Dipendenti</a></li>
+				<li class="breadcrumb-item active" aria-current="page"
+					th:text="${employee.id} == null ? 'Nuovo' : 'Modifica'">Nuovo</li>
+			</ol>
+		</nav>
+
+		<!-- Step indicator -->
+		<div class="mb-4">
+			<div class="progress" style="height: 4px;">
+				<div class="progress-bar" role="progressbar" style="width: 50%;"
+					th:classappend="${employee.id} != null ? ' bg-success' : ' bg-primary'"></div>
+			</div>
+			<small class="text-muted"> <span
+				th:text="${employee.id == null ? 'Step 1 di 2: Anagrafica' : 'Step 2 di 2: Documenti'}"></span>
+			</small>
+		</div>
+
+		<!-- Tabs -->
+		<ul class="nav nav-pills mb-4" id="employeeTabs" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="tab-details"
+					data-bs-toggle="pill" data-bs-target="#pane-details" type="button"
+					role="tab">
+					<i class="bi bi-info-circle me-1"></i> Dettagli
+				</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="tab-docs" data-bs-toggle="pill"
+					data-bs-target="#pane-docs" type="button" role="tab"
+					th:attr="disabled=${employee.id}==null">
+					<i class="bi bi-folder2-open me-1"></i> Documenti
+				</button>
+			</li>
+		</ul>
+
+		<div class="tab-content">
+			<!-- Tab 1: Dettagli anagrafica -->
+			<div class="tab-pane fade show active" id="pane-details"
+				role="tabpanel">
+				<form
+					th:action="@{${employee.id} == null ? '/fleet/employees/new' : '/fleet/employees/' + ${employee.id} + '/edit'}"
+					th:object="${employee}" method="post" class="row g-3">
+					
+<!-- ############################################  Colonna Foto Profilo ############################################################# -->
+					  
+<!-- ################################################################################################################### -->
+<!-- ############################################  Colonna Dati ############################################################# -->					
+					<!-- 
+					<div class="col-md-6">
+						<label class="form-label">Nome</label> <input type="text"
+							class="form-control" th:field="*{firstName}" required>
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">Cognome</label> <input type="text"
+							class="form-control" th:field="*{lastName}" required>
+					</div>
+					
+					<div class="col-md-3">
+					  <label for="dateOfBirth" class="form-label">Data di nascita</label>
+					  <input
+					    type="date"
+					    class="form-control"
+					    id="dateOfBirth"
+					    th:field="*{birthDate}"
+					    placeholder="gg/mm/aaaa" />
+					</div>
+					<div class="col-md-8">
+						<label class="form-label">Luogo di nascita</label> <input
+							type="text" class="form-control" th:field="*{birthPlace}">
+					</div>
+					 -->
+					 
+					  <!-- Nome / Cognome -->
+					  <div class="row">
+				      	<div>
+							<div class="col-lg-3 text-center">
+						  <label class="form-label d-block mb-2">Foto profilo</label>
+						
+						  <!-- se esiste, mostro l’immagine caricata -->
+						  <img th:if="${profilePhoto != null}"
+						       th:src="@{/fleet/employees/{id}/docs/{fn}(
+						                   id=${employee.id},
+						                   fn=${#strings.substringAfterLast(profilePhoto.path, '/')}
+						               )}"
+						       alt="Foto profilo"
+						       class="rounded-circle shadow-sm mb-2"
+						       style="width:150px; height:150px; object-fit:cover;" />
+						
+						  <!-- altrimenti icona placeholder -->
+						  <div th:if="${profilePhoto == null}"
+						       class="border border-secondary rounded-circle 
+						              d-flex align-items-center justify-content-center mb-2"
+						       style="width:150px; height:150px;">
+						    <i class="bi bi-person-fill fs-1 text-secondary"></i>
+						  </div>
+						</div>
+						
+							<div class="col-md-3">
+				        <label class="form-label">Nome</label>
+				        <input type="text" class="form-control" th:field="*{firstName}" required>
+				      </div>
+				      <div class="col-md-3">
+				        <label class="form-label">Cognome</label>
+				        <input type="text" class="form-control" th:field="*{lastName}" required>
+				      </div>
+						
+						</div>
+				      <!-- Data di nascita / Luogo di nascita -->
+				      <div class="col-md-2">
+				        <label class="form-label">Data di nascita</label>
+				        <input type="date" class="form-control" th:field="*{birthDate}">
+				      </div>
+				      <div class="col-md-3">
+				        <label class="form-label">Luogo di nascita</label>
+				        <input type="text" class="form-control" th:field="*{birthPlace}">
+				      </div>
+					 
+					<div class="col-md-2">
+						<label class="form-label">Codice Fiscale</label> <input
+							type="text" class="form-control" th:field="*{fiscalCode}"
+							required>
+					</div>
+
+					<!-- 1) Stato civile -->
+					<div class="col-md-4">
+						<label for="maritalStatus" class="form-label">Stato civile</label>
+						<select id="maritalStatus" class="form-select"
+							th:field="*{maritalStatus}">
+							<option th:each="st : ${maritalStatuses}" th:value="${st}"
+								th:text="${st.displayName}">Stato</option>
+						</select>
+					</div>
+
+					<!-- 2) Titolo di studio -->
+					<div class="col-md-4">
+						<label for="educationLevel" class="form-label">Titolo di
+							studio</label> <select id="educationLevel" class="form-select"
+							th:field="*{educationLevel}">
+							<option th:each="el : ${educationLevels}" th:value="${el}"
+								th:text="${el.displayName}">Livello</option>
+						</select>
+					</div>
+					
+					
+<!-- *******************************************RESIDENZA MODULO***************************************************** -->
+					<div class="col-12">
+					  <label class="form-label">Residenza</label>
+					  <location-selector
+						  country-binding="residenceAddress.countryCode"
+						  name-region="residenceAddress.regionCode"
+						  name-province="residenceAddress.provinceCode"
+						  name-city="residenceAddress.cityCode"
+						  name-postal="residenceAddress.postalCode"
+						  th:data-selected-country="${employee.residenceAddress.countryCode}"
+						  th:data-selected-region="${employee.residenceAddress.regionCode}"
+						  th:data-selected-province="${employee.residenceAddress.provinceCode}"
+						  th:data-selected-city="${employee.residenceAddress.cityCode}"
+						  th:data-selected-postal="${employee.residenceAddress.postalCode}">
+						</location-selector>
+					</div>
+
+<!-- ******************************************************************************************************************* -->
+					<div class="w-100"></div>
+
+					<div class="col-md-4">
+						<label class="form-label">Email</label> <input type="email"
+							class="form-control" th:field="*{email}" required>
+					</div>
+					<!-- PASSWORD + TOGGLE SHOW/HIDE -->
+				  <!-- PASSWORD + TOGGLE SHOW/HIDE -->
+				  <div class="col-md-4 position-relative">
+				    <label for="password" class="form-label">Password</label>
+				    <input
+				      type="password"
+				      id="password"
+				      th:field="*{password}"
+				      class="form-control"
+				      autocomplete="new-password" />
+				    <!-- bottone assoluto in cima al campo per il toggle -->
+				    <button type="button" id="togglePassword" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2" aria-label="Mostra/Nascondi password">
+				      Mostra
+				    </button>
+				    <!-- help text opzionale -->
+				    <div class="form-text">Deve contenere almeno 8 caratteri.</div>
+				  </div>
+				  
+				   <!-- CAMPO “RIPETI PASSWORD” -->
+					  <div class="col-md-4">
+					    <label for="confirmPassword" class="form-label">Ripeti Password</label>
+					    <input
+					      type="password"
+					      id="confirmPassword"
+					      class="form-control"
+					      autocomplete="new-password" />
+					    <!-- messaggio di errore Bootstrap hidden by default -->
+					    <div id="passwordMismatch" class="invalid-feedback">
+					      Le password non coincidono.
+					    </div>
+					  </div>
+				  
+					<div class="col-md-4">
+						<label class="form-label">Telefono</label> <input type="text"
+							class="form-control" th:field="*{phone}">
+					</div>
+					<!-- 4) PEC (opzionale) -->
+					<div class="col-md-4">
+						<label for="pec" class="form-label">PEC (opzionale)</label> <input
+							type="email" id="pec" class="form-control" th:field="*{pec}">
+					</div>
+					
+					 <div class="col-12 d-flex justify-content-end mt-3">
+				    <button
+				      type="submit"
+				      class="btn btn-lg btn-primary me-2"
+				      id="submitBtn">
+				      <span th:text="${employee.id == null ? 'Crea e Continua' : 'Aggiorna'}"></span>
+				    </button>
+				    <a th:href="@{/fleet/employees/manage}" class="btn btn-lg btn-outline-secondary">
+				      <i class="bi bi-box-arrow-left me-1"></i> Esci
+				    </a>
+				  </div>
+				</form>
+			</div>
+
+			<!-- Tab 2: Documenti (solo se id != null) -->
+			<div class="tab-pane fade" id="pane-docs" role="tabpanel">
+				<div th:if="${employee.id} != null" class="mb-4">
+					<h4>Documenti di <span	th:text="${employee.firstName+' '+employee.lastName}"></span>
+					</h4>
+					<!-- Upload -->
+					<form th:action="@{|/fleet/employees/${employee.id}/edit|}"
+						method="post" enctype="multipart/form-data" class="row g-3 mb-4">
+						<div class="col-md-5">
+							<input type="file" name="file" class="form-control" required>
+						</div>
+						<div class="col-md-3">
+							<input type="date" name="issueDate" class="form-control"
+								placeholder="Emesso">
+						</div>
+						<div class="col-md-3">
+							<input type="date" name="expiryDate" class="form-control"
+								placeholder="Scadenza">
+						</div>
+						<div class="col-md-3">
+							<select name="type" class="form-select">
+								<option th:each="dt : ${docTypes}" th:value="${dt}"
+									th:text="${dt.displayName}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-success w-100">
+								<i class="bi bi-upload me-1"></i> Carica
+							</button>
+						</div>
+					</form>
+
+					<!-- Lista documenti -->
+					<div class="table-responsive shadow-sm">
+						<table class="table table-bordered">
+							<thead class="table-light">
+								<tr>
+									<th>Tipo</th>
+									<th>File</th>
+									<th>Emesso</th>
+									<th>Scadenza</th>
+									<th class="text-center">Azioni</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="doc : ${documents}">
+									<td th:text="${doc.type.displayName}"></td>
+									<td
+										th:text="${doc.path.substring(doc.path.lastIndexOf('/') + 1)}"></td>
+									<td th:text="${doc.issueDate}">-</td>
+									<td th:text="${doc.expiryDate}">-</td>
+									<td class="text-center"><a th:href="@{|/fleet/employees/${employee.id}/docs/${doc.path.substring(doc.path.lastIndexOf('/') + 1)}|}"
+										class="btn btn-sm btn-outline-primary me-1" title="Download">Download </a> 
+										<a th:href="@{/fleet/employees/{empId}/docs/{docId}/delete(empId=${employee.id},docId=${doc.id})}"
+										class="btn btn-sm btn-outline-danger" title="Elimina"> <i class="bi bi-trash"></i>
+									</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Footer Buttons -->
+					<div class="d-flex justify-content-between mt-4">
+						<a th:href="@{/}" class="btn btn-outline-secondary"> <i
+							class="bi bi-house-door me-1"></i> Home
+						</a> <a th:href="@{/fleet/employees/manage}" class="btn btn-secondary">
+							<i class="bi bi-list-ul me-1"></i> Torna alla lista
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer -->
+	<div th:insert="fragments/footer :: mainFooter"></div>
+
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+	<script>
+		// 1) Raccogliamo gli elementi fondamentali
+		const pwdInput      = document.getElementById('password');
+		const confirmInput  = document.getElementById('confirmPassword');
+		const toggleBtn     = document.getElementById('togglePassword');
+		const mismatchMsg   = document.getElementById('passwordMismatch');
+		const submitBtn     = document.getElementById('submitBtn');
+		const form          = document.getElementById('employeeForm');
+		
+		// 2) Toggle tipo password <-> text
+		toggleBtn.addEventListener('click', () => {
+		  const isPwd = pwdInput.type === 'password';
+		  pwdInput.type = isPwd ? 'text' : 'password';
+		  toggleBtn.textContent = isPwd ? 'Nascondi' : 'Mostra';
+		});
+		
+		// 3) Validazione in tempo reale: confronto password ↔ conferma
+		function validatePasswords() {
+		  const match = pwdInput.value === confirmInput.value;
+		  if (!confirmInput.value) {
+		    // nessun input nella conferma → reset dei feedback
+		    confirmInput.classList.remove('is-valid', 'is-invalid');
+		    submitBtn.disabled = false;
+		    return;
+		  }
+		  if (match) {
+		    confirmInput.classList.add('is-valid');
+		    confirmInput.classList.remove('is-invalid');
+		    mismatchMsg.style.display = 'none';
+		    submitBtn.disabled = false;
+		  } else {
+		    confirmInput.classList.add('is-invalid');
+		    confirmInput.classList.remove('is-valid');
+		    mismatchMsg.style.display = 'block';
+		    submitBtn.disabled = true;
+		  }
+		}
+		
+		// 4) Faccio partire la validazione ogni volta che cambia uno dei due campi
+		pwdInput.addEventListener('input', validatePasswords);
+		confirmInput.addEventListener('input', validatePasswords);
+		
+		// 5) Ulteriore guard a submit: blocco nel caso in cui non coincidano
+		form.addEventListener('submit', e => {
+		  if (pwdInput.value !== confirmInput.value) {
+		    e.preventDefault();
+		    confirmInput.classList.add('is-invalid');
+		    mismatchMsg.style.display = 'block';
+		    confirmInput.focus();
+		  }
+		});
+	</script>
+	<script type="module" src="/js/location-selector.js"></script>
+</body>
+</html>

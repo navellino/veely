@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${vehicle.id} != null ? 'Modifica Veicolo' : 'Nuovo Veicolo'">Veicolo</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<nav th:insert="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container mt-4">
+    <h1 th:text="${vehicle.id} != null ? 'Modifica Veicolo' : 'Nuovo Veicolo'">Veicolo</h1>
+
+    <form th:action="${vehicle.id} != null
+            ? @{|/fleet/vehicles/${vehicle.id}|}
+            : @{/fleet/vehicles}" method="post"
+          th:object="${vehicle}" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label for="plate" class="form-label">Targa</label>
+            <input type="text" class="form-control" id="plate" th:field="*{plate}" required>
+        </div>
+        <div class="mb-3">
+            <label for="brand" class="form-label">Marca</label>
+            <input type="text" class="form-control" id="brand" th:field="*{brand}">
+        </div>
+        <div class="mb-3">
+            <label for="model" class="form-label">Modello</label>
+            <input type="text" class="form-control" id="model" th:field="*{model}">
+        </div>
+        <div class="mb-3">
+            <label for="year" class="form-label">Anno</label>
+            <input type="number" class="form-control" id="year" th:field="*{year}">
+        </div>
+        <div class="mb-3">
+            <label for="type" class="form-label">Tipo</label>
+            <select class="form-select" id="type" th:field="*{type}">
+                <option th:each="t : ${T(com.veely.model.VehicleType).values()}"
+                        th:value="${t}" th:text="${t.displayName}">Car</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="fuelType" class="form-label">Carburante</label>
+            <select class="form-select" id="fuelType" th:field="*{fuelType}">
+                <option th:each="f : ${T(com.veely.model.FuelType).values()}"
+                        th:value="${f}" th:text="${f.displayName}">Petrol</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Stato</label>
+            <select class="form-select" id="status" th:field="*{status}">
+                <option th:each="s : ${T(com.veely.model.VehicleStatus).values()}"
+                        th:value="${s}" th:text="${s.displayName}">In servizio</option>
+            </select>
+        </div>
+
+        <!-- Campi leasing/proprietà -->
+        <div class="mb-3">
+            <label for="financialFee" class="form-label">Canone Finanziario</label>
+            <input type="number" step="0.01" class="form-control" id="financialFee"
+                   th:field="*{financialFee}">
+        </div>
+        <div class="mb-3">
+            <label for="assistanceFee" class="form-label">Canone Assistenza</label>
+            <input type="number" step="0.01" class="form-control" id="assistanceFee"
+                   th:field="*{assistanceFee}">
+        </div>
+        <div class="mb-3">
+            <label for="currentMileage" class="form-label">Chilometraggio</label>
+            <input type="number" class="form-control" id="currentMileage" th:field="*{currentMileage}">
+        </div>
+
+        <button type="submit" class="btn btn-success">Salva</button>
+        <a class="btn btn-secondary" th:href="@{/fleet/vehicles}">Annulla</a>
+    </form>
+</div>
+</body>
+</html>

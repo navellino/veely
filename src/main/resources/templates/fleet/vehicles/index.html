@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Elenco Veicoli – Veely</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<nav th:insert="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container mt-4">
+    <h1>Veicoli</h1>
+    <a class="btn btn-primary mb-3" th:href="@{/fleet/vehicles/new}">Nuovo Veicolo</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Targa</th>
+            <th>Marca</th>
+            <th>Modello</th>
+            <th>Anno</th>
+            <th>Stato</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="v : ${vehicles}">
+            <td th:text="${v.id}">1</td>
+            <td th:text="${v.plate}">AA000BB</td>
+            <td th:text="${v.brand}">Fiat</td>
+            <td th:text="${v.model}">Panda</td>
+            <td th:text="${v.year}">2022</td>
+            <td th:text="${v.status.displayName}">In servizio</td>
+            <td>
+                <a class="btn btn-sm btn-info" th:href="@{|/fleet/vehicles/${v.id}|}">Dettagli</a>
+                <a class="btn btn-sm btn-secondary" th:href="@{|/fleet/vehicles/${v.id}/edit|}">Modifica</a>
+                <form th:action="@{|/fleet/vehicles/${v.id}/delete|}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Sei sicuro?');">Elimina</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

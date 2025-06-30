@@ -1,0 +1,129 @@
+package com.veely.service;
+
+import com.veely.entity.Employment;
+import com.veely.entity.Document;
+import com.veely.exception.ResourceNotFoundException;
+import com.veely.model.EmploymentStatus;
+import com.veely.repository.DocumentRepository;
+import com.veely.repository.EmploymentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+/**
+ * Servizio per la gestione CRUD di Employment,
+ * ricerca/filtro/paginazione e pulizia file/documenti.
+ */
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class EmploymentService {
+
+    private final EmploymentRepository employmentRepo;
+    private final DocumentRepository documentRepo;
+    private final FileSystemStorageService fileStorage;
+
+    /**
+     * Crea un nuovo rapporto di lavoro.
+     */
+    public Employment create(Employment employment) {
+        if (employment.getStatus() == null) {
+            employment.setStatus(EmploymentStatus.ACTIVE);
+        }
+        return employmentRepo.save(employment);
+    }
+
+    /**
+     * Aggiorna un rapporto di lavoro esistente.
+     */
+    public Employment update(Long id, Employment payload) {
+        Employment existing = findByIdOrThrow(id);
+        existing.setEmployee(payload.getEmployee());
+        existing.setHireDate(payload.getHireDate());
+        existing.setEndDate(payload.getEndDate());
+        existing.setJobTitle(payload.getJobTitle());
+        existing.setSalary(payload.getSalary());
+        existing.setStatus(payload.getStatus());
+        return existing;
+    }
+
+    /**
+     * Trova un Employment per ID o lancia eccezione se non esiste.
+     */
+    @Transactional(readOnly = true)
+    public Employment findByIdOrThrow(Long id) {
+        return employmentRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rapporto di lavoro non trovato: " + id));
+    }
+
+    /**
+     * Elenca tutti i rapporti di lavoro.
+     */
+    @Transactional(readOnly = true)
+    public List<Employment> findAll() {
+        return employmentRepo.findAll();
+    }
+
+    /**
+     * Elenca tutti i rapporti di lavoro con paginazione.
+     */
+    @Transactional(readOnly = true)
+    public Page<Employment> findAll(Pageable pageable) {
+        return employmentRepo.findAll(pageable);
+    }
+
+    /**
+     * Filtra per stato del rapporto di lavoro (ACTIVE, TERMINATED, etc) con paginazione.
+     */
+    @Transactional(readOnly = true)
+    public Page<Employment> findByStatus(EmploymentStatus status, Pageable pageable) {
+        return employmentRepo.findByStatus(status, pageable);
+    }
+
+    /**
+     * Ricerca per titolo di lavoro contenente keyword, paginata.
+     */
+    @Transactional(readOnly = true)
+    public Page<Employment> searchByJobTitle(String keyword, Pageable pageable) {
+        String like = "%" + keyword.trim().toLowerCase() + "%";
+        return employmentRepo.findByJobTitleIgnoreCaseContaining(like, pageable);
+    }
+
+    /**
+     * Elimina un rapporto di lavoro e i suoi documenti (DB + filesystem).
+     */
+    public void delete(Long id) {
+        Employment e = findByIdOrThrow(id);
+        // Elimina documenti contrattuali associati
+        List<Document> docs = documentRepo.findByEmploymentId(id);
+        docs.forEach(doc -> {
+            String fullPath = doc.getPath();
+            int sep = fullPath.lastIndexOf('/');
+            String subDir = sep > 0 ? fullPath.substring(0, sep) : "";
+            String filename = sep > 0 ? fullPath.substring(sep + 1) : fullPath;
+            fileStorage.delete(filename, subDir);
+        });
+        documentRepo.deleteAll(docs);
+        // Rimuove directory fisica
+        fileStorage.deleteDirectory("employments/" + id + "/docs");
+        // Cancella il rapporto di lavoro
+        employmentRepo.delete(e);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Employment> findByEmployeeId(Long employeeId) {
+        return employmentRepo.findByEmployeeId(employeeId);
+    }
+    
+    /**
+     * Recupera tutte le Employment per i dipendenti indicati e le raggruppa per employeeId.
+     */
+    public List<Employment> findByEmployeeIds(List<Long> ids) {
+        if (ids.isEmpty()) return List.of();
+        return employmentRepo.findByEmployeeIdIn(ids);
+    }
+    
+}

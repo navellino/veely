@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Dettaglio Veicolo ' + ${vehicle.plate}">Dettaglio</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<nav th:insert="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container mt-4">
+    <h1>Veicolo: <span th:text="${vehicle.plate}">AA000BB</span></h1>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Marca:</strong> <span th:text="${vehicle.brand}">Fiat</span></li>
+                <li class="list-group-item"><strong>Modello:</strong> <span th:text="${vehicle.model}">Panda</span></li>
+                <li class="list-group-item"><strong>Tipo:</strong> <span th:text="${vehicle.type.displayName}">Auto</span></li>
+                <li class="list-group-item"><strong>Carburante:</strong> <span th:text="${vehicle.fuelType.displayName}">Benzina</span></li>
+                <li class="list-group-item"><strong>Anno:</strong> <span th:text="${vehicle.year}">2022</span></li>
+                <li class="list-group-item"><strong>Stato:</strong> <span th:text="${vehicle.status.displayName}">In servizio</span></li>
+                <li class="list-group-item"><strong>Chilometraggio:</strong> <span th:text="${vehicle.currentMileage}">10000</span></li>
+                <li class="list-group-item"><strong>Canone Totale:</strong> <span th:text="${vehicle.totalFee}">€ 200.00</span></li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h4>Foto e Documenti</h4>
+
+            <!-- Upload Foto -->
+            <form th:action="@{|/fleet/vehicles/${vehicle.id}/photos|}" method="post" enctype="multipart/form-data" class="mb-3">
+                <label for="filePhoto" class="form-label">Carica Foto</label>
+                <input class="form-control" type="file" name="file" id="filePhoto" accept="image/*" required>
+                <button type="submit" class="btn btn-primary mt-2">Upload Foto</button>
+            </form>
+
+            <!-- Upload Documento -->
+            <form th:action="@{|/fleet/vehicles/${vehicle.id}/docs|}" method="post" enctype="multipart/form-data">
+                <div class="mb-2">
+                    <label for="fileDoc" class="form-label">Carica Documento</label>
+                    <input class="form-control" type="file" name="file" id="fileDoc" required>
+                </div>
+                <div class="mb-2">
+                    <label for="typeDoc" class="form-label">Tipo Documento</label>
+                    <select class="form-select" name="type" id="typeDoc">
+                        <option th:each="dt : ${docTypes}"
+                                th:value="${dt}"
+                                th:text="${dt.displayName}">Assicurazione</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="issueDate" class="form-label">Data Emissione</label>
+                    <input type="date" class="form-control" name="issueDate" id="issueDate">
+                </div>
+                <div class="mb-2">
+                    <label for="expiryDate" class="form-label">Data Scadenza</label>
+                    <input type="date" class="form-control" name="expiryDate" id="expiryDate">
+                </div>
+                <button type="submit" class="btn btn-secondary">Upload Documento</button>
+            </form>
+
+            <!-- Elenco Documenti / Foto -->
+            <h5 class="mt-4">Elenco File</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Nome File</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${documents}">
+                    <td th:text="${d.type.displayName}">Assicurazione</td>
+                    <td th:text="${#strings.substringAfterLast(d.path,'/')}">162345_photo.jpg</td>
+                    <td>
+                        <a class="btn btn-sm btn-success"
+                           th:href="@{|/fleet/vehicles/files/${vehicle.id}/${#strings.substringAfterLast(d.path,'/')}|}">
+                            Download
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a class="btn btn-secondary mt-3" th:href="@{/fleet/vehicles}">Torna alla lista</a>
+</div>
+</body>
+</html>
