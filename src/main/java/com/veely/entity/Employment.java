@@ -1,5 +1,6 @@
 package com.veely.entity;
 
+import com.veely.model.CcnlType;
 import com.veely.model.ContractType;
 import com.veely.model.EmploymentStatus;
 import com.veely.model.JobRole;
@@ -38,6 +39,11 @@ public class Employment {
     private String branch;               // Filiale
     private String department;           // Reparto / ufficio
     private String jobTitle;             // Mansione
+    
+    private String contractLevel;        // Livello contrattuale
+
+    @Enumerated(EnumType.STRING)
+    private CcnlType ccnl;               // CCNL applicato
     
     @Enumerated(EnumType.STRING)
     private JobRole jobRole;             // Mansione predefinita

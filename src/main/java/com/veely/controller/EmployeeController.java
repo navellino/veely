@@ -6,6 +6,7 @@ import com.veely.entity.Employment;
 import com.veely.model.DocumentType;
 import com.veely.model.EducationLevel;
 import com.veely.model.FullAddress;
+import com.veely.model.Gender;
 import com.veely.model.MaritalStatus;
 import com.veely.service.CountryService;
 import com.veely.service.CountryService.CountryDto;
@@ -116,6 +117,7 @@ public class EmployeeController {
             // 4) reference data per i dropdown
             model.addAttribute("maritalStatuses", MaritalStatus.values());
             model.addAttribute("educationLevels", EducationLevel.values());
+            model.addAttribute("genders", Gender.values());
             model.addAttribute("countries", countryService.getAll());
             // carica solo regioni italiane: la select sarà poi popolata via JS da gi_regioni.json
             model.addAttribute("regions", locationService.getRegions("IT"));
@@ -137,6 +139,10 @@ public class EmployeeController {
             Model model
     ) {
         if (binding.hasErrors()) {
+        	model.addAttribute("docTypes", DocumentType.values());
+            model.addAttribute("maritalStatuses", MaritalStatus.values());
+            model.addAttribute("educationLevels", EducationLevel.values());
+            model.addAttribute("genders", Gender.values());
             model.addAttribute("docTypes", DocumentType.values());
             return "fleet/employees/form";
         }
@@ -185,6 +191,7 @@ public class EmployeeController {
         model.addAttribute("residenceAddress", employee.getResidenceAddress());
         model.addAttribute("maritalStatuses", MaritalStatus.values());
         model.addAttribute("educationLevels", EducationLevel.values());
+        model.addAttribute("genders", Gender.values());
         model.addAttribute("countries", countryService.getAll());
 
         // 5) aggiungi tutto al Model
@@ -250,6 +257,7 @@ public class EmployeeController {
             // ripopolo le select in caso di validazione KO
             model.addAttribute("maritalStatuses", MaritalStatus.values());
             model.addAttribute("educationLevels", EducationLevel.values());
+            model.addAttribute("genders", Gender.values());
             model.addAttribute("countries", countryService.getAll());
             String cc = employee.getResidenceAddress().getCountryCode();
             String rc = employee.getResidenceAddress().getRegionCode();

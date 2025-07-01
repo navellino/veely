@@ -36,15 +36,23 @@
     <div class="tab-content">
         <div class="tab-pane fade show active" id="pane-details" role="tabpanel">
             <form th:object="${employment}"
-                  th:action="${employment.id == null} ? @{/fleet/employments} : @{/fleet/employments/{id}(id=${employment.id})}"
+                  th:action="${employment.id == null} ? @{/fleet/employments/new} : @{/fleet/employments/{id}(id=${employment.id})}"
                   method="post" class="row g-3" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                 <div class="col-md-6">
                     <label class="form-label">Dipendente</label>
-                    <select class="form-select" th:field="*{employee.id}" th:disabled="${employment.id != null}">
-                        <option th:each="e : ${employees}" th:value="${e.id}" th:text="${e.firstName + ' ' + e.lastName}"></option>
+                    <select id="employeeSelect" class="form-select" th:field="*{employee.id}" th:disabled="${employment.id != null}">
+                        <option th:each="e : ${employees}" th:value="${e.id}" th:text="${e.firstName + ' ' + e.lastName}" th:data-birthdate="${e.birthDate}" th:data-gender="${e.gender}"></option>
                     </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Età</label>
+                    <input id="empAge" class="form-control" readonly />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Sesso</label>
+                    <input id="empGender" class="form-control" readonly />
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Data inizio</label>
@@ -74,7 +82,50 @@
                         <option th:each="jr : ${jobRoles}" th:value="${jr}" th:text="${jr.displayName}"></option>
                     </select>
                 </div>
+				
+				<div class="col-md-3">
+                    <label class="form-label">CCNL</label>
+                    <select class="form-select" th:field="*{ccnl}">
+                        <option th:each="c : ${ccnls}" th:value="${c}" th:text="${c.displayName}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Livello</label>
+                    <input class="form-control" th:field="*{contractLevel}" />
+                </div>
 
+                <div class="col-12">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="fw-semibold mb-3">Luogo di lavoro</h5>
+                            <location-selector
+                                country-binding="workplace.countryCode"
+                                name-region="workplace.regionCode"
+                                name-province="workplace.provinceCode"
+                                name-city="workplace.cityCode"
+                                name-postal="workplace.postalCode"
+                                name-street="workplace.street"
+                                th:data-selected-country="${employment.workplace.countryCode}"
+                                th:data-selected-region="${employment.workplace.regionCode}"
+                                th:data-selected-province="${employment.workplace.provinceCode}"
+                                th:data-selected-city="${employment.workplace.cityCode}"
+                                th:data-selected-postal="${employment.workplace.postalCode}"
+                                th:data-selected-street="${employment.workplace.street}">
+                            </location-selector>
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Sede/Cantiere</label>
+                                    <input class="form-control" th:field="*{workplace.siteName}" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Commessa</label>
+                                    <input class="form-control" th:field="*{workplace.jobNumber}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				
                 <div class="col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary me-2" th:text="${employment.id == null ? 'Crea' : 'Aggiorna'}"></button>
                     <a class="btn btn-outline-secondary" th:href="@{/fleet/employments/manage}">Annulla</a>
@@ -138,5 +189,27 @@
 </main>
 <div th:insert="fragments/footer :: mainFooter"></div>
 <script type="module" th:src="@{/js/location-selector.js}"></script>
+<script>
+    const sel = document.getElementById('employeeSelect');
+    const ageInput = document.getElementById('empAge');
+    const genderInput = document.getElementById('empGender');
+    function updateInfo(){
+        const opt = sel.selectedOptions[0];
+        if(!opt) return;
+        const bd = opt.getAttribute('data-birthdate');
+        const g = opt.getAttribute('data-gender');
+        genderInput.value = g ? g : '';
+        if(bd){
+            const diff = Date.now() - new Date(bd).getTime();
+            ageInput.value = Math.floor(diff / 31557600000); // 365.25 days
+        } else {
+            ageInput.value = '';
+        }
+    }
+    if(sel){
+        sel.addEventListener('change', updateInfo);
+        document.addEventListener('DOMContentLoaded', updateInfo);
+    }
+</script>
 </body>
 </html>

@@ -4,6 +4,7 @@ package com.veely.entity;
 import com.veely.model.DocumentType;
 import com.veely.model.EducationLevel;
 import com.veely.model.FullAddress;
+import com.veely.model.Gender;
 import com.veely.model.MaritalStatus;
 import com.veely.model.UserRole;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public class Employee {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthDate;
     private String birthPlace;
+    
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(nullable = false, unique = true, length = 16)
     private String fiscalCode;
@@ -87,4 +91,11 @@ public class Employee {
             .findFirst()
             .orElse(null);
     }
+    
+    @Transient
+    public Integer getAge() {
+        return birthDate == null ? null
+                : java.time.Period.between(birthDate, java.time.LocalDate.now()).getYears();
+    }
+    
 }

@@ -98,14 +98,20 @@
 													required />
 											</div>
 											<div class="col-md-8">
-												<label class="form-label">Luogo di nascita</label> <input
-													class="form-control" th:field="*{birthPlace}" required />
-											</div>
-											<div class="col-md-4">
-												<label class="form-label">Codice Fiscale</label> <input
-													class="form-control text-uppercase" maxlength="16"
-													th:field="*{fiscalCode}" required />
-											</div>
+												 <label class="form-label">Luogo di nascita</label> <input
+			                                        class="form-control" th:field="*{birthPlace}" required />
+			                                    </div>
+			                                    <div class="col-md-4">
+			                                        <label class="form-label">Sesso</label>
+			                                        <select class="form-select" th:field="*{gender}">
+			                                            <option th:each="g : ${genders}" th:value="${g}" th:text="${g.displayName}"></option>
+			                                        </select>
+			                                    </div>
+			                                    <div class="col-md-4">
+			                                        <label class="form-label">Codice Fiscale</label> <input
+			                                        class="form-control text-uppercase" maxlength="16"
+			                                        th:field="*{fiscalCode}" required />
+			                                    </div>
 											<div class="col-md-4">
 												<label class="form-label">Stato civile</label> <select
 													class="form-select" th:field="*{maritalStatus}">

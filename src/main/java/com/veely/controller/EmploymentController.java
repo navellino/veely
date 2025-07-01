@@ -1,6 +1,7 @@
 package com.veely.controller;
 
 import com.veely.entity.Employment;
+import com.veely.model.CcnlType;
 import com.veely.model.DocumentType;
 import com.veely.model.EmploymentStatus;
 import com.veely.model.JobRole;
@@ -46,6 +47,7 @@ public class EmploymentController {
         model.addAttribute("employees", employeeService.findAvailableForEmployment());
         model.addAttribute("docTypes", DocumentType.values());
         model.addAttribute("jobRoles", JobRole.values());
+        model.addAttribute("ccnls", CcnlType.values());
         model.addAttribute("statuses", EmploymentStatus.values());
         return "fleet/employments/form";
     }
@@ -61,9 +63,11 @@ public class EmploymentController {
 
         if (binding.hasErrors()) {
             //model.addAttribute("employees", employeeService.findAll());
+        	//model.addAttribute("employees", employeeService.findAvailableForEmployment());
         	model.addAttribute("employees", employeeService.findAvailableForEmployment());
             model.addAttribute("docTypes", DocumentType.values());
             model.addAttribute("jobRoles", JobRole.values());
+            model.addAttribute("ccnls", CcnlType.values());
             model.addAttribute("statuses", EmploymentStatus.values());
             return "fleet/employments/form";
         }
@@ -94,6 +98,7 @@ public class EmploymentController {
         model.addAttribute("docTypes", DocumentType.values());
         model.addAttribute("documents", documentService.getEmploymentDocuments(id));
         model.addAttribute("jobRoles", JobRole.values());
+        model.addAttribute("ccnls", CcnlType.values());
         model.addAttribute("statuses", EmploymentStatus.values());
         return "fleet/employments/form";
     }
@@ -108,6 +113,7 @@ public class EmploymentController {
             model.addAttribute("docTypes", DocumentType.values());
             model.addAttribute("documents", documentService.getEmploymentDocuments(id));
             model.addAttribute("jobRoles", JobRole.values());
+            model.addAttribute("ccnls", CcnlType.values());
             model.addAttribute("statuses", EmploymentStatus.values());
             return "fleet/employments/form";
         }
