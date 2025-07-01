@@ -53,9 +53,8 @@ public class EmploymentController {
     
     
     @GetMapping("/export")
-    public ResponseEntity<byte[]> exportPdf(@RequestParam(required = false) String keyword,
-                                            @RequestParam(required = false) EmploymentStatus status) {
-        byte[] pdf = employmentService.exportPdf(keyword, status);
+    public ResponseEntity<byte[]> exportPdf() {
+        byte[] pdf = employmentService.exportPdf();
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=employments.pdf")
