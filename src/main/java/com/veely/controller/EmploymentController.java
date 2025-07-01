@@ -25,15 +25,22 @@ public class EmploymentController {
     private final EmployeeService employeeService;
     private final DocumentService documentService;
 
+    @GetMapping
+    public String list(Model model) {
+        model.addAttribute("employments", employmentService.findAll());
+        return "fleet/employments/index";
+    }
+    
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("employment", new Employment());
         model.addAttribute("employees", employeeService.findAll());
         model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("statuses", com.veely.model.EmploymentStatus.values());
         return "fleet/employments/form";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String create(@Valid @ModelAttribute Employment employment,
                          BindingResult binding,
                          @RequestParam(value = "file", required = false) MultipartFile file,
@@ -45,6 +52,7 @@ public class EmploymentController {
         if (binding.hasErrors()) {
             model.addAttribute("employees", employeeService.findAll());
             model.addAttribute("docTypes", DocumentType.values());
+            model.addAttribute("statuses", com.veely.model.EmploymentStatus.values());
             return "fleet/employments/form";
         }
 
@@ -62,7 +70,38 @@ public class EmploymentController {
                 saved.getId(), file, type, issued, exp
             );
         }
-
         return "redirect:/fleet/employments";
     }
+    
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Employment emp = employmentService.findByIdOrThrow(id);
+        model.addAttribute("employment", emp);
+        model.addAttribute("employees", employeeService.findAll());
+        model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("statuses", com.veely.model.EmploymentStatus.values());
+        return "fleet/employments/form";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute Employment employment,
+                         BindingResult binding,
+                         Model model) {
+        if (binding.hasErrors()) {
+            model.addAttribute("employees", employeeService.findAll());
+            model.addAttribute("docTypes", DocumentType.values());
+            model.addAttribute("statuses", com.veely.model.EmploymentStatus.values());
+            return "fleet/employments/form";
+        }
+        employmentService.update(id, employment);
+        return "redirect:/fleet/employments";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        employmentService.delete(id);
+        return "redirect:/fleet/employments";
+    }
+    
 }

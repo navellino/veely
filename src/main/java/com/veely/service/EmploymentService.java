@@ -7,6 +7,8 @@ import com.veely.model.EmploymentStatus;
 import com.veely.repository.DocumentRepository;
 import com.veely.repository.EmployeeRepository;
 import com.veely.repository.EmploymentRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,12 +36,10 @@ public class EmploymentService {
      */
     /* ---------- CREATE ---------- */
     public Employment create(Employment employment) {
-
         // (A)  Aggancia il dipendente se viene passato solo l’id
         if (employment.getEmployee() != null &&
             employment.getEmployee().getId() != null) {
-            employment.setEmployee(
-            		employeeRepo.findById(employment.getEmployee().getId()));
+            employment.setEmployee(employeeRepo.findById(employment.getEmployee().getId()).get());
         }
 
         /* (B)  EmploymentAddress è già popolato dal binding
