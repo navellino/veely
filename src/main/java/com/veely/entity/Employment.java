@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * Rapporto di lavoro associato ad una persona.
  * Contiene la matricola, i dati contrattuali e le assegnazioni veicoli.
@@ -50,7 +52,10 @@ public class Employment {
 
     private BigDecimal salary;           // Retribuzione base
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
     
     @Column(name = "job_description")

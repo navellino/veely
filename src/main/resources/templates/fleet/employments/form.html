@@ -7,6 +7,7 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+             <li class="breadcrumb-item"><a th:href="@{/fleet/employments}">Contratti</a></li>
             <li class="breadcrumb-item active" aria-current="page" th:text="${employment.id == null ? 'Nuovo' : 'Modifica'}"></li>
         </ol>
     </nav>
@@ -127,8 +128,9 @@
                 </div>
 				
                 <div class="col-12 d-flex justify-content-end">
+                	<a class="btn btn-outline-secondary me-auto" th:href="@{/fleet/employments}"><i class="bi bi-list-ul me-1"></i> Lista contratti</a>
                     <button type="submit" class="btn btn-primary me-2" th:text="${employment.id == null ? 'Crea' : 'Aggiorna'}"></button>
-                    <a class="btn btn-outline-secondary" th:href="@{/fleet/employments/manage}">Annulla</a>
+                    <a class="btn btn-outline-secondary" th:href="@{/fleet/employments}">Annulla</a>
                 </div>
             </form>
         </div>

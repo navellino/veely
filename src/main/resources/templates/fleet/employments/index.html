@@ -14,21 +14,37 @@
     <table class="table table-hover align-middle">
       <thead class="table-dark">
         <tr>
-          <th>Dipendente</th>
+          <th>Cognome</th>
+          <th>Nome</th>
           <th>Matricola</th>
-          <th>Inizio</th>
-          <th>Fine</th>
-          <th>Stato</th>
+           <th>Assunzione</th>
+          <th>Scadenza</th>
+          <th>Qualifica</th>
+          <th>Mansione</th>
+          <th>Sede</th>
+          <th>Livello</th>
+          <th>Sesso</th>
+          <th>Data nascita</th>
+          <th>Cod. fiscale</th>
+          <th>Età</th>
           <th class="text-end">Azioni</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="e : ${employments}">
-          <td th:text="${e.employee.firstName + ' ' + e.employee.lastName}">Mario Rossi</td>
+			<td th:text="${e.employee.lastName}">Rossi</td>
+          <td th:text="${e.employee.firstName}">Mario</td>
           <td th:text="${e.matricola}">M123</td>
           <td th:text="${e.startDate}">2025-01-01</td>
-          <td th:text="${e.endDate}">2025-12-31</td>
-          <td th:text="${e.status}">ACTIVE</td>
+          <td th:text="${e.contractType == T(com.veely.model.ContractType).PERMANENT ? '' : e.endDate}">2025-12-31</td>
+          <td th:text="${e.jobRole != null ? e.jobRole.displayName : ''}">Operaio</td>
+          <td th:text="${e.jobTitle}">Mansione</td>
+          <td th:text="${e.workplace != null ? e.workplace.siteName : ''}">Sede</td>
+          <td th:text="${e.contractLevel}">Livello</td>
+          <td th:text="${e.employee.gender != null ? e.employee.gender.displayName : ''}">M</td>
+          <td th:text="${e.employee.birthDate}">1980-01-01</td>
+          <td th:text="${e.employee.fiscalCode}">RSSMRA80A01F205X</td>
+          <td th:text="${e.employee.age}">45</td>
           <td class="text-end">
             <a th:href="@{|/fleet/employments/${e.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
               <i class="bi bi-pencil"></i>
