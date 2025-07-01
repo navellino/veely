@@ -145,7 +145,7 @@ public class EmploymentService {
                 } else {
                     table.addCell("");
                 }
-                table.addCell(e.getJobTitle() == null ? "" : e.getJobTitle());
+                table.addCell(e.getJobTitle() == null ? "" : e.getJobTitle().toString());
                 table.addCell(e.getStartDate() != null ? e.getStartDate().toString() : "");
                 table.addCell(e.getEndDate() != null ? e.getEndDate().toString() : "");
                 table.addCell(e.getStatus() != null ? e.getStatus().name() : "");

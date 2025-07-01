@@ -4,9 +4,10 @@ package com.veely.model;
  * Mansioni principali all'interno dell'azienda.
  */
 public enum JobRole {
-    WORKER("Operaio"),
-    CLERK("Impiegato"),
-    TECHNICIAN("Tecnico"),
+    LABORER("Manovale"),
+    BRICKLAYER("Muratore"),
+    ACCOUNTANT("Contabile"),
+    SURVEYOR("Geometra"),
     MANAGER("Responsabile");
 
     private final String displayName;

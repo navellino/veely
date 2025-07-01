@@ -3,6 +3,7 @@ package com.veely.entity;
 import com.veely.model.CcnlType;
 import com.veely.model.ContractType;
 import com.veely.model.EmploymentStatus;
+import com.veely.model.JobQualification;
 import com.veely.model.JobRole;
 
 import jakarta.persistence.*;
@@ -40,7 +41,9 @@ public class Employment {
 
     private String branch;               // Filiale
     private String department;           // Reparto / ufficio
-    private String jobTitle;             // Mansione
+    
+    @Enumerated(EnumType.STRING)
+    private JobQualification jobTitle;             // Qualifica
     
     private String contractLevel;        // Livello contrattuale
 

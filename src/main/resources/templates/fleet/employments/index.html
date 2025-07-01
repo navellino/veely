@@ -16,7 +16,7 @@
     </div>
     <div class="col-auto">
       <select name="status" class="form-select">
-        <option th:value="" th:selected="${param.status == null}">Tutti</option>
+        <option value="" th:selected="${param.status == null}">Tutti</option>
         <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${param.status == s.name()}"></option>
       </select>
     </div>
@@ -57,7 +57,7 @@
           <td th:text="${e.startDate}">2025-01-01</td>
           <td th:text="${e.contractType == T(com.veely.model.ContractType).PERMANENT ? '' : e.endDate}">2025-12-31</td>
           <td th:text="${e.jobRole != null ? e.jobRole.displayName : ''}">Operaio</td>
-          <td th:text="${e.jobTitle}">Mansione</td>
+          <td th:text="${e.jobRole.displayName}">Mansione</td>
           <td th:text="${e.workplace != null ? e.workplace.siteName : ''}">Sede</td>
           <td th:text="${e.contractLevel}">Livello</td>
           <td th:text="${e.employee.gender != null ? e.employee.gender.displayName : ''}">M</td>
