@@ -44,7 +44,11 @@ public class EmploymentService {
 
         /* (B)  EmploymentAddress è già popolato dal binding
                 – nessun merge manuale necessario */
-        return employmentRepo.save(employment);
+        //return employmentRepo.save(employment);
+        Employment saved = employmentRepo.save(employment);
+        // crea la cartella per i documenti usando la matricola
+        fileStorage.initDirectory("employments/" + saved.getMatricola() + "/docs");
+        return saved;
     }
 
     /**
@@ -128,7 +132,8 @@ public class EmploymentService {
         });
         documentRepo.deleteAll(docs);
         // Rimuove directory fisica
-        fileStorage.deleteDirectory("employments/" + id + "/docs");
+        //fileStorage.deleteDirectory("employments/" + id + "/docs");
+        fileStorage.deleteDirectory("employments/" + e.getMatricola() + "/docs");
         // Cancella il rapporto di lavoro
         employmentRepo.delete(e);
     }

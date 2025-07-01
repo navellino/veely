@@ -2,6 +2,8 @@ package com.veely.entity;
 
 import com.veely.model.ContractType;
 import com.veely.model.EmploymentStatus;
+import com.veely.model.JobRole;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +38,9 @@ public class Employment {
     private String branch;               // Filiale
     private String department;           // Reparto / ufficio
     private String jobTitle;             // Mansione
+    
+    @Enumerated(EnumType.STRING)
+    private JobRole jobRole;             // Mansione predefinita
 
     private BigDecimal salary;           // Retribuzione base
 

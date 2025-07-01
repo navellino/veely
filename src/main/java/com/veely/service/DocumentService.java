@@ -79,7 +79,8 @@ public class DocumentService {
                                              LocalDate issueDate,
                                              LocalDate expiryDate) throws IOException {
         Employment empmt = employmentService.findByIdOrThrow(employmentId);
-        String subdir = "employments/" + employmentId + "/docs";
+        //String subdir = "employments/" + employmentId + "/docs";
+        String subdir = "employments/" + empmt.getMatricola() + "/docs";
         fileStorage.initDirectory(subdir);
         String filename = fileStorage.store(file, subdir);
 
@@ -175,6 +176,14 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public Resource loadEmployeeDocumentAsResource(Long employeeId, String filename) {
         String dir = "employees/" + employeeId + "/docs";
+        return fileStorage.loadAsResource(filename, dir);
+    }
+    
+    /** Carica la risorsa per un documento di rapporto di lavoro */
+    @Transactional(readOnly = true)
+    public Resource loadEmploymentDocumentAsResource(Long employmentId, String filename) {
+        Employment emp = employmentService.findByIdOrThrow(employmentId);
+        String dir = "employments/" + emp.getMatricola() + "/docs";
         return fileStorage.loadAsResource(filename, dir);
     }
     

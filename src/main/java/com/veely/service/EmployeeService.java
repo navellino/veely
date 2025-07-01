@@ -4,6 +4,7 @@ import com.veely.entity.Employee;
 import com.veely.entity.Document;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.EducationLevel;
+import com.veely.model.EmploymentStatus;
 import com.veely.model.MaritalStatus;
 import com.veely.model.UserRole;
 import com.veely.repository.DocumentRepository;
@@ -116,6 +117,12 @@ public class EmployeeService {
         return employeeRepo.findAll();
     }
 
+    /** Restituisce i dipendenti senza un rapporto di lavoro attivo */
+    @Transactional(readOnly = true)
+    public List<Employee> findAvailableForEmployment() {
+        return employeeRepo.findAvailableForEmployment(EmploymentStatus.ACTIVE);
+    }
+    
     /**
      * Elenca i dipendenti con paginazione.
      */
