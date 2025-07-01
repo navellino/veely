@@ -7,7 +7,13 @@ import com.veely.model.EmploymentStatus;
 import com.veely.repository.DocumentRepository;
 import com.veely.repository.EmployeeRepository;
 import com.veely.repository.EmploymentRepository;
-
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import java.io.ByteArrayOutputStream;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,6 +89,77 @@ public class EmploymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Rapporto di lavoro non trovato: " + id));
     }
 
+    /**
+     * Ricerca con keyword e stato, paginata.
+     */
+    @Transactional(readOnly = true)
+    public Page<Employment> search(String keyword, EmploymentStatus status, Pageable pageable) {
+        boolean hasKw = keyword != null && !keyword.isBlank();
+        if (hasKw && status != null) {
+            return employmentRepo.searchByStatusAndKeyword(status, keyword.trim(), pageable);
+        } else if (hasKw) {
+            return employmentRepo.searchByKeyword(keyword.trim(), pageable);
+        } else if (status != null) {
+            return employmentRepo.findByStatus(status, pageable);
+        }
+        return employmentRepo.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Employment> search(String keyword, EmploymentStatus status) {
+        return search(keyword, status, Pageable.unpaged()).getContent();
+    }
+
+    /**
+     * Esporta l'elenco dei rapporti di lavoro in formato PDF.
+     *
+     * @return array di byte contenente il documento PDF
+     */
+    public byte[] exportPdf() {
+        List<Employment> employments = employmentRepo.findAll();
+
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        com.lowagie.text.Document pdfDoc = new com.lowagie.text.Document(PageSize.A4);
+        try {
+            PdfWriter.getInstance(pdfDoc, out);
+            pdfDoc.open();
+
+            pdfDoc.add(new Paragraph("Elenco rapporti di lavoro"));
+            pdfDoc.add(new Paragraph(" "));
+
+            PdfPTable table = new PdfPTable(7);
+            table.setWidthPercentage(100f);
+            table.addCell("ID");
+            table.addCell("Matricola");
+            table.addCell("Dipendente");
+            table.addCell("Job title");
+            table.addCell("Data inizio");
+            table.addCell("Data fine");
+            table.addCell("Stato");
+
+            for (Employment e : employments) {
+                table.addCell(String.valueOf(e.getId()));
+                table.addCell(e.getMatricola() == null ? "" : e.getMatricola());
+                if (e.getEmployee() != null) {
+                    table.addCell(e.getEmployee().getFirstName() + " " + e.getEmployee().getLastName());
+                } else {
+                    table.addCell("");
+                }
+                table.addCell(e.getJobTitle() == null ? "" : e.getJobTitle());
+                table.addCell(e.getStartDate() != null ? e.getStartDate().toString() : "");
+                table.addCell(e.getEndDate() != null ? e.getEndDate().toString() : "");
+                table.addCell(e.getStatus() != null ? e.getStatus().name() : "");
+            }
+
+            pdfDoc.add(table);
+            pdfDoc.close();
+        } catch (DocumentException e) {
+            throw new RuntimeException("Errore nella creazione del PDF", e);
+        }
+
+        return out.toByteArray();
+    }
+    
     /**
      * Elenca tutti i rapporti di lavoro.
      */

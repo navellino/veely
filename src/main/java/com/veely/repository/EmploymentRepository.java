@@ -31,6 +31,40 @@ public interface EmploymentRepository extends JpaRepository<Employment, Long> {
      */
     Page<Employment> findByJobTitleIgnoreCaseContaining(String jobTitle, Pageable pageable);
     
+    
+    @Query("""
+            select emp from Employment emp
+            join emp.employee person
+            left join emp.workplace w
+            where lower(person.firstName) like lower(concat('%', :kw, '%'))
+               or lower(person.lastName) like lower(concat('%', :kw, '%'))
+               or lower(emp.matricola) like lower(concat('%', :kw, '%'))
+               or lower(emp.jobTitle) like lower(concat('%', :kw, '%'))
+               or lower(emp.contractLevel) like lower(concat('%', :kw, '%'))
+               or lower(emp.branch) like lower(concat('%', :kw, '%'))
+               or lower(coalesce(w.siteName,'')) like lower(concat('%', :kw, '%'))
+        """)
+        Page<Employment> searchByKeyword(@Param("kw") String keyword, Pageable pageable);
+
+        @Query("""
+            select emp from Employment emp
+            join emp.employee person
+            left join emp.workplace w
+            where emp.status = :status and (
+                lower(person.firstName) like lower(concat('%', :kw, '%'))
+                or lower(person.lastName) like lower(concat('%', :kw, '%'))
+                or lower(emp.matricola) like lower(concat('%', :kw, '%'))
+                or lower(emp.jobTitle) like lower(concat('%', :kw, '%'))
+                or lower(emp.contractLevel) like lower(concat('%', :kw, '%'))
+                or lower(emp.branch) like lower(concat('%', :kw, '%'))
+                or lower(coalesce(w.siteName,'')) like lower(concat('%', :kw, '%'))
+            )
+        """)
+        Page<Employment> searchByStatusAndKeyword(@Param("status") EmploymentStatus status,
+                                                  @Param("kw") String keyword,
+                                                  Pageable pageable);
+    
+    
     List<Employment> findByEmployeeId(Long employeeId);
     
     // Se Employment ha un campo Employee employee, usiamo la property path employee.id

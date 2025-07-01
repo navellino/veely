@@ -10,6 +10,9 @@ import com.veely.service.DocumentService;
 import com.veely.service.EmploymentService;
 import com.veely.service.EmployeeService;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +39,27 @@ public class EmploymentController {
     private final DocumentService documentService;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("employments", employmentService.findAll());
-        return "fleet/employments/index";
+    public String list(@RequestParam(required = false) String keyword,
+            @RequestParam(required = false) EmploymentStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
+			
+    		Page<Employment> emps = employmentService.search(keyword, status, PageRequest.of(page, 20));
+			model.addAttribute("employments", emps);
+			model.addAttribute("statuses", EmploymentStatus.values());
+        
+			return "fleet/employments/index";
+    }
+    
+    
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportPdf(@RequestParam(required = false) String keyword,
+                                            @RequestParam(required = false) EmploymentStatus status) {
+        byte[] pdf = employmentService.exportPdf(keyword, status);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=employments.pdf")
+                .body(pdf);
     }
     
     @GetMapping("/new")

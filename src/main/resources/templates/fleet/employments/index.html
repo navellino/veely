@@ -3,13 +3,32 @@
 <head th:replace="fragments/head :: commonHead('Elenco Rapporti di Lavoro – Veely')"></head>
 <body class="d-flex flex-column min-vh-100">
 <div th:insert="fragments/navbar :: mainNavbar"></div>
-<main class="container my-5 flex-fill">
+<main class="container-fluid my-5 flex-fill">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-semibold">Elenco Rapporti di Lavoro</h2>
     <a th:href="@{/fleet/employments/new}" class="btn btn-primary">
       <i class="bi bi-plus-lg me-1"></i> Nuovo Rapporto
     </a>
   </div>
+  <form class="row g-2 mb-4" method="get" th:action="@{/fleet/employments}">
+    <div class="col-auto">
+      <input type="text" name="keyword" th:value="${param.keyword}" class="form-control" placeholder="Cerca…">
+    </div>
+    <div class="col-auto">
+      <select name="status" class="form-select">
+        <option th:value="" th:selected="${param.status == null}">Tutti</option>
+        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${param.status == s.name()}"></option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+    </div>
+    <div class="col-auto ms-auto">
+      <a class="btn btn-outline-primary" th:href="@{/fleet/employments/export(status=${param.status},keyword=${param.keyword})}">
+        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+      </a>
+    </div>
+  </form>
   <div class="table-responsive shadow-sm">
     <table class="table table-hover align-middle">
       <thead class="table-dark">
@@ -59,6 +78,19 @@
       </tbody>
     </table>
   </div>
+  <nav th:if="${employments.totalPages > 1}">
+    <ul class="pagination justify-content-center mt-4">
+      <li class="page-item" th:classappend="${!employments.hasPrevious()}? 'disabled'">
+        <a class="page-link" th:href="@{/fleet/employments(page=${employments.number-1}, keyword=${param.keyword}, status=${param.status})}">«</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, employments.totalPages-1)}" th:classappend="${i == employments.number}? 'active'">
+        <a class="page-link" th:href="@{/fleet/employments(page=${i}, keyword=${param.keyword}, status=${param.status})}" th:text="${i+1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${!employments.hasNext()}? 'disabled'">
+        <a class="page-link" th:href="@{/fleet/employments(page=${employments.number+1}, keyword=${param.keyword}, status=${param.status})}">»</a>
+      </li>
+    </ul>
+  </nav>
 </main>
 <div th:insert="fragments/footer :: mainFooter"></div>
 </body>
