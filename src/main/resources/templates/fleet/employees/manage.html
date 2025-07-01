@@ -19,6 +19,7 @@
               <th>Nome</th>
               <th>Cognome</th>
               <th>Email</th>
+              <th>Qualifica</th>
               <th>Rapporto di lavoro</th>
               <th class="text-end">Azioni</th>
             </tr>
@@ -28,6 +29,7 @@
               <td th:text="${emp.firstName}">Mario</td>
               <td th:text="${emp.lastName}">Rossi</td>
               <td th:text="${emp.email}">mario@esempio.com</td>
+              <td th:text="${activeEmployments[emp.id] != null ? activeEmployments[emp.id].jobTitle?.displayName : '-'}">-</td>
               <td>
                 <span th:if="${#lists.size(empToEmpls[emp.id]) > 0}"
                       class="badge bg-success">Sì</span>

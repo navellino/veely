@@ -5,6 +5,7 @@ import com.veely.entity.EmploymentAddress;
 import com.veely.model.CcnlType;
 import com.veely.model.DocumentType;
 import com.veely.model.EmploymentStatus;
+import com.veely.model.JobQualification;
 import com.veely.model.JobRole;
 import com.veely.service.DocumentService;
 import com.veely.service.EmploymentService;
@@ -12,7 +13,6 @@ import com.veely.service.EmployeeService;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,6 @@ public class EmploymentController {
 			return "fleet/employments/index";
     }
     
-    
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportPdf() {
         byte[] pdf = employmentService.exportPdf();
@@ -78,6 +77,7 @@ public class EmploymentController {
         model.addAttribute("employees", employeeService.findAvailableForEmployment());
         model.addAttribute("docTypes", DocumentType.values());
         model.addAttribute("jobRoles", JobRole.values());
+        model.addAttribute("jobQualifications", JobQualification.values());
         model.addAttribute("ccnls", CcnlType.values());
         model.addAttribute("statuses", EmploymentStatus.values());
         return "fleet/employments/form";
@@ -93,12 +93,11 @@ public class EmploymentController {
                          Model model) throws IOException {
 
         if (binding.hasErrors()) {
-            //model.addAttribute("employees", employeeService.findAll());
-        	//model.addAttribute("employees", employeeService.findAvailableForEmployment());
         	model.addAttribute("employees", employeeService.findAvailableForEmployment());
             model.addAttribute("docTypes", DocumentType.values());
             model.addAttribute("jobRoles", JobRole.values());
             model.addAttribute("ccnls", CcnlType.values());
+            model.addAttribute("jobQualifications", JobQualification.values());
             model.addAttribute("statuses", EmploymentStatus.values());
             return "fleet/employments/form";
         }
@@ -130,6 +129,7 @@ public class EmploymentController {
         model.addAttribute("documents", documentService.getEmploymentDocuments(id));
         model.addAttribute("jobRoles", JobRole.values());
         model.addAttribute("ccnls", CcnlType.values());
+        model.addAttribute("jobQualifications", JobQualification.values());
         model.addAttribute("statuses", EmploymentStatus.values());
         return "fleet/employments/form";
     }
@@ -144,6 +144,7 @@ public class EmploymentController {
             model.addAttribute("docTypes", DocumentType.values());
             model.addAttribute("documents", documentService.getEmploymentDocuments(id));
             model.addAttribute("jobRoles", JobRole.values());
+            model.addAttribute("jobQualifications", JobQualification.values());
             model.addAttribute("ccnls", CcnlType.values());
             model.addAttribute("statuses", EmploymentStatus.values());
             return "fleet/employments/form";

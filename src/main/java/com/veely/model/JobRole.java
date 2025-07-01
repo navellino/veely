@@ -5,6 +5,8 @@ package com.veely.model;
  */
 public enum JobRole {
     LABORER("Manovale"),
+    CLERK("Vecchio"),
+    TECHNICIAN("Vecchio"),
     BRICKLAYER("Muratore"),
     ACCOUNTANT("Contabile"),
     SURVEYOR("Geometra"),

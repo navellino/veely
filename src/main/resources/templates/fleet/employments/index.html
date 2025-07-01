@@ -56,7 +56,7 @@
           <td th:text="${e.matricola}">M123</td>
           <td th:text="${e.startDate}">2025-01-01</td>
           <td th:text="${e.contractType == T(com.veely.model.ContractType).PERMANENT ? '' : e.endDate}">2025-12-31</td>
-          <td th:text="${e.jobRole != null ? e.jobRole.displayName : ''}">Operaio</td>
+          <td th:text="${e.jobTitle != null ? e.jobTitle.displayName : ''}">Operaio</td>
           <td th:text="${e.jobRole.displayName}">Mansione</td>
           <td th:text="${e.workplace != null ? e.workplace.siteName : ''}">Sede</td>
           <td th:text="${e.contractLevel}">Livello</td>

@@ -5,6 +5,7 @@ import com.veely.entity.Employee;
 import com.veely.entity.Employment;
 import com.veely.model.DocumentType;
 import com.veely.model.EducationLevel;
+import com.veely.model.EmploymentStatus;
 import com.veely.model.FullAddress;
 import com.veely.model.Gender;
 import com.veely.model.MaritalStatus;
@@ -80,8 +81,17 @@ public class EmployeeController {
             Long empId = empl.getEmployee().getId();
             empToEmpls.get(empId).add(empl);
         }
+        
+     // Mappa degli impieghi attivi per mostrare la qualifica corrente
+        Map<Long, Employment> activeEmpls = new HashMap<>();
+        for (Employment empl : allEmpls) {
+            if (empl.getStatus() == EmploymentStatus.ACTIVE) {
+                activeEmpls.putIfAbsent(empl.getEmployee().getId(), empl);
+            }
+        }
 
         model.addAttribute("empToEmpls", empToEmpls);
+        model.addAttribute("activeEmployments", activeEmpls);
         return "fleet/employees/manage";
     }
         

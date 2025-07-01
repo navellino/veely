@@ -83,7 +83,12 @@
                         <option th:each="jr : ${jobRoles}" th:value="${jr}" th:text="${jr.displayName}"></option>
                     </select>
                 </div>
-				
+				<div class="col-md-3">
+                    <label class="form-label">Qualifica</label>
+                    <select class="form-select" th:field="*{jobTitle}">
+                        <option th:each="qt : ${jobQualifications}" th:value="${qt}" th:text="${qt.displayName}"></option>
+                    </select>
+                </div>
 				<div class="col-md-3">
                     <label class="form-label">CCNL</label>
                     <select class="form-select" th:field="*{ccnl}">
