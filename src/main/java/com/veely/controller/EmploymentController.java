@@ -1,6 +1,7 @@
 package com.veely.controller;
 
 import com.veely.entity.Employment;
+import com.veely.entity.EmploymentAddress;
 import com.veely.model.CcnlType;
 import com.veely.model.DocumentType;
 import com.veely.model.EmploymentStatus;
@@ -42,8 +43,18 @@ public class EmploymentController {
     
     @GetMapping("/new")
     public String newForm(Model model) {
-        model.addAttribute("employment", new Employment());
+        //model.addAttribute("employment", new Employment());
         //model.addAttribute("employees", employeeService.findAll());
+    	Employment employment = new Employment();
+        EmploymentAddress workplace = employment.getWorkplace();
+        if (workplace == null) {
+            workplace = new EmploymentAddress();
+            employment.setWorkplace(workplace);
+        }
+        if (workplace.getCountryCode() == null) {
+            workplace.setCountryCode("IT");
+        }
+        model.addAttribute("employment", employment);
         model.addAttribute("employees", employeeService.findAvailableForEmployment());
         model.addAttribute("docTypes", DocumentType.values());
         model.addAttribute("jobRoles", JobRole.values());
