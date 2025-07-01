@@ -73,6 +73,15 @@ public class EmploymentService {
         existing.setSalary(payload.getSalary());
         existing.setStatus(payload.getStatus());
 
+        /* campi contrattuali */
+        existing.setContractType(payload.getContractType());
+        existing.setBranch(payload.getBranch());
+        existing.setDepartment(payload.getDepartment());
+        existing.setJobTitle(payload.getJobTitle());
+        existing.setContractLevel(payload.getContractLevel());
+        existing.setCcnl(payload.getCcnl());
+        existing.setJobRole(payload.getJobRole());
+        
         /* (C)  Sostituisci l’intero embeddable                             
                 → se preferisci aggiornare campo-per-campo fai i setter singoli */
         existing.setWorkplace(payload.getWorkplace());
