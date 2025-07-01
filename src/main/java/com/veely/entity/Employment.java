@@ -39,8 +39,14 @@ public class Employment {
 
     private BigDecimal salary;           // Retribuzione base
 
-    private LocalDate hireDate;
+    private LocalDate startDate;
     private LocalDate endDate;
+    
+    @Column(name = "job_description")
+    private String jobDescription;                // qualifica / mansione
+    
+    @Embedded
+    private EmploymentAddress workplace;
 
     @Enumerated(EnumType.STRING)
     private EmploymentStatus status;

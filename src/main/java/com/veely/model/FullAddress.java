@@ -3,6 +3,7 @@ package com.veely.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -11,7 +12,10 @@ import java.io.Serializable;
  * via, paese, codice e nome regione, provincia, comune, località, CAP.
  */
 @Embeddable
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@SuperBuilder(toBuilder = true)   // ⬅️ cambia Builder → SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FullAddress implements Serializable {
 
     /**

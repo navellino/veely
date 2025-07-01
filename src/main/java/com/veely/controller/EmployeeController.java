@@ -292,6 +292,16 @@ public class EmployeeController {
                 .body(resource);
     }
     
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+
+        employeeService.delete(id);
+        ra.addFlashAttribute("toastSuccess",
+              "Dipendente eliminato correttamente");
+
+        return "redirect:/fleet/employees/manage";
+    }
+    
     @GetMapping("/{empId}/docs/{docId}/delete")
     public String deleteEmployeeDocument(
             @PathVariable Long empId,
@@ -302,10 +312,11 @@ public class EmployeeController {
         redirectAttrs.addFlashAttribute("success", "Documento eliminato");
         return "redirect:/fleet/employees/" + empId + "/edit";
     }
-    
+  /*  
     private void prepareReferenceData(Model model) {
         model.addAttribute("maritalStatuses", employeeService.listMaritalStatuses());
         model.addAttribute("educationLevels", employeeService.listEducationLevels());
         model.addAttribute("countries", countryService.getAll());
       }
+      */
 }

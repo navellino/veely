@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head
+	th:replace="fragments/head :: commonHead(${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'})"></head>
+
+<body class="d-flex flex-column min-vh-100">
+	<div th:insert="fragments/navbar :: mainNavbar"></div>
+	<!-- Card wrapper for coherent look -->
+	<div class="card shadow-sm">
+		<div class="card-header bg-primary text-white">
+			<i class="bi bi-briefcase me-2"></i> <span
+				th:text="${employment.id == null ? 'Nuovo Rapporto di Lavoro' : 'Modifica Rapporto di Lavoro'}"></span>
+		</div>
+		<div class="card-body">
+			<form class="row g-3" th:object="${employment}"
+				th:action="${employment.id == null} ? @{/fleet/employments/new} : @{/fleet/employments/{id}/edit(id=${employment.id})}"
+				method="post" enctype="multipart/form-data">
+				<input type="hidden" th:name="${_csrf.parameterName}"
+					th:value="${_csrf.token}" />
+
+				<!-- Dipendente -->
+				<div class="col-md-6">
+					<label class="form-label">Dipendente</label> <select
+						class="form-select" th:field="*{employee.id}"
+						th:disabled="${employment.id != null}">
+						<option th:each="d: ${employees}" th:value="${d.id}"
+							th:text="${d.firstName + ' ' + d.lastName}"></option>
+					</select>
+				</div>
+
+				<!-- Date -->
+				<div class="col-md-3">
+					<label class="form-label">Data inizio</label> <input type="date"
+						class="form-control" th:field="*{startDate}" required />
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Data fine</label> <input type="date"
+						class="form-control" th:field="*{endDate}" />
+				</div>
+
+				<!-- Ruolo e RAL -->
+				<div class="col-md-6">
+					<label class="form-label">Ruolo</label> <input class="form-control"
+						th:field="*{role}" required />
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Salary (€)</label> <input type="number"
+						step="0.01" class="form-control" th:field="*{salary}" />
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Stato</label> <select class="form-select"
+						th:field="*{status}">
+						<option th:each="s: ${statuses}" th:value="${s}" th:text="${s}"></option>
+					</select>
+				</div>
+
+				<!-- Workplace / EmploymentAddress -->
+				<div class="col-12">
+					<label class="form-label mb-2">Sede di lavoro / Cantiere</label>
+					<location-selector name-country="workplace.countryCode"
+						name-region="workplace.regionCode"
+						name-province="workplace.provinceCode"
+						name-city="workplace.cityCode" name-postal="workplace.postalCode"
+						name-street="workplace.street"
+						th:data-selected-country="${employment.workplace?.countryCode}"
+						th:data-selected-region="${employment.workplace?.regionCode}"
+						th:data-selected-province="${employment.workplace?.provinceCode}"
+						th:data-selected-city="${employment.workplace?.cityCode}"
+						th:data-selected-postal="${employment.workplace?.postalCode}"
+						th:data-selected-street="${employment.workplace?.street}">
+					</location-selector>
+				</div>
+				<div class="col-md-8">
+					<label class="form-label">Cantiere / Sede esterna</label> <input
+						class="form-control" th:field="*{workplace.siteName}"
+						placeholder="Esempio: Cantiere Expo 2030 – Padiglione A" />
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Numero Commessa</label> <input
+						class="form-control" th:field="*{workplace.jobNumber}"
+						placeholder="COM-2025-042" required />
+				</div>
+
+				<!-- Document upload -->
+				<div class="col-12">
+					<label class="form-label">Documenti del rapporto</label>
+					<div class="input-group mb-2">
+						<input type="file" class="form-control" name="files" multiple />
+						<button class="btn btn-outline-secondary" type="submit"
+							formaction="#" formmethod="post">Carica</button>
+					</div>
+					<small class="text-muted">PDF, DOCX, JPG - 10&nbsp;MB max</small>
+				</div>
+
+				<!-- Azioni -->
+				<div class="col-12 d-flex justify-content-end">
+					<button type="submit" class="btn btn-primary me-2"
+						th:text="${employment.id == null ? 'Crea' : 'Aggiorna'}"></button>
+					<a class="btn btn-outline-secondary"
+						th:href="@{/fleet/employments/manage}">Annulla</a>
+					<th:block th:if="${employment.id != null}">
+						<button class="btn btn-danger ms-2" type="button"
+							data-bs-toggle="modal" data-bs-target="#delModal">
+							<i class="bi bi-trash"></i>
+						</button>
+					</th:block>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal elimina -->
+	<div th:if="${employment.id != null}" class="modal fade" id="delModal"
+		tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Conferma eliminazione</h5>
+					<button class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">Eliminare questo rapporto di lavoro?</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+					<form
+						th:action="@{/fleet/employments/{id}/delete(id=${employment.id})}"
+						method="post">
+						<input type="hidden" th:name="${_csrf.parameterName}"
+							th:value="${_csrf.token}" />
+						<button class="btn btn-danger" type="submit">Elimina</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

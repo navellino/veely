@@ -5,6 +5,7 @@ import com.veely.entity.Document;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.EmploymentStatus;
 import com.veely.repository.DocumentRepository;
+import com.veely.repository.EmployeeRepository;
 import com.veely.repository.EmploymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,28 +26,47 @@ public class EmploymentService {
     private final EmploymentRepository employmentRepo;
     private final DocumentRepository documentRepo;
     private final FileSystemStorageService fileStorage;
+    private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepo;
 
     /**
      * Crea un nuovo rapporto di lavoro.
      */
+    /* ---------- CREATE ---------- */
     public Employment create(Employment employment) {
-        if (employment.getStatus() == null) {
-            employment.setStatus(EmploymentStatus.ACTIVE);
+
+        // (A)  Aggancia il dipendente se viene passato solo l’id
+        if (employment.getEmployee() != null &&
+            employment.getEmployee().getId() != null) {
+            employment.setEmployee(
+            		employeeRepo.findById(employment.getEmployee().getId()));
         }
+
+        /* (B)  EmploymentAddress è già popolato dal binding
+                – nessun merge manuale necessario */
         return employmentRepo.save(employment);
     }
 
     /**
      * Aggiorna un rapporto di lavoro esistente.
      */
+    /* ---------- UPDATE ---------- */
     public Employment update(Long id, Employment payload) {
-        Employment existing = findByIdOrThrow(id);
-        existing.setEmployee(payload.getEmployee());
-        existing.setHireDate(payload.getHireDate());
+
+        Employment existing = employmentRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Employment " + id + " not found"));
+
+        /* campi “semplici” */
+        existing.setStartDate(payload.getStartDate());
         existing.setEndDate(payload.getEndDate());
-        existing.setJobTitle(payload.getJobTitle());
+        existing.setJobDescription(payload.getJobDescription());
         existing.setSalary(payload.getSalary());
         existing.setStatus(payload.getStatus());
+
+        /* (C)  Sostituisci l’intero embeddable                             
+                → se preferisci aggiornare campo-per-campo fai i setter singoli */
+        existing.setWorkplace(payload.getWorkplace());
+
         return existing;
     }
 
