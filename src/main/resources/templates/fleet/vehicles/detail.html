@@ -66,8 +66,8 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
 					    <span><strong>Fuel Card:</strong> <span th:text="${vehicle.fuelCard}">-</span></span>
 					    <span class="badge"
-					          th:classappend="${#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 30 ? 'bg-danger' :
-					                          (#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+					           th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 30 ? 'bg-danger' :
+                                                                  (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
 					          th:text="${#temporals.format(vehicle.fuelCardExpiryDate, 'dd/MM/yyyy')}">
 					        01/01/2026
 					    </span>
@@ -76,8 +76,8 @@
 					<li class="list-group-item d-flex justify-content-between align-items-center">
 					    <span><strong>Telepass:</strong> <span th:text="${vehicle.telepass}">-</span></span>
 					    <span class="badge"
-					          th:classappend="${#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 30 ? 'bg-danger' :
-					                          (#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+					          th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 30 ? 'bg-danger' :
+                                                                  (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
 					          th:text="${#temporals.format(vehicle.telepassExpiryDate, 'dd/MM/yyyy')}">
 					        01/01/2026
 					    </span>
