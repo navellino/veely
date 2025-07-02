@@ -141,6 +141,19 @@ public class VehicleService {
         fileStorage.delete(filename, subDir);
         documentRepo.delete(doc);
     }
+    
+    /**
+     * Aggiorna il chilometraggio corrente del veicolo.
+     *
+     * @param vehicleId  id del veicolo da aggiornare
+     * @param mileage    nuovo valore dei km percorsi
+     * @return entità Vehicle aggiornata
+     */
+    public Vehicle updateMileage(Long vehicleId, int mileage) {
+        Vehicle vehicle = findByIdOrThrow(vehicleId);
+        vehicle.setCurrentMileage(mileage);
+        return vehicle;
+    }
 
     // ---------------------- UTILI INTERNI ----------------------
 

@@ -103,6 +103,14 @@ public class VehicleController {
         vehicleService.update(id, vehicle);
         return "redirect:/fleet/vehicles/" + id + "/edit";
     }
+    
+    /** Aggiorna il chilometraggio corrente del veicolo */
+    @PostMapping("/{id}/mileage")
+    public String updateMileage(@PathVariable Long id,
+                                @RequestParam("newMileage") int newMileage) {
+        vehicleService.updateMileage(id, newMileage);
+        return "redirect:/fleet/vehicles/" + id;
+    }
 
     /** Elimina un veicolo */
     @PostMapping("/{id}/delete")
