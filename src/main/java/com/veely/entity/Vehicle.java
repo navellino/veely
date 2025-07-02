@@ -73,7 +73,11 @@ public class Vehicle {
     private VehicleStatus status = VehicleStatus.IN_SERVICE;
 
     private Integer currentMileage;       // Km attuali
-    private String supplier;              // Società di leasing / vendor
+
+    /** Società di leasing / concessionario */
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
     // -----------------------------------
     // Accessori gestionali
@@ -83,6 +87,7 @@ public class Vehicle {
     private LocalDate fuelCardExpiryDate;
 
     private String telepass;              // Telepass associato
+    private LocalDate telepassExpiryDate; // Scadenza Telepass
     private String imagePath;             // Path immagine del veicolo
 
     // -----------------------------------

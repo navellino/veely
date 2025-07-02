@@ -4,6 +4,7 @@ public enum FuelType {
     PETROL("Benzina"),
     DIESEL("Diesel"),
     ELECTRIC("Elettrico"),
+    PROVA("Prova"),
     HYBRID("Ibrido");
 
     private final String displayName;

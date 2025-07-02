@@ -2,7 +2,8 @@ package com.veely.model;
 
 public enum VehicleType {
     CAR("Auto"),
-    TRUCK("Camion");
+    TRUCK("Camion"),
+    WORKSITE("Mezzo da cantiere");
 
     private final String displayName;
 

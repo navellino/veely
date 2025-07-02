@@ -1,38 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="'Dettaglio Veicolo ' + ${vehicle.plate}">Dettaglio</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<head th:replace="fragments/head :: commonHead('Dettaglio Veicolo – Veely')">
+    <style>
+        .card-header .badge {
+            font-size: 0.9em;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<nav th:insert="~{fragments/navbar :: navbar}"></nav>
-
-<div class="container mt-4">
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="fragments/navbar :: mainNavbar"></div>
+<main class="container my-5 flex-fill">
     <h1>Veicolo: <span th:text="${vehicle.plate}">AA000BB</span></h1>
     <div class="row">
+        <!-- COLONNA SINISTRA -->
         <div class="col-md-6">
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Marca:</strong> <span th:text="${vehicle.brand}">Fiat</span></li>
-                <li class="list-group-item"><strong>Modello:</strong> <span th:text="${vehicle.model}">Panda</span></li>
-                <li class="list-group-item"><strong>Tipo:</strong> <span th:text="${vehicle.type.displayName}">Auto</span></li>
-                <li class="list-group-item"><strong>Carburante:</strong> <span th:text="${vehicle.fuelType.displayName}">Benzina</span></li>
-                <li class="list-group-item"><strong>Anno:</strong> <span th:text="${vehicle.year}">2022</span></li>
-                <li class="list-group-item"><strong>Stato:</strong> <span th:text="${vehicle.status.displayName}">In servizio</span></li>
-                <li class="list-group-item"><strong>Chilometraggio:</strong> <span th:text="${vehicle.currentMileage}">10000</span></li>
-                <li class="list-group-item"><strong>Canone Totale:</strong> <span th:text="${vehicle.totalFee}">€ 200.00</span></li>
-            </ul>
+            <div class="card mb-4">
+                <div class="card-header">Dati Veicolo</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Marca:</strong> <span th:text="${vehicle.brand}">Fiat</span></li>
+                    <li class="list-group-item"><strong>Modello:</strong> <span th:text="${vehicle.model}">Panda</span></li>
+                    <li class="list-group-item"><strong>Tipo:</strong> <span th:text="${vehicle.type.displayName}">Auto</span></li>
+                    <li class="list-group-item"><strong>Carburante:</strong> <span th:text="${vehicle.fuelType.displayName}">Benzina</span></li>
+                    <li class="list-group-item"><strong>Anno:</strong> <span th:text="${vehicle.year}">2022</span></li>
+                    <li class="list-group-item"><strong>Stato:</strong> <span th:text="${vehicle.status.displayName}">In servizio</span></li>
+                    <li class="list-group-item"><strong>Fornitore:</strong> <span th:text="${vehicle.supplier != null ? vehicle.supplier.name : '-'}">-</span></li>
+                </ul>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Contratto & Km</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Km Contratto:</strong> <span th:text="${vehicle.contractualKm}">40000</span></li>
+                    <li class="list-group-item"><strong>Km Attuali:</strong> <span th:text="${vehicle.currentMileage}">10000</span></li>
+                    <li class="list-group-item"><strong>Canone Totale:</strong> <span th:text="${vehicle.totalFee}">€ 200.00</span></li>
+                </ul>
+                <div class="card-body">
+                    <form th:action="@{|/fleet/vehicles/${vehicle.id}/mileage|}" method="post" class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label for="newMileage" class="form-label">Aggiorna Km</label>
+                            <input type="number" class="form-control" id="newMileage" name="newMileage" required min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100">Salva</button>
+                        </div>
+                    </form>
+                    <div class="mt-3">
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 th:style="'width:' + (${vehicle.currentMileage} * 100 / ${vehicle.contractualKm}) + '%'"
+                                 th:text="'Utilizzo: ' + (${vehicle.currentMileage} * 100 / ${vehicle.contractualKm}) + '%'">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Scadenze</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+					    <span><strong>Fuel Card:</strong> <span th:text="${vehicle.fuelCard}">-</span></span>
+					    <span class="badge"
+					          th:classappend="${#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 30 ? 'bg-danger' :
+					                          (#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+					          th:text="${#temporals.format(vehicle.fuelCardExpiryDate, 'dd/MM/yyyy')}">
+					        01/01/2026
+					    </span>
+					</li>
+					
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+					    <span><strong>Telepass:</strong> <span th:text="${vehicle.telepass}">-</span></span>
+					    <span class="badge"
+					          th:classappend="${#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 30 ? 'bg-danger' :
+					                          (#temporals.daysBetween(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+					          th:text="${#temporals.format(vehicle.telepassExpiryDate, 'dd/MM/yyyy')}">
+					        01/01/2026
+					    </span>
+					</li>
+                </ul>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Grafico Km</div>
+                <div class="card-body">
+                    <canvas id="mileageChart"></canvas>
+                </div>
+            </div>
         </div>
+
+        <!-- COLONNA DESTRA -->
         <div class="col-md-6">
             <h4>Foto e Documenti</h4>
 
-            <!-- Upload Foto -->
             <form th:action="@{|/fleet/vehicles/${vehicle.id}/photos|}" method="post" enctype="multipart/form-data" class="mb-3">
                 <label for="filePhoto" class="form-label">Carica Foto</label>
                 <input class="form-control" type="file" name="file" id="filePhoto" accept="image/*" required>
                 <button type="submit" class="btn btn-primary mt-2">Upload Foto</button>
             </form>
 
-            <!-- Upload Documento -->
             <form th:action="@{|/fleet/vehicles/${vehicle.id}/docs|}" method="post" enctype="multipart/form-data">
                 <div class="mb-2">
                     <label for="fileDoc" class="form-label">Carica Documento</label>
@@ -41,9 +111,7 @@
                 <div class="mb-2">
                     <label for="typeDoc" class="form-label">Tipo Documento</label>
                     <select class="form-select" name="type" id="typeDoc">
-                        <option th:each="dt : ${docTypes}"
-                                th:value="${dt}"
-                                th:text="${dt.displayName}">Assicurazione</option>
+                        <option th:each="dt : ${docTypes}" th:value="${dt}" th:text="${dt.displayName}">Assicurazione</option>
                     </select>
                 </div>
                 <div class="mb-2">
@@ -57,33 +125,67 @@
                 <button type="submit" class="btn btn-secondary">Upload Documento</button>
             </form>
 
-            <!-- Elenco Documenti / Foto -->
             <h5 class="mt-4">Elenco File</h5>
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Nome File</th>
-                    <th>Azioni</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="d : ${documents}">
-                    <td th:text="${d.type.displayName}">Assicurazione</td>
-                    <td th:text="${#strings.substringAfterLast(d.path,'/')}">162345_photo.jpg</td>
-                    <td>
-                        <a class="btn btn-sm btn-success"
-                           th:href="@{|/fleet/vehicles/files/${vehicle.id}/${#strings.substringAfterLast(d.path,'/')}|}">
-                            Download
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Nome File</th>
+                        <th>Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${documents}">
+                        <td th:text="${d.type.displayName}">Assicurazione</td>
+                        <td th:text="${d.path.substring(d.path.lastIndexOf('/')+1)}">file.pdf</td>
+                        <td>
+                            <a class="btn btn-sm btn-success"
+                               th:href="@{|/fleet/vehicles/files/${vehicle.id}/${d.path.substring(d.path.lastIndexOf('/')+1)}|}">
+                                Download
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <a class="btn btn-secondary mt-3" th:href="@{/fleet/vehicles}">Torna alla lista</a>
-</div>
+    <a class="btn btn-secondary mt-4" th:href="@{/fleet/vehicles}">Torna alla lista</a>
+</main>
+
+<div th:insert="fragments/footer :: mainFooter"></div>
+
+<script th:inline="javascript">
+    const currentKm = /*[[${vehicle.currentMileage}]]*/ 10000;
+    const contractualKm = /*[[${vehicle.contractualKm}]]*/ 40000;
+
+    const ctx = document.getElementById('mileageChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Km Percorsi', 'Km Residui'],
+            datasets: [{
+                data: [currentKm, contractualKm - currentKm],
+                backgroundColor: ['#0d6efd', '#d3d3d3'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            return ctx.label + ': ' + ctx.raw + ' km';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

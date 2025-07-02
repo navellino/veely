@@ -5,6 +5,8 @@ import com.veely.entity.Vehicle;
 import com.veely.model.DocumentType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.DocumentRepository;
+import com.veely.service.DocumentService;
+import com.veely.service.SupplierService;
 import com.veely.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -25,7 +27,9 @@ import java.util.List;
 public class VehicleController {
 
     private final VehicleService vehicleService;
-    private final DocumentRepository documentRepo; // per paginare documenti in dettaglio
+    private final DocumentService documentService;
+    private final DocumentRepository documentRepo; // per eventuali operazioni dirette
+    private final SupplierService supplierService;
 
     /** Mostra la lista (tabella) di tutti i veicoli */
     @GetMapping
@@ -40,39 +44,64 @@ public class VehicleController {
     public String createForm(Model model) {
         model.addAttribute("vehicle", new Vehicle());
         model.addAttribute("statuses", VehicleStatus.values());
+        model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("suppliers", supplierService.findAll());
         return "fleet/vehicles/form";
     }
 
     /** Salva un nuovo veicolo */
-    @PostMapping
+    @PostMapping("new")
     public String saveNew(@Valid @ModelAttribute("vehicle") Vehicle vehicle,
-                          BindingResult binding) {
+                          BindingResult binding, Model model) {
         if (binding.hasErrors()) {
+            model.addAttribute("statuses", VehicleStatus.values());
+            model.addAttribute("docTypes", DocumentType.values());
+            model.addAttribute("suppliers", supplierService.findAll());
             return "fleet/vehicles/form";
         }
-        vehicleService.create(vehicle);
-        return "redirect:/fleet/vehicles";
+        Vehicle saved = vehicleService.create(vehicle);
+        return "redirect:/fleet/vehicles/" + saved.getId() + "/edit";
     }
 
-    /** Form di modifica veicolo */
+    /** Form di modifica veicolo con sezione documenti */
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         Vehicle v = vehicleService.findByIdOrThrow(id);
+        List<Document> docs = documentService.getVehicleDocuments(id);
+        Document image = docs.stream()
+                .filter(d -> d.getType() == DocumentType.VEHICLE_IMAGE)
+                .findFirst()
+                .orElse(null);
+        
         model.addAttribute("vehicle", v);
         model.addAttribute("statuses", VehicleStatus.values());
+        model.addAttribute("suppliers", supplierService.findAll());
+        model.addAttribute("documents", docs);
+        model.addAttribute("vehicleImage", image);
+        model.addAttribute("docTypes", DocumentType.values());
         return "fleet/vehicles/form";
     }
 
     /** Aggiorna un veicolo esistente */
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/edit")
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("vehicle") Vehicle vehicle,
-                         BindingResult binding) {
+                         BindingResult binding, Model model) {
         if (binding.hasErrors()) {
+            List<Document> docs = documentService.getVehicleDocuments(id);
+            Document image = docs.stream()
+                    .filter(d -> d.getType() == DocumentType.VEHICLE_IMAGE)
+                    .findFirst()
+                    .orElse(null);
+            model.addAttribute("statuses", VehicleStatus.values());
+            model.addAttribute("suppliers", supplierService.findAll());
+            model.addAttribute("documents", docs);
+            model.addAttribute("vehicleImage", image);
+            model.addAttribute("docTypes", DocumentType.values());
             return "fleet/vehicles/form";
         }
         vehicleService.update(id, vehicle);
-        return "redirect:/fleet/vehicles";
+        return "redirect:/fleet/vehicles/" + id + "/edit";
     }
 
     /** Elimina un veicolo */
@@ -98,7 +127,7 @@ public class VehicleController {
     public String uploadPhoto(@PathVariable Long id,
                               @RequestParam("file") MultipartFile file) throws IOException {
         vehicleService.uploadPhoto(id, file);
-        return "redirect:/fleet/vehicles/" + id;
+        return "redirect:/fleet/vehicles/" + id + "/edit";
     }
 
     /** Upload documento veicolo */
@@ -111,7 +140,7 @@ public class VehicleController {
         LocalDate issued = issueDate.isBlank() ? null : LocalDate.parse(issueDate);
         LocalDate exp = expiryDate.isBlank() ? null : LocalDate.parse(expiryDate);
         vehicleService.uploadDocument(id, file, type, issued, exp);
-        return "redirect:/fleet/vehicles/" + id;
+        return "redirect:/fleet/vehicles/" + id + "/edit";
     }
 
     /** Download di un file (foto o doc): restituirà il Resource e header content disposition */

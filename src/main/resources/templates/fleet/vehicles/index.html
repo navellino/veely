@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Elenco Veicoli – Veely</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-</head>
-<body>
-<nav th:insert="~{fragments/navbar :: navbar}"></nav>
+<head th:replace="fragments/head :: commonHead('Elenco Veicoli – Veely')"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="fragments/navbar :: mainNavbar"></div>
 
-<div class="container mt-4">
-    <h1>Veicoli</h1>
+<main class="container my-5 flex-fill">
+    <h2 class="fw-semibold">Veicoli</h2>
     <a class="btn btn-primary mb-3" th:href="@{/fleet/vehicles/new}">Nuovo Veicolo</a>
     <table class="table table-striped">
         <thead>
@@ -17,6 +14,7 @@
             <th>Targa</th>
             <th>Marca</th>
             <th>Modello</th>
+            <th>Tipo</th>
             <th>Anno</th>
             <th>Stato</th>
             <th>Azioni</th>
@@ -28,6 +26,7 @@
             <td th:text="${v.plate}">AA000BB</td>
             <td th:text="${v.brand}">Fiat</td>
             <td th:text="${v.model}">Panda</td>
+            <td th:text="${v.type.displayName}">Auto</td>
             <td th:text="${v.year}">2022</td>
             <td th:text="${v.status.displayName}">In servizio</td>
             <td>
@@ -41,6 +40,7 @@
         </tr>
         </tbody>
     </table>
-</div>
+</main>
+<div th:insert="fragments/footer :: mainFooter"></div>
 </body>
 </html>
