@@ -31,7 +31,7 @@ public class VehicleController {
     private final DocumentRepository documentRepo; // per eventuali operazioni dirette
     private final SupplierService supplierService;
 
-    /** Mostra la lista (tabella) di tutti i veicoli */
+    /** Mostra la lista (tabella) di tutti i veicoli **/
     @GetMapping
     public String list(Model model) {
         List<Vehicle> list = vehicleService.findAll();
@@ -155,7 +155,20 @@ public class VehicleController {
         vehicleService.uploadDocument(id, file, type, issued, exp);
         return "redirect:/fleet/vehicles/" + id + "/edit";
     }
-
+    
+    /** Upload documento veicolo */
+    @PostMapping("/{id}/det")
+    public String uploadDocDet(@PathVariable Long id,
+                            @RequestParam("file") MultipartFile file,
+                            @RequestParam("type") DocumentType type,
+                            @RequestParam("issueDate") String issueDate,
+                            @RequestParam("expiryDate") String expiryDate) {
+        LocalDate issued = issueDate.isBlank() ? null : LocalDate.parse(issueDate);
+        LocalDate exp = expiryDate.isBlank() ? null : LocalDate.parse(expiryDate);
+        vehicleService.uploadDocument(id, file, type, issued, exp);
+        return "redirect:/fleet/vehicles/" + id;
+    }
+    
     /** Download di un file (foto o doc): restituirà il Resource e header content disposition */
     @GetMapping("/files/{area}/{filename:.+}")
     @ResponseBody

@@ -123,7 +123,7 @@
       <div class="card-body">
 
         <!-- FORM UPLOAD -->
-        <form class="row g-3 mb-4" th:action="@{|/fleet/vehicles/${vehicle.id}/docs|}" method="post" enctype="multipart/form-data">
+        <form class="row g-3 mb-4" th:action="@{|/fleet/vehicles/${vehicle.id}/det|}" method="post" enctype="multipart/form-data">
           <div class="col-md-3">
             <label for="fileDoc" class="form-label">Carica Documento</label>
             <input class="form-control" type="file" name="file" id="fileDoc" required>

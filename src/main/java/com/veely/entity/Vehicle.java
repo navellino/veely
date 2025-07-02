@@ -19,7 +19,7 @@ import java.util.Set;
 public class Vehicle {
 
     // -----------------------------------
-    // Identificativi
+    // Identificativi e Descrittivi
     // -----------------------------------
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,14 +32,10 @@ public class Vehicle {
     @Column(unique = true, length = 50)
     private String chassisNumber;
 
-    // -----------------------------------
-    // Dati descrittivi
-    // -----------------------------------
     private String brand;         // Marca
     private String model;         // Modello
     private String series;        // Allestimento / serie
     private Integer year;         // Anno di immatricolazione (solo cifra)
-    private String color;
 
     @Enumerated(EnumType.STRING)
     private VehicleType type;     // CAR / TRUCK
@@ -53,6 +49,12 @@ public class Vehicle {
     // -----------------------------------
     // Contratto di leasing / proprietà
     // -----------------------------------
+    
+    /** Società di leasing / concessionario */
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
+    
     private LocalDate registrationDate;   // Data immatricolazione
     private LocalDate contractStartDate;  // Inizio leasing
     private LocalDate contractEndDate;    // Fine leasing
@@ -73,12 +75,6 @@ public class Vehicle {
     private VehicleStatus status = VehicleStatus.IN_SERVICE;
 
     private Integer currentMileage;       // Km attuali
-
-    /** Società di leasing / concessionario */
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
     // -----------------------------------
     // Accessori gestionali
     // -----------------------------------
