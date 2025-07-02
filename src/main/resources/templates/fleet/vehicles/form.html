@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
-<head
-	th:replace="fragments/head :: commonHead(${vehicle.id == null ? 'Nuovo Veicolo' : 'Modifica Veicolo'})"></head>
+<head th:replace="fragments/head :: commonHead(${vehicle.id == null ? 'Nuovo Veicolo' : 'Modifica Veicolo'})"></head>
 <body class="d-flex flex-column min-vh-100">
 	<div th:insert="fragments/navbar :: mainNavbar"></div>
 	<main class="container my-5 flex-fill">
@@ -9,8 +8,7 @@
 			<ol class="breadcrumb mb-0">
 				<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
 				<li class="breadcrumb-item"><a th:href="@{/fleet/vehicles}">Veicoli</a></li>
-				<li class="breadcrumb-item active" aria-current="page"
-					th:text="${vehicle.id == null ? 'Nuovo' : 'Modifica'}"></li>
+				<li class="breadcrumb-item active" aria-current="page" th:text="${vehicle.id == null ? 'Nuovo' : 'Modifica'}"></li>
 			</ol>
 		</nav>
 		<div class="mb-4">
@@ -69,8 +67,8 @@
 													data-bs-toggle="tab" data-bs-target="#pane-general"
 													type="button" role="tab">Generale</button>
 											</li>
-											<li class="nav-item" role="presentation" id="leasingTabItem"
-												th:classappend="${vehicle.ownership} != T(com.veely.model.OwnershipType).LEASED ? 'd-none' : ''">
+											  <li class="nav-item" role="presentation" id="leasingTabItem"
+                                                                               th:classappend="${!T(com.veely.model.OwnershipType).LEASED.equals(vehicle.ownership) ? 'd-none' : ''}">
 												<button class="nav-link" id="tab-leasing"
 													data-bs-toggle="tab" data-bs-target="#pane-leasing"
 													type="button" role="tab">Leasing</button>
@@ -284,8 +282,7 @@
 							<tbody>
 								<tr th:each="doc : ${documents}">
 									<td th:text="${doc.type.displayName}"></td>
-									<td
-										th:text="${doc.path.substring(doc.path.lastIndexOf('/')+1)}"></td>
+									<td	th:text="${doc.path.substring(doc.path.lastIndexOf('/')+1)}"></td>
 									<td th:text="${doc.issueDate} ?: '-'">-</td>
 									<td th:text="${doc.expiryDate} ?: '-'">-</td>
 									<td class="text-center"><a
@@ -294,8 +291,7 @@
 											class="bi bi-download"></i></a></td>
 								</tr>
 								<tr th:if="${#lists.isEmpty(documents)}">
-									<td colspan="5" class="text-center">Nessun documento
-										caricato.</td>
+									<td colspan="5" class="text-center">Nessun documento caricato.</td>
 								</tr>
 							</tbody>
 						</table>

@@ -43,11 +43,7 @@ public class VehicleController {
     /** Form di creazione veicolo */
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("vehicle", new Vehicle());
-        model.addAttribute("statuses", VehicleStatus.values());
-        model.addAttribute("docTypes", DocumentType.values());
-        model.addAttribute("ownershipTypes", OwnershipType.values());
-        model.addAttribute("suppliers", supplierService.findAll());
+    	addFormOptions(model);
         return "fleet/vehicles/form";
     }
 
@@ -56,10 +52,7 @@ public class VehicleController {
     public String saveNew(@Valid @ModelAttribute("vehicle") Vehicle vehicle,
                           BindingResult binding, Model model) {
         if (binding.hasErrors()) {
-            model.addAttribute("statuses", VehicleStatus.values());
-            model.addAttribute("docTypes", DocumentType.values());
-            model.addAttribute("ownershipTypes", OwnershipType.values());
-            model.addAttribute("suppliers", supplierService.findAll());
+        	addFormOptions(model);
             return "fleet/vehicles/form";
         }
         Vehicle saved = vehicleService.create(vehicle);
@@ -77,12 +70,9 @@ public class VehicleController {
                 .orElse(null);
         
         model.addAttribute("vehicle", v);
-        model.addAttribute("statuses", VehicleStatus.values());
-        model.addAttribute("suppliers", supplierService.findAll());
-        model.addAttribute("ownershipTypes", OwnershipType.values());
         model.addAttribute("documents", docs);
         model.addAttribute("vehicleImage", image);
-        model.addAttribute("docTypes", DocumentType.values());
+        addFormOptions(model);
         return "fleet/vehicles/form";
     }
 
@@ -97,12 +87,9 @@ public class VehicleController {
                     .filter(d -> d.getType() == DocumentType.VEHICLE_IMAGE)
                     .findFirst()
                     .orElse(null);
-            model.addAttribute("statuses", VehicleStatus.values());
-            model.addAttribute("suppliers", supplierService.findAll());
-            model.addAttribute("ownershipTypes", OwnershipType.values());
             model.addAttribute("documents", docs);
             model.addAttribute("vehicleImage", image);
-            model.addAttribute("docTypes", DocumentType.values());
+            addFormOptions(model);
             return "fleet/vehicles/form";
         }
         vehicleService.update(id, vehicle);
@@ -189,5 +176,12 @@ public class VehicleController {
                                  @PathVariable("docId") Long docId) throws IOException {
         documentService.deleteDocument(docId);
         return "redirect:/fleet/vehicles/" + vehId;
+    }
+    
+    private void addFormOptions(Model model) {
+        model.addAttribute("statuses", VehicleStatus.values());
+        model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("ownershipTypes", OwnershipType.values());
+        model.addAttribute("suppliers", supplierService.findAll());
     }
 }
