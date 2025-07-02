@@ -135,7 +135,7 @@
 														</select>
 													</div>
 													<div class="col-md-4">
-														<label class="form-label">Chilometraggio</label> <input
+														<label class="form-label">Chilometri attuali</label> <input
 															type="number" class="form-control"
 															th:field="*{currentMileage}" />
 													</div>
@@ -168,10 +168,10 @@
 												<div class="row g-3">
 													<div class="col-md-6">
 														<label class="form-label">Fornitore</label> <select
-															class="form-select" th:field="*{supplier}">
-															<option th:each="s : ${suppliers}" th:value="${s}"
-																th:text="${s.name}"></option>
-														</select>
+                                                                               class="form-select" th:field="*{supplier}">
+                                                                               <option th:each="s : ${suppliers}" th:value="${s.id}"
+                                                                               th:text="${s.name}"></option>
+                                                                               </select>
 													</div>
 													<div class="col-md-6">
 														<label class="form-label">Data Immatricolazione</label> <input
