@@ -3,6 +3,7 @@ package com.veely.controller;
 import com.veely.entity.Document;
 import com.veely.entity.Vehicle;
 import com.veely.model.DocumentType;
+import com.veely.model.OwnershipType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.DocumentRepository;
 import com.veely.service.DocumentService;
@@ -45,6 +46,7 @@ public class VehicleController {
         model.addAttribute("vehicle", new Vehicle());
         model.addAttribute("statuses", VehicleStatus.values());
         model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("ownershipTypes", OwnershipType.values());
         model.addAttribute("suppliers", supplierService.findAll());
         return "fleet/vehicles/form";
     }
@@ -56,6 +58,7 @@ public class VehicleController {
         if (binding.hasErrors()) {
             model.addAttribute("statuses", VehicleStatus.values());
             model.addAttribute("docTypes", DocumentType.values());
+            model.addAttribute("ownershipTypes", OwnershipType.values());
             model.addAttribute("suppliers", supplierService.findAll());
             return "fleet/vehicles/form";
         }
@@ -76,6 +79,7 @@ public class VehicleController {
         model.addAttribute("vehicle", v);
         model.addAttribute("statuses", VehicleStatus.values());
         model.addAttribute("suppliers", supplierService.findAll());
+        model.addAttribute("ownershipTypes", OwnershipType.values());
         model.addAttribute("documents", docs);
         model.addAttribute("vehicleImage", image);
         model.addAttribute("docTypes", DocumentType.values());
@@ -95,6 +99,7 @@ public class VehicleController {
                     .orElse(null);
             model.addAttribute("statuses", VehicleStatus.values());
             model.addAttribute("suppliers", supplierService.findAll());
+            model.addAttribute("ownershipTypes", OwnershipType.values());
             model.addAttribute("documents", docs);
             model.addAttribute("vehicleImage", image);
             model.addAttribute("docTypes", DocumentType.values());
