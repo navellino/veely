@@ -4,9 +4,10 @@ public enum DocumentType {
     // ---- VEICOLO ----
     VEHICLE_REGISTRATION("Libretto circolazione"),
     INSURANCE("Assicurazione"),
-    MAINTENANCE("Documenti manutenzione"),
+    MAINTENANCE("Manutenzioni"),
     VEHICLE_IMAGE("Immagine veicolo"),
     LEASE_CONTRACT("Contratto di leasing"),
+    SPACE("--------------------"),
 
     // ---- RAPPORTO DI LAVORO ----
     EMPLOYMENT_CONTRACT("Contratto di lavoro"),

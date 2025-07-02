@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head th:replace="fragments/head :: commonHead(${supplier.id == null ? 'Nuovo Fornitore' : 'Modifica Fornitore'})"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="fragments/navbar :: mainNavbar"></div>
+<main class="container my-5 flex-fill">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/fleet/suppliers}">Fornitori</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${supplier.id == null ? 'Nuovo' : 'Modifica'}"></li>
+        </ol>
+    </nav>
+
+    <form th:object="${supplier}"
+          th:action="${supplier.id == null} ? @{/fleet/suppliers/new} : @{/fleet/suppliers/{id}/edit(id=${supplier.id})}"
+          method="post" class="row g-3">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="col-md-6">
+            <label class="form-label">Denominazione</label>
+            <input class="form-control" th:field="*{name}" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Partita IVA / CF</label>
+            <input class="form-control" th:field="*{vatNumber}" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Contatto</label>
+            <input class="form-control" th:field="*{contatto}" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Telefono</label>
+            <input class="form-control" th:field="*{phone}" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" th:field="*{email}" />
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-3">Indirizzo</h5>
+                    <location-selector
+                            country-binding="address.countryCode"
+                            name-region="address.regionCode"
+                            name-province="address.provinceCode"
+                            name-city="address.cityCode"
+                            name-postal="address.postalCode"
+                            name-street="address.street"
+                            th:data-selected-country="${supplier.address != null ? supplier.address.countryCode : null}"
+                            th:data-selected-region="${supplier.address != null ? supplier.address.regionCode : null}"
+                            th:data-selected-province="${supplier.address != null ? supplier.address.provinceCode : null}"
+                            th:data-selected-city="${supplier.address != null ? supplier.address.cityCode : null}"
+                            th:data-selected-postal="${supplier.address != null ? supplier.address.postalCode : null}"
+                            th:data-selected-street="${supplier.address != null ? supplier.address.street : null}">
+                    </location-selector>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary me-2" th:text="${supplier.id == null ? 'Crea' : 'Aggiorna'}"></button>
+            <a class="btn btn-outline-secondary" th:href="@{/fleet/suppliers}">Annulla</a>
+        </div>
+    </form>
+</main>
+
+<div th:insert="fragments/footer :: mainFooter"></div>
+<script type="module" th:src="@{/js/location-selector.js}"></script>
+</body>
+</html>

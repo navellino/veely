@@ -28,4 +28,9 @@ public class NavigationController {
     public String assignmentListRedirect() {
         return "redirect:/fleet/assignments";
     }
+    
+    @GetMapping({"/supplierList"})
+    public String supplierListRedirect() {
+        return "redirect:/fleet/suppliers";
+    }
 }
