@@ -43,11 +43,34 @@ public class VehicleService {
 
     public Vehicle update(Long id, Vehicle payload) {
         Vehicle existing = findByIdOrThrow(id);
-        // (…tutti i set come prima…)
+        existing.setPlate(payload.getPlate());
+        existing.setChassisNumber(payload.getChassisNumber());
+        existing.setBrand(payload.getBrand());
+        existing.setModel(payload.getModel());
+        existing.setSeries(payload.getSeries());
+        existing.setYear(payload.getYear());
+        existing.setType(payload.getType());
+        existing.setFuelType(payload.getFuelType());
+        existing.setOwnership(payload.getOwnership());
+        existing.setSupplier(payload.getSupplier());
+        existing.setRegistrationDate(payload.getRegistrationDate());
+        existing.setContractStartDate(payload.getContractStartDate());
+        existing.setContractEndDate(payload.getContractEndDate());
+        existing.setContractDuration(payload.getContractDuration());
+        existing.setContractualKm(payload.getContractualKm());
         existing.setFinancialFee(safe(payload.getFinancialFee()));
         existing.setAssistanceFee(safe(payload.getAssistanceFee()));
         existing.setTotalFee(existing.getFinancialFee().add(existing.getAssistanceFee()));
-        // (…restanti campi come prima…)
+        existing.setAnnualFringeBenefit(payload.getAnnualFringeBenefit());
+        existing.setMonthlyFringeBenefit(payload.getMonthlyFringeBenefit());
+        existing.setStatus(payload.getStatus());
+        existing.setCurrentMileage(payload.getCurrentMileage());
+        existing.setFuelCard(payload.getFuelCard());
+        existing.setFuelCardExpiryDate(payload.getFuelCardExpiryDate());
+        existing.setTelepass(payload.getTelepass());
+        existing.setInsuranceExpiryDate(payload.getInsuranceExpiryDate());
+        existing.setCarTaxExpiryDate(payload.getCarTaxExpiryDate());
+        existing.setImagePath(payload.getImagePath());
         return existing;
     }
 
