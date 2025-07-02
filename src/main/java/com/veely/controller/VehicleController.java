@@ -124,8 +124,13 @@ public class VehicleController {
     public String detail(@PathVariable Long id, Model model) {
         Vehicle v = vehicleService.findByIdOrThrow(id);
         List<Document> docs = documentRepo.findByVehicleId(id);
+        Document image = docs.stream()
+                .filter(d -> d.getType() == DocumentType.VEHICLE_IMAGE)
+                .findFirst()
+                .orElse(null);
         model.addAttribute("vehicle", v);
         model.addAttribute("documents", docs);
+        model.addAttribute("vehicleImage", image);
         model.addAttribute("docTypes", DocumentType.values());
         return "fleet/vehicles/detail";
     }
@@ -158,5 +163,13 @@ public class VehicleController {
                               @PathVariable String filename) {
         return vehicleService.loadDocument(Long.valueOf(area), filename);
         // Si assume area = vehicleId, per foto cambiare loadPhoto se necessario.
+    }
+    
+    /** Elimina un documento veicolo */
+    @GetMapping("/{vehId}/docs/{docId}/delete")
+    public String deleteDocument(@PathVariable("vehId") Long vehId,
+                                 @PathVariable("docId") Long docId) throws IOException {
+        documentService.deleteDocument(docId);
+        return "redirect:/fleet/vehicles/" + vehId;
     }
 }

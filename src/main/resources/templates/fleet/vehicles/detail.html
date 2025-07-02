@@ -9,15 +9,25 @@
             transition: width 0.5s ease;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
 <div th:insert="fragments/navbar :: mainNavbar"></div>
 <main class="container my-5 flex-fill">
-    <h1>Veicolo: <span th:text="${vehicle.plate}">AA000BB</span></h1>
+    <h1 class="mb-4" th:text="${vehicle.plate}">AA000BB</h1>
     <div class="row">
         <!-- COLONNA SINISTRA -->
         <div class="col-md-6">
+        	<div class="text-center mb-3">
+                <img th:if="${vehicleImage != null}"
+                     th:src="@{/fleet/vehicles/files/{id}/{fn}(id=${vehicle.id},fn=${vehicleImage.path.substring(vehicleImage.path.lastIndexOf('/') + 1)})}"
+                     class="rounded shadow-sm"
+                     style="width: 300px; height: 200px; object-fit: cover;" alt="Foto veicolo" />
+                <div th:if="${vehicleImage == null}"
+                     class="border border-secondary d-flex align-items-center justify-content-center"
+                     style="width: 300px; height: 200px;">
+                    <i class="bi bi-truck-front fs-1 text-secondary"></i>
+                </div>
+            </div>
             <div class="card mb-4">
                 <div class="card-header">Dati Veicolo</div>
                 <ul class="list-group list-group-flush">
@@ -28,6 +38,7 @@
                     <li class="list-group-item"><strong>Anno:</strong> <span th:text="${vehicle.year}">2022</span></li>
                     <li class="list-group-item"><strong>Stato:</strong> <span th:text="${vehicle.status.displayName}">In servizio</span></li>
                     <li class="list-group-item"><strong>Fornitore:</strong> <span th:text="${vehicle.supplier != null ? vehicle.supplier.name : '-'}">-</span></li>
+                     <li class="list-group-item"><strong>Telepass:</strong> <span th:text="${vehicle.telepass}">-</span></li>
                 </ul>
             </div>
 
@@ -72,37 +83,31 @@
 					        01/01/2026
 					    </span>
 					</li>
-					
-					<li class="list-group-item d-flex justify-content-between align-items-center">
-					    <span><strong>Telepass:</strong> <span th:text="${vehicle.telepass}">-</span></span>
-					    <span class="badge"
-					          th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 30 ? 'bg-danger' :
-                                                                  (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.telepassExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
-					          th:text="${#temporals.format(vehicle.telepassExpiryDate, 'dd/MM/yyyy')}">
-					        01/01/2026
-					    </span>
-					</li>
+					 <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong>Assicurazione:</strong></span>
+                        <span class="badge"
+                              th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.insuranceExpiryDate) <= 30 ? 'bg-danger' :
+                                              (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.insuranceExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+                              th:text="${#temporals.format(vehicle.insuranceExpiryDate, 'dd/MM/yyyy')}">
+                            01/01/2026
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong>Bollo:</strong></span>
+                        <span class="badge"
+                              th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.carTaxExpiryDate) <= 30 ? 'bg-danger' :
+                                              (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.carTaxExpiryDate) <= 60 ? 'bg-warning' : 'bg-success')}"
+                              th:text="${#temporals.format(vehicle.carTaxExpiryDate, 'dd/MM/yyyy')}">
+                            01/01/2026
+                        </span>
+                    </li>
                 </ul>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">Grafico Km</div>
-                <div class="card-body">
-                    <canvas id="mileageChart"></canvas>
-                </div>
             </div>
         </div>
 
         <!-- COLONNA DESTRA -->
         <div class="col-md-6">
             <h4>Foto e Documenti</h4>
-
-            <form th:action="@{|/fleet/vehicles/${vehicle.id}/photos|}" method="post" enctype="multipart/form-data" class="mb-3">
-                <label for="filePhoto" class="form-label">Carica Foto</label>
-                <input class="form-control" type="file" name="file" id="filePhoto" accept="image/*" required>
-                <button type="submit" class="btn btn-primary mt-2">Upload Foto</button>
-            </form>
-
             <form th:action="@{|/fleet/vehicles/${vehicle.id}/docs|}" method="post" enctype="multipart/form-data">
                 <div class="mb-2">
                     <label for="fileDoc" class="form-label">Carica Documento</label>
@@ -144,6 +149,10 @@
                                th:href="@{|/fleet/vehicles/files/${vehicle.id}/${d.path.substring(d.path.lastIndexOf('/')+1)}|}">
                                 Download
                             </a>
+                            <a class="btn btn-sm btn-danger ms-1"
+                               th:href="@{|/fleet/vehicles/${vehicle.id}/docs/${d.id}/delete|}">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -151,41 +160,8 @@
             </div>
         </div>
     </div>
-
     <a class="btn btn-secondary mt-4" th:href="@{/fleet/vehicles}">Torna alla lista</a>
 </main>
-
 <div th:insert="fragments/footer :: mainFooter"></div>
-
-<script th:inline="javascript">
-    const currentKm = /*[[${vehicle.currentMileage}]]*/ 10000;
-    const contractualKm = /*[[${vehicle.contractualKm}]]*/ 40000;
-
-    const ctx = document.getElementById('mileageChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Km Percorsi', 'Km Residui'],
-            datasets: [{
-                data: [currentKm, contractualKm - currentKm],
-                backgroundColor: ['#0d6efd', '#d3d3d3'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                    callbacks: {
-                        label: function (ctx) {
-                            return ctx.label + ': ' + ctx.raw + ' km';
-                        }
-                    }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>

@@ -87,7 +87,14 @@ public class Vehicle {
     private LocalDate fuelCardExpiryDate;
 
     private String telepass;              // Telepass associato
-    private LocalDate telepassExpiryDate; // Scadenza Telepass
+    
+    /** Scadenza polizza assicurativa (in precedenza telepassExpiryDate). */
+    @Column(name = "telepass_expiry_date")
+    private LocalDate insuranceExpiryDate;
+
+    /** Scadenza bollo auto. */
+    private LocalDate carTaxExpiryDate;
+    
     private String imagePath;             // Path immagine del veicolo
 
     // -----------------------------------
