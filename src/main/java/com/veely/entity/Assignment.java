@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "assignments")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -24,7 +26,10 @@ public class Assignment {
     @Enumerated(EnumType.STRING)
     private AssignmentType type; // LONG_TERM vs SHORT_TERM
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)

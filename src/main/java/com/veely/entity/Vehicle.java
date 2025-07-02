@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * Veicolo aziendale (auto o camion), sia di proprietà sia in leasing.
  * Campi ereditati dal tuo modello precedente: canoni, km contrattuali,
@@ -55,9 +57,15 @@ public class Vehicle {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
     
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate registrationDate;   // Data immatricolazione
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate contractStartDate;  // Inizio leasing
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate contractEndDate;    // Fine leasing
+    
     private Integer contractDuration;     // Durata (mesi)
     private Integer contractualKm;        // Km previsti dal contratto
 
@@ -80,15 +88,19 @@ public class Vehicle {
     // -----------------------------------
     @Column(unique = true)
     private String fuelCard;              // Carta carburante
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fuelCardExpiryDate;
 
     private String telepass;              // Telepass associato
     
     /** Scadenza polizza assicurativa (in precedenza telepassExpiryDate). */
     @Column(name = "telepass_expiry_date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate insuranceExpiryDate;
 
     /** Scadenza bollo auto. */
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate carTaxExpiryDate;
     
     private String imagePath;             // Path immagine del veicolo

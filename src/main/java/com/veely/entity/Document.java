@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "documents")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -31,6 +33,8 @@ public class Document {
     private DocumentType type;
 
     private String path;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate issueDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate expiryDate;
 }
