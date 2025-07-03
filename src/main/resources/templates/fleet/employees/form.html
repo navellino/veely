@@ -3,10 +3,10 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
 
 <head
-	th:replace="fragments/head :: commonHead(${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'})"></head>
+	th:replace="~{fragments/head :: commonHead(${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'})}"></head>
 
 <body class="d-flex flex-column min-vh-100">
-	<div th:insert="fragments/navbar :: mainNavbar"></div>
+	<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 
 	<main class="container my-5 flex-fill">
 		<!-- Breadcrumb -->
@@ -329,7 +329,7 @@
 		    </div>
 		  </div>
 
-	<div th:insert="fragments/footer :: mainFooter"></div>
+	<div th:insert="~{fragments/footer :: mainFooter}"></div>
 
 	<!-- Scripts -->
 	<script type="module" th:src="@{/js/location-selector.js}"></script>

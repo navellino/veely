@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/head :: commonHead('Elenco Dipendenti – Veely')"></head>
+  <head th:replace="~{fragments/head :: commonHead('Elenco Dipendenti – Veely')}"></head>
   <body class="d-flex flex-column min-vh-100">
 
     <!-- Navbar -->
-    <div th:insert="fragments/navbar :: mainNavbar"></div>
+    <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 
     <!-- Main content -->
     <main class="container my-5 flex-fill">
@@ -99,7 +99,7 @@
     </main>
 
     <!-- Footer -->
-    <div th:insert="fragments/footer :: mainFooter"></div>
+    <div th:insert="~{fragments/footer :: mainFooter}"></div>
 
   </body>
 </html>

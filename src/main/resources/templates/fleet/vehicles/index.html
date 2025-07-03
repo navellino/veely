@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: commonHead('Elenco Veicoli – Veely')"></head>
+<head th:replace="~{fragments/head :: commonHead('Elenco Veicoli – Veely')}"></head>
 <body class="d-flex flex-column min-vh-100">
-<div th:insert="fragments/navbar :: mainNavbar"></div>
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 
 <main class="container my-5 flex-fill">
     <h2 class="fw-semibold">Veicoli</h2>
@@ -41,6 +41,6 @@
         </tbody>
     </table>
 </main>
-<div th:insert="fragments/footer :: mainFooter"></div>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
 </body>
 </html>
