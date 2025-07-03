@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -102,6 +103,14 @@ public class Vehicle {
     /** Scadenza bollo auto. */
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate carTaxExpiryDate;
+    
+    /** Numero totale di veicoli attualmente in servizio. */
+    @Formula("(SELECT COUNT(*) FROM vehicles v WHERE v.status = 'IN_SERVICE')")
+    private Long inServiceCount;
+
+    /** Numero totale di veicoli assegnati. */
+    @Formula("(SELECT COUNT(DISTINCT a.vehicle_id) FROM assignments a WHERE a.status = 'ASSIGNED')")
+    private Long assignedCount;
     
     private String imagePath;             // Path immagine del veicolo
 
