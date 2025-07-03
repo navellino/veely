@@ -13,4 +13,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     /** Veicoli con stato specifico (es. AVAILABLE). */
     List<Vehicle> findByStatus(VehicleStatus status);
+    
+    long countByStatus(VehicleStatus status);
 }

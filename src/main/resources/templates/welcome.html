@@ -74,6 +74,8 @@
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Veicoli</h3>
                 <p id="vehicles-total" class="text-4xl font-extrabold mt-3">--</p>
+                <p class="text-sm mt-1">In servizio: <span id="vehicles-in-service">--</span></p>
+                <p class="text-sm">Assegnati: <span id="vehicles-assigned">--</span></p>
               </div>
             </a>
 
@@ -161,13 +163,15 @@
       const queryClient = new QueryClient();
       function MetricsUpdater() {
         const { data } = useQuery({ queryKey: ['dashboard'], queryFn: () => fetch('/api/dashboard').then(r => r.json()), refetchInterval: 30000 });
-        React.useEffect(() => {
-          if (!data) return;
-          document.getElementById('vehicles-total').textContent = data.vehicles;
-          document.getElementById('assignments-total').textContent = data.assignments;
-          document.getElementById('deadlines-total').textContent = data.deadlines;
-          document.getElementById('fuel-cost').textContent = data.fuelMonth;
-        }, [data]);
+       React.useEffect(() => {
+            if (!data) return;
+            document.getElementById('vehicles-total').textContent = data.vehicles;
+            document.getElementById('vehicles-in-service').textContent = data.vehiclesInService;
+            document.getElementById('vehicles-assigned').textContent = data.vehiclesAssigned;
+            document.getElementById('assignments-total').textContent = data.assignments;
+            document.getElementById('deadlines-total').textContent = data.deadlines;
+            document.getElementById('fuel-cost').textContent = data.fuelMonth;
+          }, [data]);
         return null;
       }
       const mount = document.createElement('div');
