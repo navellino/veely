@@ -34,5 +34,9 @@ public class Assignment {
 
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
+    
+    /** Nota operativa per assegnazioni brevi (es. motivo utilizzo). */
+    @Column(length = 255)
+    private String note;
 }
 

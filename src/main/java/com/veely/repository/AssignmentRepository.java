@@ -2,6 +2,7 @@ package com.veely.repository;
 
 import com.veely.entity.Assignment;
 import com.veely.model.AssignmentStatus;
+import com.veely.model.AssignmentType;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     /** Assegnazioni future/prenotate su un veicolo. */
     List<Assignment> findByVehicleIdAndStartDateAfter(Long vehicleId, java.time.LocalDate date);
 
-	Page<Assignment> findByStatus(AssignmentStatus status, Pageable pageable);
+    Page<Assignment> findByStatus(AssignmentStatus status, Pageable pageable);
+
+    /** Lista di assegnazioni filtrate per tipologia. */
+    List<Assignment> findByTypeOrderByStartDateDesc(AssignmentType type);
 
     /** Numero di veicoli distinti con assegnazioni in uno stato specifico. */
     @Query("SELECT COUNT(DISTINCT a.vehicle.id) FROM Assignment a WHERE a.status = :status")

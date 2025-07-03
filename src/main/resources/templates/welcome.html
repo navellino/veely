@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-<html lang="it">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard – Veely</title>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+  <head th:replace="~{fragments/head :: commonHead('Welcome to Veely')}"></head>
 
 	<!-- Google Font & Bootstrap CSS -->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -73,9 +70,9 @@
               <i class="bi bi-car-front text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Veicoli</h3>
-                <p id="vehicles-total" class="text-4xl font-extrabold mt-3">--</p>
-                <p class="text-sm mt-1">In servizio: <span id="vehicles-in-service">--</span></p>
-                <p class="text-sm">Assegnati: <span id="vehicles-assigned">--</span></p>
+                <p id="vehicles-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.vehicles}">--</p>
+                <p class="text-sm mt-1">In servizio: <span id="vehicles-in-service" th:text="${metrics.vehiclesInService}">--</span></p>
+                <p class="text-sm">Assegnati: <span id="vehicles-assigned" th:text="${metrics.vehiclesAssigned}">--</span></p>
               </div>
             </a>
 
@@ -84,7 +81,7 @@
               <i class="bi bi-arrow-left-right text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Assegnazioni</h3>
-                <p id="assignments-total" class="text-4xl font-extrabold mt-3">--</p>
+                <p id="assignments-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.assignments}">--</p>
               </div>
             </a>
 
@@ -93,7 +90,8 @@
               <i class="bi bi-exclamation-triangle text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Scadenze imminenti</h3>
-                <p class="text-4xl font-extrabold mt-3"><span id="deadlines-total">--</span> <span class="text-lg font-normal">scadenze</span></p>
+                <p class="text-4xl font-extrabold mt-3"><span id="deadlines-total" th:text="${metrics.deadlines}">--</span> 
+                <span class="text-lg font-normal">scadenze</span></p>
               </div>
             </a>
 
@@ -102,7 +100,7 @@
               <i class="bi bi-fuel-pump text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Carburante (mese)</h3>
-                <p class="text-4xl font-extrabold mt-3"><span class="align-middle text-3xl">€</span> <span id="fuel-cost">--</span></p>
+                <p class="text-4xl font-extrabold mt-3"><span class="align-middle text-3xl">€</span> <span id="fuel-cost" th:text="${metrics.fuelMonth}">--</span></p>
               </div>
             </a>
           </div>
@@ -154,35 +152,6 @@
         </a>
       </div>
     </main>
-
-    <!-- ░░ Metric refresh (React‑Query) ░░ -->
-    <script type="module">
-      import React from 'https://cdn.skypack.dev/react';
-      import { createRoot } from 'https://cdn.skypack.dev/react-dom/client';
-      import { QueryClient, QueryClientProvider, useQuery } from 'https://cdn.skypack.dev/@tanstack/react-query';
-      const queryClient = new QueryClient();
-      function MetricsUpdater() {
-        const { data } = useQuery({ queryKey: ['dashboard'], queryFn: () => fetch('/api/dashboard').then(r => r.json()), refetchInterval: 30000 });
-       React.useEffect(() => {
-            if (!data) return;
-            document.getElementById('vehicles-total').textContent = data.vehicles;
-            document.getElementById('vehicles-in-service').textContent = data.vehiclesInService;
-            document.getElementById('vehicles-assigned').textContent = data.vehiclesAssigned;
-            document.getElementById('assignments-total').textContent = data.assignments;
-            document.getElementById('deadlines-total').textContent = data.deadlines;
-            document.getElementById('fuel-cost').textContent = data.fuelMonth;
-          }, [data]);
-        return null;
-      }
-      const mount = document.createElement('div');
-      document.body.appendChild(mount);
-      createRoot(mount).render(
-        <QueryClientProvider client={queryClient}>
-          <MetricsUpdater />
-        </QueryClientProvider>
-      );
-    </script>
-
     <!-- ░░ Footer ░░ -->
     <div th:insert="~{fragments/footer :: mainFooter}"></div>
   </body>

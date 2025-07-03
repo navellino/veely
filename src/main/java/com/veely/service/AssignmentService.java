@@ -4,6 +4,7 @@ package com.veely.service;
 import com.veely.entity.Assignment;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.AssignmentStatus;
+import com.veely.model.AssignmentType;
 import com.veely.repository.AssignmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,5 +70,11 @@ public class AssignmentService {
     public void delete(Long id) {
         Assignment a = findByIdOrThrow(id);
         assignmentRepo.delete(a);
+    }
+    
+    /** Restituisce le assegnazioni filtrate per tipologia. */
+    @Transactional(readOnly = true)
+    public List<Assignment> findByType(AssignmentType type) {
+        return assignmentRepo.findByTypeOrderByStartDateDesc(type);
     }
 }
