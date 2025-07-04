@@ -8,6 +8,8 @@ import com.veely.model.AssignmentStatus;
 import com.veely.model.AssignmentType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.AssignmentRepository;
+import com.veely.repository.VehicleRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +25,24 @@ import java.util.List;
 public class AssignmentService {
 
     private final AssignmentRepository assignmentRepo;
+    private final VehicleRepository vehicleRepo;
 
     /** Crea una nuova assegnazione (status default ACTIVE) */
     public Assignment create(Assignment assignment) {
         if (assignment.getStatus() == null) {
             assignment.setStatus(AssignmentStatus.ASSIGNED);
         }
+        // ensure vehicle entity is managed
+        if (assignment.getVehicle() != null && assignment.getVehicle().getId() != null) {
+            assignment.setVehicle(
+                    vehicleRepo.findById(assignment.getVehicle().getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Veicolo non trovato: " + assignment.getVehicle().getId())));
+        }
         updateVehicleStatus(assignment);
-        return assignmentRepo.save(assignment);
+        Assignment saved = assignmentRepo.save(assignment);
+        // persist vehicle status change
+        vehicleRepo.save(assignment.getVehicle());
+        return saved;
     }
 
     /** Aggiorna un'assegnazione esistente */
@@ -39,11 +51,19 @@ public class AssignmentService {
         Vehicle previousVehicle = existing.getVehicle();
         
         existing.setEmployment(payload.getEmployment());
-        existing.setVehicle(payload.getVehicle());
+        if (payload.getVehicle() != null && payload.getVehicle().getId() != null) {
+            existing.setVehicle(
+                    vehicleRepo.findById(payload.getVehicle().getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Veicolo non trovato: " + payload.getVehicle().getId())));
+        }
         existing.setStartDate(payload.getStartDate());
         existing.setEndDate(payload.getEndDate());
-        existing.setType(payload.getType());
-        existing.setStatus(payload.getStatus());
+        if (payload.getType() != null) {
+            existing.setType(payload.getType());
+        }
+        if (payload.getStatus() != null) {
+            existing.setStatus(payload.getStatus());
+        }
         
         if (previousVehicle != null &&
                 (payload.getVehicle() == null ||
@@ -52,6 +72,13 @@ public class AssignmentService {
             }
         
         updateVehicleStatus(existing);
+     // persist status updates for involved vehicles
+        if (existing.getVehicle() != null) {
+            vehicleRepo.save(existing.getVehicle());
+        }
+        if (previousVehicle != null && !previousVehicle.getId().equals(existing.getVehicle().getId())) {
+            vehicleRepo.save(previousVehicle);
+        }
         return existing;
     }
 
