@@ -36,12 +36,21 @@ public class AssignmentService {
     /** Aggiorna un'assegnazione esistente */
     public Assignment update(Long id, Assignment payload) {
         Assignment existing = findByIdOrThrow(id);
+        Vehicle previousVehicle = existing.getVehicle();
+        
         existing.setEmployment(payload.getEmployment());
         existing.setVehicle(payload.getVehicle());
         existing.setStartDate(payload.getStartDate());
         existing.setEndDate(payload.getEndDate());
         existing.setType(payload.getType());
         existing.setStatus(payload.getStatus());
+        
+        if (previousVehicle != null &&
+                (payload.getVehicle() == null ||
+                 !previousVehicle.getId().equals(payload.getVehicle().getId()))) {
+                previousVehicle.setStatus(VehicleStatus.IN_SERVICE);
+            }
+        
         updateVehicleStatus(existing);
         return existing;
     }
