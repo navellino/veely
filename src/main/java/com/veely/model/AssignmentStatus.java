@@ -3,7 +3,9 @@ package com.veely.model;
 public enum AssignmentStatus {
     ASSIGNED("Assegnato"),
     RETURNED("Restituito"),
-    BOOKED("Prenotato");
+    BOOKED("Prenotato"),
+    OPEN("Aperta"),
+    CLOSED("Chiusa");
 
     private final String displayName;
 
