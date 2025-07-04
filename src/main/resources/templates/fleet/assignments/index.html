@@ -31,6 +31,7 @@
               <th>Dal</th>
               <th>Al</th>
               <th>Stato</th>
+              <th class="text-end">Azioni</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +58,7 @@
               <th>Al</th>
               <th>Nota</th>
               <th>Stato</th>
+              <th class="text-end">Azioni</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +69,11 @@
               <td th:text="${a.endDate}"></td>
               <td th:text="${a.note}"></td>
               <td th:text="${a.status.displayName}"></td>
+              <td class="text-end">
+                <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-secondary" title="Modifica">
+                  <i class="bi bi-pencil"></i>
+                </a>
+              </td>
             </tr>
           </tbody>
         </table>

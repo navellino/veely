@@ -43,7 +43,8 @@ public class VehicleController {
     /** Form di creazione veicolo */
     @GetMapping("/new")
     public String createForm(Model model) {
-    	addFormOptions(model);
+    	model.addAttribute("vehicle", new Vehicle());
+        addFormOptions(model);
         return "fleet/vehicles/form";
     }
 

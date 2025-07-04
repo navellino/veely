@@ -35,6 +35,7 @@ public class AssignmentController {
     /** Pagina con le liste di assegnazioni lunghe e brevi. */
     @GetMapping
     public String list(Model model) {
+    	assignmentService.releaseExpiredAssignments();
         List<Assignment> longAsg = assignmentService.findByType(AssignmentType.LONG_TERM);
         List<Assignment> shortAsg = assignmentService.findByType(AssignmentType.SHORT_TERM);
         model.addAttribute("longAssignments", longAsg);
@@ -80,6 +81,24 @@ public class AssignmentController {
             LocalDate exp = (expiryDate == null || expiryDate.isBlank()) ? null : LocalDate.parse(expiryDate);
             documentService.uploadAssignmentDocument(saved.getId(), file, docType, issued, exp);
         }
+        return "redirect:/fleet/assignments";
+    }
+    
+    /** Form di modifica per qualunque assegnazione. */
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Assignment a = assignmentService.findByIdOrThrow(id);
+        model.addAttribute("assignment", a);
+        model.addAttribute("employments", employmentService.findAll());
+        model.addAttribute("vehicles", vehicleService.findAll());
+        model.addAttribute("docTypes", DocumentType.values());
+        return "fleet/assignments/form";
+    }
+
+    /** Salvataggio modifiche di un'assegnazione. */
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable Long id, @ModelAttribute Assignment assignment) {
+        assignmentService.update(id, assignment);
         return "redirect:/fleet/assignments";
     }
 }

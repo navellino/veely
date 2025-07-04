@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: commonHead('Nuova Assegnazione – Veely')}"></head>
+<head th:replace="~{fragments/head :: commonHead(${assignment.id == null ? 'Nuova Assegnazione – Veely' : 'Modifica Assegnazione – Veely'})}"></head>
 <body class="d-flex flex-column min-vh-100">
 <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 <main class="container my-5 flex-fill">
@@ -8,11 +8,13 @@
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
       <li class="breadcrumb-item"><a th:href="@{/fleet/assignments}">Assegnazioni</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Nuova</li>
+      <li class="breadcrumb-item active" aria-current="page" th:text="${assignment.id == null ? 'Nuova' : 'Modifica'}">Nuova</li>
     </ol>
   </nav>
 
-  <form th:object="${assignment}" th:action="@{/fleet/assignments/new}" method="post" enctype="multipart/form-data" class="row g-3">
+  <form th:object="${assignment}"
+        th:action="${assignment.id == null} ? @{/fleet/assignments/new} : @{/fleet/assignments/{id}/edit(id=${assignment.id})}"
+        method="post" enctype="multipart/form-data" class="row g-3">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div class="col-md-4">
       <label class="form-label">Rapporto di lavoro</label>

@@ -24,10 +24,11 @@ public class SupplierService {
         Supplier existing = findByIdOrThrow(id);
         existing.setName(payload.getName());
         existing.setVatNumber(payload.getVatNumber());
+        existing.setContatto(payload.getContatto());
         existing.setPhone(payload.getPhone());
         existing.setEmail(payload.getEmail());
         existing.setAddress(payload.getAddress());
-        return existing;
+        return supplierRepo.save(existing);
     }
 
     @Transactional(readOnly = true)

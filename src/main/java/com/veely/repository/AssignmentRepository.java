@@ -27,4 +27,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     /** Numero di veicoli distinti con assegnazioni in uno stato specifico. */
     @Query("SELECT COUNT(DISTINCT a.vehicle.id) FROM Assignment a WHERE a.status = :status")
     long countDistinctVehicleByStatus(AssignmentStatus status);
+    
+    /** Assegnazioni terminate prima di una certa data per stato specifico. */
+    List<Assignment> findByStatusAndEndDateBefore(AssignmentStatus status, java.time.LocalDate date);
 }
