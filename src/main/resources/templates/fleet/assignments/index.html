@@ -31,17 +31,17 @@
               <th>Dal</th>
               <th>Al</th>
               <th>Stato</th>
-              <th class="text-end">Azioni</th>
+              <th class="text-center">Azioni</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="a : ${longAssignments}">
-                <td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
-                <td th:text="${a.vehicle.plate}"></td>
-                <td th:text="${a.startDate}"></td>
-                <td th:text="${a.endDate}"></td>
-                <td th:text="${a.status.displayName}"></td>
-                <td class="text-end">
+            		<td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
+	                <td th:text="${a.vehicle.plate}"></td>
+	                <td th:text="${a.startDate}"></td>
+	                <td th:text="${a.endDate}"></td>
+	                <td th:text="${a.status.displayName}"></td>
+	                <td class="text-end">
                   <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-secondary" title="Modifica">
                     <i class="bi bi-pencil"></i>
                   </a>

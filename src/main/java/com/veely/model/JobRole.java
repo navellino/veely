@@ -4,6 +4,7 @@ package com.veely.model;
  * Mansioni principali all'interno dell'azienda.
  */
 public enum JobRole {
+	LEGAL_ADMIN("Amministratore"),
     LABORER("Manovale"),
     BRICKLAYER("Muratore"),
     ACCOUNTANT("Contabile"),

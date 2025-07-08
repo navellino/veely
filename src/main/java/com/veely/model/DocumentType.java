@@ -2,7 +2,7 @@ package com.veely.model;
 
 public enum DocumentType {
     // ---- VEICOLO ----
-	SPACE1(""),
+	SPACE1("---- VEICOLO ----"),
     VEHICLE_REGISTRATION("Libretto circolazione"),
     INSURANCE("Assicurazione"),
     MAINTENANCE("Manutenzioni"),
@@ -16,13 +16,15 @@ public enum DocumentType {
     DISCIPLINARY_LETTER("Lettera di richiamo"),
 
     // ---- PERSONA ----
+    SPACE2("---- PERSONA ----"),
     IDENTITY_PHOTO("Foto Profilo"),
     IDENTITY_DOCUMENT("Documento identità"),
     FISCAL_CODE("Tessera Sanitaria"),
     SAP("Scheda Anagrafica Professionale"),
     GRADE("Titolo di studio"),
     
-    
+    // ---- ASSEGNAZIONI ----
+    SPACE3("---- ASSEGNAZIONI ----"),
     ASSIGNMENT_PHOTO("Foto veicolo durante assegnazione"),
     ASSIGNMENT_REPORT("Report riconsegna / danni"),
     ASSIGNMENT_LETTER("Lettera di assegnazione veicolo"),
