@@ -196,5 +196,11 @@ public class DocumentService {
         documentRepo.delete(doc);
     }
     
-    
+    /** Carica la risorsa per un documento di assegnazione */
+    @Transactional(readOnly = true)
+    public Resource loadAssignmentDocumentAsResource(Long assignmentId, String filename) {
+        assignmentService.findByIdOrThrow(assignmentId);
+        String dir = "assignments/" + assignmentId + "/docs";
+        return fileStorage.loadAsResource(filename, dir);
+    }
 }

@@ -14,7 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -92,6 +96,7 @@ public class AssignmentController {
         model.addAttribute("employments", employmentService.findAll());
         model.addAttribute("vehicles", vehicleService.findAll());
         model.addAttribute("docTypes", DocumentType.values());
+        model.addAttribute("documents", documentService.getAssignmentDocuments(id));
         return "fleet/assignments/form";
     }
 
@@ -100,5 +105,40 @@ public class AssignmentController {
     public String update(@PathVariable Long id, @ModelAttribute Assignment assignment) {
         assignmentService.update(id, assignment);
         return "redirect:/fleet/assignments";
+    }
+    
+    /** Upload documento per un'assegnazione esistente */
+    @PostMapping("/{id}/docs")
+    public String uploadDoc(@PathVariable Long id,
+                            @RequestParam("file") MultipartFile file,
+                            @RequestParam("type") DocumentType type,
+                            @RequestParam(value = "issueDate", required = false) String issueDate,
+                            @RequestParam(value = "expiryDate", required = false) String expiryDate) throws IOException {
+        LocalDate issued = (issueDate == null || issueDate.isBlank()) ? null : LocalDate.parse(issueDate);
+        LocalDate exp = (expiryDate == null || expiryDate.isBlank()) ? null : LocalDate.parse(expiryDate);
+        documentService.uploadAssignmentDocument(id, file, type, issued, exp);
+        return "redirect:/fleet/assignments/" + id + "/edit";
+    }
+
+    @GetMapping("/{id}/docs/{filename:.+}")
+    public ResponseEntity<Resource> serveFile(@PathVariable Long id,
+                                              @PathVariable String filename,
+                                              HttpServletRequest request) throws IOException {
+        Resource resource = documentService.loadAssignmentDocumentAsResource(id, filename);
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/{asgId}/docs/{docId}/delete")
+    public String deleteDocument(@PathVariable("asgId") Long asgId,
+                                 @PathVariable("docId") Long docId) throws IOException {
+        documentService.deleteDocument(docId);
+        return "redirect:/fleet/assignments/" + asgId + "/edit";
     }
 }
