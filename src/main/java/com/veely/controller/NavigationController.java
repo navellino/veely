@@ -33,4 +33,9 @@ public class NavigationController {
     public String supplierListRedirect() {
         return "redirect:/fleet/suppliers";
     }
+    
+    @GetMapping({"/deadlineList"})
+    public String deadlineListRedirect() {
+        return "redirect:/deadlines";
+    }
 }

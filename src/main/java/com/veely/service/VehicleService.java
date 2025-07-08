@@ -183,4 +183,22 @@ public class VehicleService {
     private BigDecimal safe(BigDecimal x) {
         return (x != null) ? x : BigDecimal.ZERO;
     }
+    
+    /** Aggiorna la data di scadenza assicurazione. */
+    public void updateInsuranceExpiry(Long vehicleId, LocalDate newDate) {
+        Vehicle v = findByIdOrThrow(vehicleId);
+        v.setInsuranceExpiryDate(newDate);
+    }
+
+    /** Aggiorna la data di scadenza bollo. */
+    public void updateCarTaxExpiry(Long vehicleId, LocalDate newDate) {
+        Vehicle v = findByIdOrThrow(vehicleId);
+        v.setCarTaxExpiryDate(newDate);
+    }
+
+    /** Aggiorna la data di scadenza della fuel card. */
+    public void updateFuelCardExpiry(Long vehicleId, LocalDate newDate) {
+        Vehicle v = findByIdOrThrow(vehicleId);
+        v.setFuelCardExpiryDate(newDate);
+    }
 }

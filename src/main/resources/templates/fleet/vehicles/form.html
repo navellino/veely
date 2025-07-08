@@ -232,10 +232,8 @@
 						</div>
 					</div>
 					<div class="col-12 d-flex justify-content-end">
-						<button type="submit" class="btn btn-lg btn-primary me-2"
-							th:text="${vehicle.id == null ? 'Crea e Continua' : 'Aggiorna'}"></button>
-						<a class="btn btn-lg btn-outline-secondary"
-							th:href="@{/fleet/vehicles}">Annulla</a>
+						<button type="submit" class="btn btn-lg btn-primary me-2" th:text="${vehicle.id == null ? 'Crea e Continua' : 'Aggiorna'}"></button>
+						<a class="btn btn-lg btn-outline-secondary" th:href="@{/fleet/vehicles}" th:text="${vehicle.id == null ? 'Annulla' : 'Torna alla Lista'}"></a>
 					</div>
 				</form>
 			</div>

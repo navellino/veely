@@ -83,19 +83,19 @@
                         <option th:each="jr : ${jobRoles}" th:value="${jr}" th:text="${jr.displayName}"></option>
                     </select>
                 </div>
-				<div class="col-md-3">
+				<div class="col-md-2">
                     <label class="form-label">Qualifica</label>
                     <select class="form-select" th:field="*{jobTitle}">
                         <option th:each="qt : ${jobQualifications}" th:value="${qt}" th:text="${qt.displayName}"></option>
                     </select>
                 </div>
-				<div class="col-md-3">
+				<div class="col-md-2">
                     <label class="form-label">CCNL</label>
                     <select class="form-select" th:field="*{ccnl}">
                         <option th:each="c : ${ccnls}" th:value="${c}" th:text="${c.displayName}"></option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Livello</label>
                     <input class="form-control" th:field="*{contractLevel}" />
                 </div>

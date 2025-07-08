@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
   <head th:replace="~{fragments/head :: commonHead('Welcome to Veely')}"></head>
 
-	<link rel="preconnect" href="https://fonts.gstatic.com" />
+	<!-- Google Font & Bootstrap CSS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     
+    <!-- Tailwind CSS (dev only) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -33,6 +35,7 @@
       };
     </script>
 
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
     <style>
@@ -48,20 +51,21 @@
     </style>
   </head>
   <body class="flex flex-col min-h-screen bg-gray-50">
+    <!-- ░░ Navbar ░░ -->
     <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 
+    <!-- ░░ Hero ░░ -->
     <section class="bg-primary-900 text-white py-40 relative">
       <div class="container mx-auto px-4 text-center">
         <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Benvenuto in Veely</h1>
-        <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Tieni sotto controllo veicoli, scadenze e costi in un'unica dashboard</p>
-        <a th:href="@{/dashboard}" class="btn btn-lg bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-900 shadow-lg transition duration-300">
-          <i class="bi bi-speedometer2 me-2"></i> Vai alla Dashboard
-        </a>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto">Tieni sotto controllo veicoli, scadenze e costi in un'unica dashboard</p>
       </div>
 
+      <!-- ░░ Mega‑cards ░░ -->
       <div class="absolute inset-x-0 -bottom-32 md:-bottom-36">
         <div class="container mx-auto px-4">
          <div class="text-center grid grid-flow-col auto-cols-[17rem] gap-5 overflow-x-auto snap-x snap-mandatory md:grid-flow-row md:auto-cols-fr md:grid-cols-4 md:overflow-visible hide-scrollbar">
+            <!-- Veicoli -->
             <a th:href="@{/vehicleList}" class="flex flex-col justify-between p-6 rounded-xl text-white bg-gradient-to-br from-primary-500 to-primary-700 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
               <i class="bi bi-car-front text-7xl"></i>
               <div class="mt-auto">
@@ -72,6 +76,7 @@
               </div>
             </a>
 
+            <!-- Assegnazioni -->
             <a th:href="@{/assignmentList}" class="flex flex-col justify-between p-6 rounded-xl text-white bg-indigo-600 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
               <i class="bi bi-arrow-left-right text-7xl"></i>
               <div class="mt-auto">
@@ -82,6 +87,7 @@
               </div>
             </a>
 
+            <!-- Scadenze imminenti -->
             <a th:href="@{/deadlines}" class="flex flex-col justify-between p-6 rounded-xl text-gray-900 bg-warning-500 hover:shadow-xl hover:scale-105 transition snap-start ring-1 ring-black/10">
               <i class="bi bi-exclamation-triangle text-7xl"></i>
               <div class="mt-auto">
@@ -91,6 +97,7 @@
               </div>
             </a>
 
+            <!-- Carburante -->
             <a th:href="@{/fuel}" class="flex flex-col justify-between p-6 rounded-xl text-white bg-success-600 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
               <i class="bi bi-fuel-pump text-7xl"></i>
               <div class="mt-auto">
@@ -103,11 +110,14 @@
       </div>
     </section>
 
-    <div class="h-48 md:h-52"></div>
+    <!-- spazio per overlap -->
+       <div class="h-48 md:h-52"></div>
 
-    <main class="container mx-auto px-4 py-10 md:py-16">
+    <!-- ░░ Secondary cards ░░ -->
+    <main class="container mx-auto px-4">
       <hr class="my-6 border-gray-200" />
       <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <!-- Fornitori -->
         <a th:href="@{/supplierList}" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-building text-6xl text-yellow-500"></i>
           <div>
@@ -116,6 +126,7 @@
           </div>
         </a>
 
+        <!-- Dipendenti -->
         <a th:href="@{/fleet/employees/manage}" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-people-fill text-6xl text-indigo-600"></i>
           <div>
@@ -124,6 +135,7 @@
           </div>
         </a>
 
+        <!-- Rapporti -->
         <a th:href="@{/employmentList}" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-file-earmark-text text-6xl text-green-600"></i>
           <div>
@@ -132,6 +144,7 @@
           </div>
         </a>
 
+        <!-- Fornitura -->
         <a th:href="@{/formutturaList}" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-list text-6xl text-primary-700"></i>
           <div>
@@ -141,6 +154,7 @@
         </a>
       </div>
     </main>
+    <!-- ░░ Footer ░░ -->
     <div th:insert="~{fragments/footer :: mainFooter}"></div>
   </body>
 </html>

@@ -7,6 +7,7 @@ import com.veely.repository.AssignmentRepository;
 import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.veely.service.DeadlineService;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class DashboardService {
 
     private final VehicleRepository vehicleRepo;
     private final AssignmentRepository assignmentRepo;
+    private final DeadlineService deadlineService;
 
     public DashboardMetrics getMetrics() {
         long vehicles = vehicleRepo.count();
@@ -22,8 +24,9 @@ public class DashboardService {
         long longActive = assignmentRepo.countByTypeAndStatus(AssignmentType.LONG_TERM, AssignmentStatus.ASSIGNED);
         long shortActive = assignmentRepo.countByTypeAndStatus(AssignmentType.SHORT_TERM, AssignmentStatus.ASSIGNED);
         long totalAssignments = assignmentRepo.count();
+        long deadlines = deadlineService.getVehicleDeadlines().size();
         return new DashboardMetrics(vehicles, inService, assigned,
-                totalAssignments, longActive, shortActive, 0L, 0L);
+        		totalAssignments, longActive, shortActive, deadlines, 0L);
     }
 
     public record DashboardMetrics(long vehicles,

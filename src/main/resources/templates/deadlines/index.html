@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head th:replace="~{fragments/head :: commonHead('Scadenze')}" />
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<main class="container my-5 flex-fill">
+    <h2 class="fw-semibold">Scadenze</h2>
+    <table class="table table-striped sortable">
+        <thead>
+        <tr>
+            <th>Categoria</th>
+            <th>Veicolo</th>
+            <th>Data</th>
+            <th>Gestione</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="d : ${deadlines}">
+            <td th:text="${d.category}">Assicurazione</td>
+            <td th:text="${d.name}">AA000AA</td>
+            <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
+            <td>
+                <form th:action="@{|/deadlines/vehicle/${d.vehicleId}/${d.type}|}" method="post" enctype="multipart/form-data" class="d-flex gap-2">
+                    <input type="date" name="date" class="form-control form-control-sm" required />
+                    <input type="file" name="file" class="form-control form-control-sm" />
+                    <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>
