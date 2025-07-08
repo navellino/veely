@@ -1,11 +1,13 @@
 package com.veely.controller;
 
+import com.veely.entity.Assignment;
 import com.veely.entity.Document;
 import com.veely.entity.Vehicle;
 import com.veely.model.DocumentType;
 import com.veely.model.OwnershipType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.DocumentRepository;
+import com.veely.service.AssignmentService;
 import com.veely.service.DocumentService;
 import com.veely.service.SupplierService;
 import com.veely.service.VehicleService;
@@ -31,6 +33,7 @@ public class VehicleController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepo; // per eventuali operazioni dirette
     private final SupplierService supplierService;
+    private final AssignmentService assignmentService;
 
     /** Mostra la lista (tabella) di tutti i veicoli **/
     @GetMapping
@@ -121,6 +124,10 @@ public class VehicleController {
                 .filter(d -> d.getType() == DocumentType.VEHICLE_IMAGE)
                 .findFirst()
                 .orElse(null);
+        Assignment asg = assignmentService.findActiveByVehicle(id);
+        if (asg != null) {
+            model.addAttribute("assignedEmployee", asg.getEmployment().getEmployee());
+        }
         model.addAttribute("vehicle", v);
         model.addAttribute("documents", docs);
         model.addAttribute("vehicleImage", image);

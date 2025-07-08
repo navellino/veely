@@ -30,4 +30,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     
     /** Assegnazioni terminate prima di una certa data per stato specifico. */
     List<Assignment> findByStatusAndEndDateBefore(AssignmentStatus status, java.time.LocalDate date);
+    
+    /** Numero di assegnazioni per tipologia e stato specifico. */
+    long countByTypeAndStatus(AssignmentType type, AssignmentStatus status);
+    
+    /** Assegnazione corrente per un veicolo. */
+    List<Assignment> findByVehicleIdAndStatus(Long vehicleId, AssignmentStatus status);
 }

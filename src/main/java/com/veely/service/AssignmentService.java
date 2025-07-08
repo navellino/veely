@@ -130,6 +130,17 @@ public class AssignmentService {
             updateVehicleStatus(a);
         }
     }
+    
+    /** Restituisce l'assegnazione attiva per un veicolo, se presente. */
+    @Transactional(readOnly = true)
+    public Assignment findActiveByVehicle(Long vehicleId) {
+        List<Assignment> list = assignmentRepo.findByVehicleIdAndStatus(vehicleId, AssignmentStatus.ASSIGNED);
+        LocalDate today = LocalDate.now();
+        return list.stream()
+                .filter(a -> a.getEndDate() == null || !a.getEndDate().isBefore(today))
+                .findFirst()
+                .orElse(null);
+    }
 
     /** Aggiorna lo stato del veicolo in base all'assegnazione. */
     private void updateVehicleStatus(Assignment assignment) {

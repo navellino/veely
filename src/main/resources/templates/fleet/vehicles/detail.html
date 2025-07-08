@@ -30,7 +30,11 @@
           <div class="card-body d-flex flex-column h-100">
             <div>
               <h3 class="text-primary fw-bold mb-1" th:text="${vehicle.brand} + ' ' + ${vehicle.model}">RENAULT MEGANE IV SERIE 1.5 110 CV</h3>
-              <p class="text-muted mb-4" th:text="${vehicle.plate}">FJ398BT</p>
+               <p class="text-muted mb-1" th:text="${vehicle.plate}">FJ398BT</p>
+              <p th:if="${assignedEmployee != null}" class="mb-4">
+                <i class="bi bi-person-fill me-2"></i>
+                Assegnato a <span th:text="${assignedEmployee.firstName + ' ' + assignedEmployee.lastName}">Mario Rossi</span>
+              </p>
             </div>
 
             <!-- INFORMAZIONI SU DUE COLONNE -->

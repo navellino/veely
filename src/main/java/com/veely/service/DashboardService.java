@@ -1,6 +1,7 @@
 package com.veely.service;
 
 import com.veely.model.AssignmentStatus;
+import com.veely.model.AssignmentType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.AssignmentRepository;
 import com.veely.repository.VehicleRepository;
@@ -18,13 +19,19 @@ public class DashboardService {
         long vehicles = vehicleRepo.count();
         long inService = vehicleRepo.countByStatus(VehicleStatus.IN_SERVICE);
         long assigned = assignmentRepo.countDistinctVehicleByStatus(AssignmentStatus.ASSIGNED);
-        return new DashboardMetrics(vehicles, inService, assigned, 0L, 0L, 0L);
+        long longActive = assignmentRepo.countByTypeAndStatus(AssignmentType.LONG_TERM, AssignmentStatus.ASSIGNED);
+        long shortActive = assignmentRepo.countByTypeAndStatus(AssignmentType.SHORT_TERM, AssignmentStatus.ASSIGNED);
+        long totalAssignments = assignmentRepo.count();
+        return new DashboardMetrics(vehicles, inService, assigned,
+                totalAssignments, longActive, shortActive, 0L, 0L);
     }
 
     public record DashboardMetrics(long vehicles,
             long vehiclesInService,
             long vehiclesAssigned,
             long assignments,
+            long longAssignmentsActive,
+            long shortAssignmentsActive,
             long deadlines,
             long fuelMonth) {}
 }
