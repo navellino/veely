@@ -45,10 +45,10 @@
                         </thead>
                         <tbody>
                         <tr th:each="d : ${vehicleDeadlines['Assicurazione']}">
-                            <td th:text="${d.name}">AA000AA</td>
+                            <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy/MM/dd')}">2024-01-01</td>
                             <td>
-                                <form th:action="@{|/deadlines/vehicle/${d.vehicleId}/${d.type}|}" method="post" class="d-flex gap-2">
+                                <form th:action="@{|/deadlines/vehicle/${d.refId}/${d.type}|}" method="post" class="d-flex gap-2">
                                     <input type="date" name="date" class="form-control form-control-sm" required />
                                     <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
                                 </form>
@@ -68,10 +68,10 @@
                         </thead>
                         <tbody>
                         <tr th:each="d : ${vehicleDeadlines['Bollo']}">
-                            <td th:text="${d.name}">AA000AA</td>
+                            <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
                             <td>
-                                <form th:action="@{|/deadlines/vehicle/${d.vehicleId}/${d.type}|}" method="post" class="d-flex gap-2">
+                                <form th:action="@{|/deadlines/vehicle/${d.refId}/${d.type}|}" method="post" class="d-flex gap-2">
                                     <input type="date" name="date" class="form-control form-control-sm" required />
                                     <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
                                 </form>
@@ -91,10 +91,10 @@
                         </thead>
                         <tbody>
                         <tr th:each="d : ${vehicleDeadlines['Leasing']}">
-                            <td th:text="${d.name}">AA000AA</td>
+                            <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
                             <td>
-                                <form th:action="@{|/deadlines/vehicle/${d.vehicleId}/${d.type}|}" method="post" class="d-flex gap-2">
+                                <form th:action="@{|/deadlines/vehicle/${d.refId}/${d.type}|}" method="post" class="d-flex gap-2">
                                     <input type="date" name="date" class="form-control form-control-sm" required />
                                     <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
                                 </form>
@@ -114,10 +114,10 @@
                         </thead>
                         <tbody>
                         <tr th:each="d : ${vehicleDeadlines['Fuel Card']}">
-                            <td th:text="${d.name}">AA000AA</td>
+                            <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
                             <td>
-                                <form th:action="@{|/deadlines/vehicle/${d.vehicleId}/${d.type}|}" method="post" class="d-flex gap-2">
+                                <form th:action="@{|/deadlines/vehicle/${d.refId}/${d.type}|}" method="post" class="d-flex gap-2">
                                     <input type="date" name="date" class="form-control form-control-sm" required />
                                     <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
                                 </form>
@@ -126,10 +126,92 @@
                         </tbody>
                     </table>
                 </div>
+                 <div class="mt-4">
+                    <h5>Carica documenti veicolo</h5>
+                    <form th:action="@{/deadlines/vehicle-docs}" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                        	<label for="fileDoc" class="form-label">Veicolo</label>
+                            <select name="vehicleId" class="form-select">
+                                <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.plate + ' ' + v.brand + ' ' + v.model}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                        	<label for="typeDoc" class="form-label">Selezione file da caricare</label>
+                            <input type="file" name="file" class="form-control" required />
+                        </div>
+                        <div class="col-md-2">
+                        	<label for="typeDoc" class="form-label">Data documento</label>
+                            <input type="date" name="issueDate" class="form-control" />
+                        </div>
+                        <div class="col-md-2">
+                        	<label for="typeDoc" class="form-label">Data scadenza</label>
+                            <input type="date" name="expiryDate" class="form-control" />
+                        </div>
+                        <div class="col-md-2">
+                        	<label for="typeDoc" class="form-label">Tipo documento</label>
+                            <select name="type" class="form-select">
+                                <option th:each="dt : ${docTypes}" th:value="${dt}" th:text="${dt.displayName}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-grid">
+                            <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i></button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="tab-pane fade" id="emp" role="tabpanel">
-            <p class="text-muted">Nessuna scadenza disponibile.</p>
+            <table class="table table-striped sortable">
+                <thead>
+                <tr>
+                    <th>Dipendente</th>
+                    <th>Scadenza Rapporto</th>
+                    <th>Gestione</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${employmentDeadlines}">
+                    <td th:text="${d.name}">EMP001</td>
+                    <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                    <td>
+                        <form th:action="@{|/deadlines/employment/${d.refId}|}" method="post" class="d-flex gap-2">
+                            <input type="date" name="date" class="form-control form-control-sm" required />
+                            <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(employmentDeadlines)}">
+                    <td colspan="3" class="text-center">Nessuna scadenza disponibile.</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="mt-4">
+                <h5>Carica documento rapporto</h5>
+                <form th:action="@{/deadlines/employment-docs}" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <select name="employmentId" class="form-select">
+                            <option th:each="e : ${employments}" th:value="${e.id}" th:text="${e.matricola + ' - ' + e.employee.firstName + ' ' + e.employee.lastName}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="file" name="file" class="form-control" required />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" name="issueDate" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" name="expiryDate" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <select name="type" class="form-select">
+                            <option th:each="dt : ${docTypes}" th:value="${dt}" th:text="${dt.displayName}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </main>

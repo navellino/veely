@@ -9,7 +9,10 @@ import java.time.LocalDate;
 public record DeadlineItem(
         String category,
         String name,
+        String brand,
+        String model,
+        String series,
         LocalDate dueDate,
-        Long vehicleId,
+        Long refId,
         String type
 ) {}

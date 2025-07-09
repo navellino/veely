@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.veely.model.DocumentType;
+import com.veely.service.EmploymentService;
+import com.veely.service.DocumentService;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/deadlines")
@@ -20,6 +25,8 @@ public class DeadlineController {
 
     private final DeadlineService deadlineService;
     private final VehicleService vehicleService;
+    private final EmploymentService employmentService;
+    private final DocumentService documentService;
 
     @GetMapping
     public String list(Model model) {
@@ -33,7 +40,10 @@ public class DeadlineController {
             grouped.computeIfAbsent(d.category(), k -> new ArrayList<>()).add(d);
         }
         model.addAttribute("vehicleDeadlines", grouped);
-        model.addAttribute("employmentDeadlines", List.of());
+        model.addAttribute("employmentDeadlines", deadlineService.getEmploymentDeadlines());
+        model.addAttribute("vehicles", vehicleService.findAll());
+        model.addAttribute("employments", employmentService.findAll());
+        model.addAttribute("docTypes", DocumentType.values());
         return "deadlines/index";
     }
 
@@ -49,6 +59,38 @@ public class DeadlineController {
 		        case "lease"    -> vehicleService.updateLeaseExpiry(id, newDate);
 		        default -> {}
         }
+        return "redirect:/deadlines";
+    }
+    
+    @PostMapping("/employment/{id}")
+    public String updateEmploymentDeadline(@PathVariable Long id,
+                                           @RequestParam("date") String date) {
+        LocalDate newDate = LocalDate.parse(date);
+        employmentService.updateEndDate(id, newDate);
+        return "redirect:/deadlines";
+    }
+
+    @PostMapping("/vehicle-docs")
+    public String uploadVehicleDoc(@RequestParam("vehicleId") Long vehicleId,
+                                   @RequestParam("file") MultipartFile file,
+                                   @RequestParam("type") DocumentType type,
+                                   @RequestParam(value = "issueDate", required = false) String issueDate,
+                                   @RequestParam(value = "expiryDate", required = false) String expiryDate) throws IOException {
+        LocalDate issued = (issueDate == null || issueDate.isBlank()) ? null : LocalDate.parse(issueDate);
+        LocalDate exp = (expiryDate == null || expiryDate.isBlank()) ? null : LocalDate.parse(expiryDate);
+        documentService.uploadVehicleDocument(vehicleId, file, type, issued, exp);
+        return "redirect:/deadlines";
+    }
+
+    @PostMapping("/employment-docs")
+    public String uploadEmploymentDoc(@RequestParam("employmentId") Long employmentId,
+                                      @RequestParam("file") MultipartFile file,
+                                      @RequestParam("type") DocumentType type,
+                                      @RequestParam(value = "issueDate", required = false) String issueDate,
+                                      @RequestParam(value = "expiryDate", required = false) String expiryDate) throws IOException {
+        LocalDate issued = (issueDate == null || issueDate.isBlank()) ? null : LocalDate.parse(issueDate);
+        LocalDate exp = (expiryDate == null || expiryDate.isBlank()) ? null : LocalDate.parse(expiryDate);
+        documentService.uploadEmploymentDocument(employmentId, file, type, issued, exp);
         return "redirect:/deadlines";
     }
 }

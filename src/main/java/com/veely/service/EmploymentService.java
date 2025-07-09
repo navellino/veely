@@ -10,10 +10,7 @@ import com.veely.repository.EmploymentRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import java.io.ByteArrayOutputStream;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.time.LocalDate;
 
 /**
  * Servizio per la gestione CRUD di Employment,
@@ -235,6 +233,12 @@ public class EmploymentService {
     public List<Employment> findByEmployeeIds(List<Long> ids) {
         if (ids.isEmpty()) return List.of();
         return employmentRepo.findByEmployeeIdIn(ids);
+    }
+    
+    /** Aggiorna la data di fine rapporto di lavoro. */
+    public void updateEndDate(Long id, LocalDate date) {
+        Employment e = findByIdOrThrow(id);
+        e.setEndDate(date);
     }
     
 }
