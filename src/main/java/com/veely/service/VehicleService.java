@@ -201,4 +201,9 @@ public class VehicleService {
         Vehicle v = findByIdOrThrow(vehicleId);
         v.setFuelCardExpiryDate(newDate);
     }
+    /** Aggiorna la scadenza del contratto di leasing. */
+    public void updateLeaseExpiry(Long vehicleId, LocalDate newDate) {
+        Vehicle v = findByIdOrThrow(vehicleId);
+        v.setContractEndDate(newDate);
+    }
 }

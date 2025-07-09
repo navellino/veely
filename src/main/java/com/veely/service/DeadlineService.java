@@ -48,6 +48,14 @@ public class DeadlineService {
                         v.getId(),
                         "fuelCard"));
             }
+            if (v.getContractEndDate() != null) {
+                items.add(new DeadlineItem(
+                        "Leasing",
+                        v.getPlate(),
+                        v.getContractEndDate(),
+                        v.getId(),
+                        "lease"));
+            }
         }
         items.sort(Comparator.comparing(DeadlineItem::dueDate));
         return items;
