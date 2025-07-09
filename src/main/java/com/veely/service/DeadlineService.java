@@ -36,7 +36,11 @@ public class DeadlineService {
                         v.getSeries(),
                         v.getInsuranceExpiryDate(),
                         v.getId(),
-                        "insurance"));
+                        "insurance",
+                        null,
+                        null,
+                        null,
+                        null));
             }
             if (v.getCarTaxExpiryDate() != null) {
                 items.add(new DeadlineItem(
@@ -47,7 +51,11 @@ public class DeadlineService {
                         v.getSeries(),
                         v.getCarTaxExpiryDate(),
                         v.getId(),
-                        "carTax"));
+                        "carTax",
+                        null,
+                        null,
+                        null,
+                        null));
             }
             if (v.getFuelCardExpiryDate() != null) {
                 items.add(new DeadlineItem(
@@ -58,7 +66,11 @@ public class DeadlineService {
                         v.getSeries(),
                         v.getFuelCardExpiryDate(),
                         v.getId(),
-                        "fuelCard"));
+                        "fuelCard",
+                        null,
+                        null,
+                        null,
+                        null));
             }
             if (v.getContractEndDate() != null) {
                 items.add(new DeadlineItem(
@@ -69,7 +81,11 @@ public class DeadlineService {
                         v.getSeries(),
                         v.getContractEndDate(),
                         v.getId(),
-                        "lease"));
+                        "lease",
+                        null,
+                        null,
+                        null,
+                        null));
             }
         }
         items.sort(Comparator.comparing(DeadlineItem::dueDate));
@@ -93,7 +109,11 @@ public class DeadlineService {
                         null,
                         e.getEndDate(),
                         e.getId(),
-                        "employment"));
+                        "employment",
+                        e.getStartDate(),
+                        e.getJobTitle(),
+                        e.getWorkplace(),
+                        e.getJobRole()));
             }
         }
         items.sort(Comparator.comparing(DeadlineItem::dueDate));

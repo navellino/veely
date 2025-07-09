@@ -39,7 +39,7 @@
                         <thead>
                         <tr>
                             <th>Veicolo</th>
-                            <th>Data</th>
+                            <th>Scadenza Assicurazione</th>
                             <th>Gestione</th>
                         </tr>
                         </thead>
@@ -62,7 +62,7 @@
                         <thead>
                         <tr>
                             <th>Veicolo</th>
-                            <th>Data</th>
+                            <th>Scadenza Bollo</th>
                             <th>Gestione</th>
                         </tr>
                         </thead>
@@ -85,7 +85,7 @@
                         <thead>
                         <tr>
                             <th>Veicolo</th>
-                            <th>Data</th>
+                            <th>Scadenza Contratto</th>
                             <th>Gestione</th>
                         </tr>
                         </thead>
@@ -108,7 +108,7 @@
                         <thead>
                         <tr>
                             <th>Veicolo</th>
-                            <th>Data</th>
+                            <th>Scadenza Carta Carburante</th>
                             <th>Gestione</th>
                         </tr>
                         </thead>
@@ -136,7 +136,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                        	<label for="typeDoc" class="form-label">Selezione file da caricare</label>
+                        	<label for="typeDoc" class="form-label">Seleziona file da caricare</label>
                             <input type="file" name="file" class="form-control" required />
                         </div>
                         <div class="col-md-2">
@@ -165,14 +165,22 @@
                 <thead>
                 <tr>
                     <th>Dipendente</th>
+                    <th>Inizio</th>
                     <th>Scadenza Rapporto</th>
+                    <th>Qualifica</th>
+                    <th>Sede</th>
+                    <th>Mansione</th>
                     <th>Gestione</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="d : ${employmentDeadlines}">
                     <td th:text="${d.name}">EMP001</td>
+                    <td th:text="${#temporals.format(d.startDate, 'yyyy-MM-dd')}">2023-01-01</td>
                     <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                    <td th:text="${d.jobTitle != null ? d.jobTitle.displayName : ''}"></td>
+                    <td th:text="${d.workplace != null ? d.workplace.siteName : ''}"></td>
+                    <td th:text="${d.jobRole != null ? d.jobRole.displayName : ''}"></td>
                     <td>
                         <form th:action="@{|/deadlines/employment/${d.refId}|}" method="post" class="d-flex gap-2">
                             <input type="date" name="date" class="form-control form-control-sm" required />
@@ -181,7 +189,7 @@
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(employmentDeadlines)}">
-                    <td colspan="3" class="text-center">Nessuna scadenza disponibile.</td>
+                    <td colspan="7" class="text-center">Nessuna scadenza disponibile.</td>
                 </tr>
                 </tbody>
             </table>
@@ -189,22 +197,27 @@
                 <h5>Carica documento rapporto</h5>
                 <form th:action="@{/deadlines/employment-docs}" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
                     <div class="col-md-3">
+                    	<label for="fileDoc" class="form-label">Seleziona Dipendente</label>
                         <select name="employmentId" class="form-select">
                             <option th:each="e : ${employments}" th:value="${e.id}" th:text="${e.matricola + ' - ' + e.employee.firstName + ' ' + e.employee.lastName}"></option>
                         </select>
                     </div>
                     <div class="col-md-3">
+                    	<label for="fileDoc" class="form-label">Seleziona file da caricare</label>
                         <input type="file" name="file" class="form-control" required />
                     </div>
                     <div class="col-md-2">
+                    <label for="fileDoc" class="form-label">Data documento</label>
                         <input type="date" name="issueDate" class="form-control" />
                     </div>
                     <div class="col-md-2">
+                    	<label for="fileDoc" class="form-label">Data scadenza documento</label>
                         <input type="date" name="expiryDate" class="form-control" />
                     </div>
                     <div class="col-md-2">
+                        <label for="fileDoc" class="form-label">Seleziona il tipo documento</label>
                         <select name="type" class="form-select">
-                            <option th:each="dt : ${docTypes}" th:value="${dt}" th:text="${dt.displayName}"></option>
+                             <option th:each="dt : ${docTypes}" th:value="${dt}" th:text="${dt.displayName}"></option>
                         </select>
                     </div>
                     <div class="col-md-1 d-grid">
