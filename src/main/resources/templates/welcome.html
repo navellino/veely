@@ -77,8 +77,8 @@
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Assegnazioni</h3>
                 <p id="assignments-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.assignments}">--</p>
-                <p class="text-sm mt-1">Lunghe attive: <span id="assignments-long" th:text="${metrics.longAssignmentsActive}">--</span></p>
-                <p class="text-sm">Brevi attive: <span id="assignments-short" th:text="${metrics.shortAssignmentsActive}">--</span></p>
+                <p class="text-lg mt-1">Lunghe attive: <span id="assignments-long" th:text="${metrics.longAssignmentsActive}">--</span></p>
+                <p class="text-lg">Brevi attive: <span id="assignments-short" th:text="${metrics.shortAssignmentsActive}">--</span></p>
               </div>
             </a>
 
@@ -86,7 +86,8 @@
               <i class="bi bi-exclamation-triangle text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Scadenze imminenti</h3>
-                <p class="text-lg mt-3">
+               <p id="deadlines-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.deadlines}">--</p>
+                <p class="text-lg mt-1">
                   <span id="deadlines-60" th:text="${metrics.deadlines60}">--</span>
                   <span class="text-lg font-normal">entro 60gg</span>
                 </p>
@@ -98,7 +99,9 @@
               <i class="bi bi-fuel-pump text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Carburante (mese)</h3>
+                <!-- 
                 <p class="text-4xl font-extrabold mt-3"><span class="align-middle text-3xl">€</span> <span id="fuel-cost" th:text="${metrics.fuelMonth}">--</span></p>
+                 -->
               </div>
             </a>
           </div>
