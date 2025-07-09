@@ -8,7 +8,8 @@ import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -91,6 +92,35 @@ public class DeadlineService {
         items.sort(Comparator.comparing(DeadlineItem::dueDate));
         return items;
     }
+    
+    /**
+     * Returns all deadlines from vehicles and employments combined.
+     */
+    public List<DeadlineItem> getAllDeadlines() {
+        List<DeadlineItem> all = new ArrayList<>();
+        all.addAll(getVehicleDeadlines());
+        all.addAll(getEmploymentDeadlines());
+        all.sort(Comparator.comparing(DeadlineItem::dueDate));
+        return all;
+    }
+
+    /**
+     * Counts deadlines occurring within the given number of days from today.
+     *
+     * @param days threshold in days
+     * @return number of deadlines due within the threshold
+     */
+    public long countDeadlinesWithinDays(int days) {
+        LocalDate now = LocalDate.now();
+        return getAllDeadlines().stream()
+                .filter(d -> d.dueDate() != null)
+                .filter(d -> {
+                    long diff = ChronoUnit.DAYS.between(now, d.dueDate());
+                    return diff <= days;
+                })
+                .count();
+    }
+    
     /**
      * Returns a list of deadlines extracted from employments.
      */
@@ -119,4 +149,5 @@ public class DeadlineService {
         items.sort(Comparator.comparing(DeadlineItem::dueDate));
         return items;
     }
+    
 }
