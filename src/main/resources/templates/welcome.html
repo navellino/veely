@@ -53,19 +53,16 @@
   <body class="flex flex-col min-h-screen bg-gray-50">
     <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 
-    <section class="bg-primary-900 text-white py-40 relative">
-      <div class="container mx-auto px-4 text-center">
+    <section class="bg-primary-900 text-white py-36 relative">
+      <div class="container mx-auto px-4 text-center mb-10">
         <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Benvenuto in Veely</h1>
         <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Tieni sotto controllo veicoli, scadenze e costi in un'unica dashboard</p>
-        <a th:href="@{/dashboard}" class="btn btn-lg bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-900 shadow-lg transition duration-300">
-          <i class="bi bi-speedometer2 me-2"></i> Vai alla Dashboard
-        </a>
       </div>
 
-      <div class="absolute inset-x-0 -bottom-32 md:-bottom-36">
+      <div class="absolute inset-x-0 -bottom-20 md:-bottom-24">
         <div class="container mx-auto px-4">
          <div class="text-center grid grid-flow-col auto-cols-[17rem] gap-5 overflow-x-auto snap-x snap-mandatory md:grid-flow-row md:auto-cols-fr md:grid-cols-4 md:overflow-visible hide-scrollbar">
-            <a th:href="@{/vehicleList}" data-aos="pulse" class="flex flex-col justify-between p-6 rounded-xl text-white bg-gradient-to-br from-primary-500 to-primary-700 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
+            <a th:href="@{/vehicleList}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between p-6 rounded-xl text-white bg-gradient-to-br from-primary-500 to-primary-700 hover:shadow-2xl snap-start ring-1 ring-white/10">
               <i class="bi bi-car-front text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Veicoli</h3>
@@ -75,7 +72,7 @@
               </div>
             </a>
 
-            <a th:href="@{/assignmentList}" data-aos="pulse" class="flex flex-col justify-between p-6 rounded-xl text-white bg-indigo-600 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
+            <a th:href="@{/assignmentList}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between p-6 rounded-xl text-white bg-indigo-600 hover:shadow-2xl snap-start ring-1 ring-white/10">
               <i class="bi bi-arrow-left-right text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Assegnazioni</h3>
@@ -85,7 +82,7 @@
               </div>
             </a>
 
-            <a th:href="@{/deadlines}" data-aos="pulse" class="flex flex-col justify-between p-6 rounded-xl text-gray-900 bg-warning-500 hover:shadow-xl hover:scale-105 transition snap-start ring-1 ring-black/10">
+            <a th:href="@{/deadlines}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between p-6 rounded-xl text-gray-900 bg-warning-500 hover:shadow-xl snap-start ring-1 ring-black/10">
               <i class="bi bi-exclamation-triangle text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Scadenze imminenti</h3>
@@ -98,7 +95,7 @@
               </div>
             </a>
 
-            <a th:href="@{/fuel}" data-aos="pulse" class="flex flex-col justify-between p-6 rounded-xl text-white bg-success-600 hover:shadow-2xl hover:scale-105 transition snap-start ring-1 ring-white/10">
+             <a th:href="@{/fuel}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between p-6 rounded-xl text-white bg-success-600 hover:shadow-2xl snap-start ring-1 ring-white/10">
               <i class="bi bi-fuel-pump text-7xl"></i>
               <div class="mt-auto">
                 <h3 class="text-2xl font-semibold tracking-wide">Carburante (mese)</h3>
@@ -112,12 +109,12 @@
       </div>
     </section>
 
-    <div class="h-48 md:h-52"></div>
+     <div class="h-16 md:h-20"></div>
 
     <main class="container mx-auto px-4 py-10 md:py-16">
       <hr class="my-6 border-gray-200" />
       <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-         <a th:href="@{/supplierList}" data-aos="pulse" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
+         <a th:href="@{/supplierList}" data-aos="zoom-in" data-aos-duration="800" class="bg-white rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-building text-6xl text-yellow-500"></i>
           <div>
             <h4 class="text-lg font-semibold">Fornitori</h4>
@@ -125,7 +122,7 @@
           </div>
         </a>
 
-        <a th:href="@{/fleet/employees/manage}" data-aos="pulse" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
+        <a th:href="@{/fleet/employees/manage}" data-aos="zoom-in" data-aos-duration="800" class="bg-white rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-people-fill text-6xl text-indigo-600"></i>
           <div>
             <h4 class="text-lg font-semibold">Dipendenti</h4>
@@ -133,7 +130,7 @@
           </div>
         </a>
 
-         <a th:href="@{/employmentList}" data-aos="pulse" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
+         <a th:href="@{/employmentList}" data-aos="zoom-in" data-aos-duration="800" class="bg-white rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-file-earmark-text text-6xl text-green-600"></i>
           <div>
             <h4 class="text-lg font-semibold">Rapporti</h4>
@@ -141,7 +138,7 @@
           </div>
         </a>
 
-        <a th:href="@{/formutturaList}" class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
+        <a th:href="@{/formutturaList}" data-aos="zoom-in" data-aos-duration="800" class="bg-white rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-4">
           <i class="bi bi-list text-6xl text-primary-700"></i>
           <div>
             <h4 class="text-lg font-semibold">Fornitura</h4>
