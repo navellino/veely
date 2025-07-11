@@ -28,6 +28,10 @@ public class Document {
     @ManyToOne @JoinColumn(name="assignment_id")
     private Assignment assignment;
 
+    @ManyToOne
+    @JoinColumn(name="correspondence_id")
+    private Correspondence correspondence;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 32, nullable = false)
     private DocumentType type;

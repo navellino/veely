@@ -42,7 +42,7 @@ public class Correspondence {
 
     private String notes;
     
-    @OneToOne(mappedBy = "correspondence", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "correspondence", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Document> documents;
     
 }

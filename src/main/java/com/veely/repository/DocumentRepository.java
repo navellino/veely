@@ -22,5 +22,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     // (utile anche per Employment, Vehicle, Assignment)
     List<Document> findByEmploymentId(Long employmentId);
+    
+    List<Document> findByCorrespondenceId(Long correspondenceId);
 
 }
