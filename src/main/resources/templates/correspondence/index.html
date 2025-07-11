@@ -6,31 +6,38 @@
 <main class="container my-5 flex-fill">
     <h2 class="fw-semibold mb-3">Corrispondenza</h2>
    	<form class="row g-2 mb-4" method="post" th:action="@{/correspondence}" enctype="multipart/form-data">
-        <div class="col-auto">
-            <select name="tipo" class="form-select" required>
-                <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}"></option>
-            </select>
-        </div>
-        <div class="col-auto">
-            <input type="text" name="descrizione" class="form-control" placeholder="Oggetto" required />
-        </div>
-        <div class="col-auto">
-            <input type="text" name="sender" class="form-control" placeholder="Mittente" required />
-        </div>
-        <div class="col-auto">
-            <input type="text" name="recipient" class="form-control" placeholder="Destinatario" />
-        </div>
-        <div class="col-auto">
-            <input type="text" name="notes" class="form-control" placeholder="Note" />
-        </div>
-        <div class="col-auto">
-            <input type="date" name="data" class="form-control" />
-        </div>
-         <div class="col-auto">
-            <input type="file" name="file" class="form-control" />
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Aggiungi</button>
+        <div class="row g-3">
+	        <div class="col-md-2">
+	            <select name="tipo" class="form-select" required>
+	                <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}"></option>
+	            </select>
+	        </div>
+	        <div class="col-2">
+	            <input type="date" name="data" class="form-control" />
+	        </div>
+	        <div class="col-md-1">
+	            <input type="text" name="progressivo" class="form-control" placeholder="Progressivo" />
+	        </div>
+	        <div class="col-md-3">
+	            <input type="text" name="sender" class="form-control" placeholder="Mittente" required />
+	        </div>
+	        <div class="col-md-4">
+	            <input type="text" name="recipient" class="form-control" placeholder="Destinatario" />
+	        </div>
+	        <div class="col-md-6">
+	            <input type="text" name="descrizione" class="form-control" placeholder="Oggetto" required />
+	        </div>
+	        
+	        <div class="col-md-6">
+	            <input type="text" name="notes" class="form-control" placeholder="Note" />
+	        </div>
+	        
+	         <div class="col-auto">
+	            <input type="file" name="file" class="form-control" />
+	        </div>
+	        <div class="col-auto">
+	            <button type="submit" class="btn btn-primary">Aggiungi</button>
+	        </div>
         </div>
     </form>
 	
@@ -71,7 +78,7 @@
                 <tbody>
                 <tr th:each="c : ${incoming}">
                     <td>
-                        <div class="fw-semibold" th:text="${#strings.format('%03d/%d', c.progressivo, c.anno)}"></div>
+                        <div class="fw-semibold" th:text="${T(java.lang.String).format('%03d/%d', c.progressivo, c.anno)}"></div>
                         <div class="text-muted small" th:text="${c.data}"></div>
                     </td>
                     <td>
@@ -112,7 +119,7 @@
                 <tbody>
                 <tr th:each="c : ${outgoing}">
                     <td>
-                        <div class="fw-semibold" th:text="${#strings.format('%03d/%d', c.progressivo, c.anno)}"></div>
+                        <div class="fw-semibold" th:text="${T(java.lang.String).format('%03d/%d', c.progressivo, c.anno)}"></div>
                         <div class="text-muted small" th:text="${c.data}"></div>
                     </td>
                     <td>

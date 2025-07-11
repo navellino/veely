@@ -35,11 +35,13 @@ public class CorrespondenceController {
     public String index(@RequestParam(value = "year", required = false) Integer year,
 			    		@RequestParam(value = "keyword", required = false) String keyword,
 			            @RequestParam(value = "tab", required = false) String tab,
+			            @RequestParam(value = "progressivo", required = false) String progressivo,
 			            Model model) {
 			int y = (year == null) ? LocalDate.now().getYear() : year;
 			model.addAttribute("incoming", service.searchByType(y, CorrespondenceType.E, keyword));
 			model.addAttribute("outgoing", service.searchByType(y, CorrespondenceType.U, keyword));
 			model.addAttribute("types", CorrespondenceType.values());
+			model.addAttribute("progressivo", progressivo);
 			model.addAttribute("year", y);
 			model.addAttribute("keyword", keyword);
 			model.addAttribute("tab", tab);
@@ -49,13 +51,14 @@ public class CorrespondenceController {
     @PostMapping
     public String create(@RequestParam("tipo") CorrespondenceType tipo,
                          @RequestParam("descrizione") String descrizione,
+                         @RequestParam(value = "progressivo", required = false) int progressivo,
                          @RequestParam(value = "data", required = false) String data,
                          @RequestParam("sender") String sender,
                          @RequestParam(value = "recipient", required = false) String recipient,
                          @RequestParam(value = "notes", required = false) String notes,
                          @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
-        Correspondence saved = service.register(tipo, descrizione, d, sender, recipient, notes);
+        Correspondence saved = service.register(tipo, progressivo, descrizione, d, sender, recipient, notes);
         if (file != null && !file.isEmpty()) {
             documentService.uploadCorrespondenceDocument(saved.getId(), file, DocumentType.OTHER, null, null);
         }

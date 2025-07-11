@@ -16,7 +16,7 @@ import java.util.List;
 public class CorrespondenceService {
     private final CorrespondenceRepository repo;
 
-    public Correspondence register(CorrespondenceType tipo,
+    public Correspondence register(CorrespondenceType tipo, int progress,
             String descrizione,
             LocalDate data,
             String sender,
@@ -24,7 +24,13 @@ public class CorrespondenceService {
             String notes) {
         int anno = LocalDate.now().getYear();
         Integer max = repo.findMaxProgressivo(anno, tipo);
-        int progressivo = (max == null) ? 1 : max + 1;
+        int progressivo;
+        if(progress == 0) {
+        	progressivo = (max == null) ? 1 : max + 1;
+        }else {
+        	progressivo = progress;
+        }
+        
 
         Correspondence c = Correspondence.builder()
                 .anno(anno)
