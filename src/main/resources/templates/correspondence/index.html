@@ -8,7 +8,7 @@
    	<form class="row g-2 mb-4" method="post" th:action="@{/correspondence}" enctype="multipart/form-data">
         <div class="row g-3">
 	        <div class="col-md-2">
-	            <select name="tipo" class="form-select" required>
+	        	<select name="tipo" class="form-select" required>
 	                <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}"></option>
 	            </select>
 	        </div>
@@ -16,7 +16,7 @@
 	            <input type="date" name="data" class="form-control" />
 	        </div>
 	        <div class="col-md-1">
-	            <input type="text" name="progressivo" class="form-control" placeholder="Progressivo" />
+	            <input type="text" name="progressivo" class="form-control" placeholder="Protocollo" />
 	        </div>
 	        <div class="col-md-3">
 	            <input type="text" name="sender" class="form-control" placeholder="Mittente" required />
