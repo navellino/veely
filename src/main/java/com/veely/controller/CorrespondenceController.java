@@ -51,7 +51,7 @@ public class CorrespondenceController {
     @PostMapping
     public String create(@RequestParam("tipo") CorrespondenceType tipo,
                          @RequestParam("descrizione") String descrizione,
-                         @RequestParam(value = "progressivo", required = false) int progressivo,
+                         @RequestParam(value = "progressivo", required = false) Integer progressivo,
                          @RequestParam(value = "data", required = false) String data,
                          @RequestParam("sender") String sender,
                          @RequestParam(value = "recipient", required = false) String recipient,
