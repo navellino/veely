@@ -58,7 +58,8 @@ public class CorrespondenceController {
                          @RequestParam(value = "notes", required = false) String notes,
                          @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
-        Correspondence saved = service.register(tipo, progressivo, descrizione, d, sender, recipient, notes);
+        int progress = progressivo == null ? 0 : progressivo;
+        Correspondence saved = service.register(tipo, progress, descrizione, d, sender, recipient, notes);
         if (file != null && !file.isEmpty()) {
             documentService.uploadCorrespondenceDocument(saved.getId(), file, DocumentType.OTHER, null, null);
         }
