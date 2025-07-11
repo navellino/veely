@@ -70,19 +70,21 @@ public class CorrespondenceService {
         return repo.searchByAnnoAndKeyword(year, keyword.toLowerCase());
     }
     
-    public Correspondence update(Long id, CorrespondenceType tipo, String descrizione, LocalDate data, String sender,
-					            String recipient,
-					            String notes) {
-			Correspondence c = findByIdOrThrow(id);
-			c.setTipo(tipo);
-			c.setDescrizione(descrizione);
-			c.setData(data);
-			c.setSender(sender);
-			c.setRecipient(recipient);
-			c.setNotes(notes);
-			return c;
-		}
-			
+    public Correspondence update(Long id, int progressivo, CorrespondenceType tipo, String descrizione,
+            LocalDate data, String sender,
+            String recipient,
+            String notes) {
+					Correspondence c = findByIdOrThrow(id);
+					c.setProgressivo(progressivo);
+					c.setTipo(tipo);
+					c.setDescrizione(descrizione);
+					c.setData(data);
+					c.setSender(sender);
+					c.setRecipient(recipient);
+					c.setNotes(notes);
+					return c;
+					}
+								
 			public void delete(Long id) {
 				Correspondence c = findByIdOrThrow(id);
 				repo.delete(c);

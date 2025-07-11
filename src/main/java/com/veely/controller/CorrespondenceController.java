@@ -71,6 +71,7 @@ public class CorrespondenceController {
     @PostMapping("/{id}/edit")
     public String update(@PathVariable Long id,
                          @RequestParam("tipo") CorrespondenceType tipo,
+                         @RequestParam("progressivo") int progressivo,
                          @RequestParam("descrizione") String descrizione,
                          @RequestParam(value = "data", required = false) String data,
                          @RequestParam("sender") String sender,
@@ -78,7 +79,7 @@ public class CorrespondenceController {
                          @RequestParam(value = "notes", required = false) String notes,
                          @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
-        service.update(id, tipo, descrizione, d, sender, recipient, notes);
+        service.update(id, progressivo, tipo, descrizione, d, sender, recipient, notes);
         if (file != null && !file.isEmpty()) {
             documentService.getCorrespondenceDocument(id)
                     .ifPresent(doc -> {
