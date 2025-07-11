@@ -28,8 +28,8 @@ public class Document {
     @ManyToOne @JoinColumn(name="assignment_id")
     private Assignment assignment;
 
-    @ManyToOne
-    @JoinColumn(name="correspondence_id")
+    @OneToOne
+    @JoinColumn(name="correspondence_id", unique = true)
     private Correspondence correspondence;
     
     @Enumerated(EnumType.STRING)

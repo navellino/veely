@@ -4,9 +4,7 @@ import com.veely.model.CorrespondenceType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "correspondence")
@@ -42,7 +40,7 @@ public class Correspondence {
 
     private String notes;
     
-    @OneToMany(mappedBy = "correspondence", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Document> documents;
+    @OneToOne(mappedBy = "correspondence", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Document document;
     
 }

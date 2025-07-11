@@ -6,7 +6,7 @@ import com.veely.repository.CorrespondenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.veely.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 
 @Service
@@ -46,4 +46,19 @@ public class CorrespondenceService {
     public java.util.List<Correspondence> getAll() {
         return repo.findAll();
     }
+    
+    @Transactional(readOnly = true)
+    public Correspondence findByIdOrThrow(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Protocollo non trovato: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<Correspondence> search(int year, String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return repo.findByAnnoOrderByProgressivoDesc(year);
+        }
+        return repo.searchByAnnoAndKeyword(year, keyword.toLowerCase());
+    }
+    
 }

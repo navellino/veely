@@ -6,6 +6,7 @@ import com.veely.model.DocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
@@ -23,6 +24,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     // (utile anche per Employment, Vehicle, Assignment)
     List<Document> findByEmploymentId(Long employmentId);
     
-    List<Document> findByCorrespondenceId(Long correspondenceId);
+    Optional<Document> findByCorrespondenceId(Long correspondenceId);
 
 }

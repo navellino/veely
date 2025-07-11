@@ -2,7 +2,10 @@ package com.veely.controller;
 
 import com.veely.entity.Correspondence;
 import com.veely.model.CorrespondenceType;
+import com.veely.model.DocumentType;
 import com.veely.service.CorrespondenceService;
+import com.veely.service.DocumentService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.Resource;
 
 import java.time.LocalDate;
 
@@ -18,11 +29,17 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class CorrespondenceController {
     private final CorrespondenceService service;
+    private final DocumentService documentService;
 
     @GetMapping
-    public String index(Model model) {
-        model.addAttribute("items", service.getAll());
-        model.addAttribute("types", CorrespondenceType.values());
+    public String index(@RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
+			int y = (year == null) ? LocalDate.now().getYear() : year;
+			model.addAttribute("items", service.search(y, keyword));
+			model.addAttribute("types", CorrespondenceType.values());
+			model.addAttribute("year", y);
+			model.addAttribute("keyword", keyword);
         return "correspondence/index";
     }
 
@@ -32,10 +49,24 @@ public class CorrespondenceController {
                          @RequestParam(value = "data", required = false) String data,
                          @RequestParam("sender") String sender,
                          @RequestParam(value = "recipient", required = false) String recipient,
-                         @RequestParam(value = "notes", required = false) String notes) {
+                         @RequestParam(value = "notes", required = false) String notes,
+                         @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
-        service.register(tipo, descrizione, d, sender, recipient, notes);
-        // For now we don't show the protocol to user except maybe a flash attribute (not implemented)
+        Correspondence saved = service.register(tipo, descrizione, d, sender, recipient, notes);
+        if (file != null && !file.isEmpty()) {
+            documentService.uploadCorrespondenceDocument(saved.getId(), file, DocumentType.OTHER, null, null);
+        }
         return "redirect:/correspondence";
+    }
+    
+    @GetMapping("/docs/{docId}")
+    public ResponseEntity<Resource> downloadDoc(@PathVariable Long docId, HttpServletRequest request) throws java.io.IOException {
+        Resource res = documentService.loadDocument(docId);
+        String contentType = request.getServletContext().getMimeType(res.getFile().getAbsolutePath());
+        if (contentType == null) contentType = "application/octet-stream";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
+                .body(res);
     }
 }

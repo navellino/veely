@@ -1,6 +1,7 @@
 package com.veely.service;
 
 import com.veely.entity.Assignment;
+import com.veely.entity.Correspondence;
 import com.veely.entity.Document;
 import com.veely.entity.Employee;
 import com.veely.entity.Employment;
@@ -30,6 +31,7 @@ public class DocumentService {
     private final EmploymentService employmentService;
     private final VehicleService vehicleService;
     private final AssignmentService assignmentService;
+    private final CorrespondenceService correspondenceService;
 
 
     /** Recupera un documento o lancia eccezione */
@@ -202,5 +204,31 @@ public class DocumentService {
         assignmentService.findByIdOrThrow(assignmentId);
         String dir = "assignments/" + assignmentId + "/docs";
         return fileStorage.loadAsResource(filename, dir);
+    }
+    
+    // --- Correspondence Documents ---
+    @Transactional(readOnly = true)
+    public java.util.Optional<Document> getCorrespondenceDocument(Long correspondenceId) {
+        return documentRepo.findByCorrespondenceId(correspondenceId);
+    }
+
+    public Document uploadCorrespondenceDocument(Long correspondenceId,
+                                                 MultipartFile file,
+                                                 DocumentType type,
+                                                 LocalDate issueDate,
+                                                 LocalDate expiryDate) throws IOException {
+        Correspondence corr = correspondenceService.findByIdOrThrow(correspondenceId);
+        String subdir = "correspondence/" + correspondenceId + "/docs";
+        fileStorage.initDirectory(subdir);
+        String filename = fileStorage.store(file, subdir);
+
+        Document doc = Document.builder()
+            .correspondence(corr)
+            .type(type)
+            .issueDate(issueDate)
+            .expiryDate(expiryDate)
+            .path(subdir + "/" + filename)
+            .build();
+        return documentRepo.save(doc);
     }
 }
