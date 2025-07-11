@@ -38,6 +38,10 @@ public class Correspondence {
     @Column(nullable = false)
     private String sender;
     
+    private String recipient;
+
+    private String notes;
+    
     @OneToOne(mappedBy = "correspondence", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Document> documents;
     

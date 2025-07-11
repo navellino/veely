@@ -29,9 +29,12 @@ public class CorrespondenceController {
     @PostMapping
     public String create(@RequestParam("tipo") CorrespondenceType tipo,
                          @RequestParam("descrizione") String descrizione,
-                         @RequestParam(value = "data", required = false) String data) {
+                         @RequestParam(value = "data", required = false) String data,
+                         @RequestParam("sender") String sender,
+                         @RequestParam(value = "recipient", required = false) String recipient,
+                         @RequestParam(value = "notes", required = false) String notes) {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
-        Correspondence c = service.register(tipo, descrizione, d);
+        service.register(tipo, descrizione, d, sender, recipient, notes);
         // For now we don't show the protocol to user except maybe a flash attribute (not implemented)
         return "redirect:/correspondence";
     }

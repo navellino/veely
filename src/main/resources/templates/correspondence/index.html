@@ -15,6 +15,15 @@
             <input type="text" name="descrizione" class="form-control" placeholder="Oggetto" required />
         </div>
         <div class="col-auto">
+            <input type="text" name="sender" class="form-control" placeholder="Mittente" required />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="recipient" class="form-control" placeholder="Destinatario" />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="notes" class="form-control" placeholder="Note" />
+        </div>
+        <div class="col-auto">
             <input type="date" name="data" class="form-control" />
         </div>
         <div class="col-auto">
@@ -30,6 +39,9 @@
             <th>Tipo</th>
             <th>Data</th>
             <th>Descrizione</th>
+            <th>Mittente</th>
+            <th>Destinatario</th>
+            <th>Note</th>
         </tr>
         </thead>
         <tbody>
@@ -39,6 +51,9 @@
             <td th:text="${c.tipo.label}"></td>
             <td th:text="${c.data}"></td>
             <td th:text="${c.descrizione}"></td>
+             <td th:text="${c.sender}"></td>
+            <td th:text="${c.recipient}"></td>
+            <td th:text="${c.notes}"></td>
         </tr>
         </tbody>
     </table>

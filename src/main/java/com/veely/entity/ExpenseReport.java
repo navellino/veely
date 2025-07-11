@@ -4,9 +4,14 @@ import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.veely.model.ExpenseStatus;
 import com.veely.model.PaymentMethod;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,7 +25,10 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ExpenseReport {
 	
-	private long expenseReportID; //Chiave primaria univoca per la nota spese.
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "expense_report_id")
+    private Long expenseReportID; //Chiave primaria univoca per la nota spese.
 	
 	private String expenseReportNum; //Numero di riferimento univoco e leggibile per la nota spese, che segue le policy di numerazione aziendali.
 	private long parentExpenseReportID; //Identificatore di una nota spese padre, utile per raggruppare note spese correlate.
