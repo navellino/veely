@@ -46,36 +46,97 @@
         </div>
     </form>
 	
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Protocollo</th>
-            <th>Dettagli</th>
-            <th>Note/Documento</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${items}">
-             <td>
-                <div class="fw-semibold" th:text="${@correspondenceService.formatProtocol(c)}"></div>
-                <div class="text-muted small" th:text="${c.data}"></div>
-            </td>
-            <td>
-                <div class="fw-semibold" th:text="${c.descrizione}"></div>
-                <div class="text-muted small">
-                    <span th:text="${c.sender}"></span>
-                    <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
-                </div>
-            </td>
-            <td>
-                <div th:text="${c.notes}"></div>
-                <div th:if="${c.document != null}">
-                    <a th:href="@{|/correspondence/docs/${c.document.id}|}">Download</a>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <ul class="nav nav-tabs mb-3" id="corrTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button" role="tab">Entrata</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="out-tab" data-bs-toggle="tab" data-bs-target="#out" type="button" role="tab">Uscita</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="in" role="tabpanel">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Protocollo</th>
+                    <th>Dettagli</th>
+                    <th>Note/Documento</th>
+                    <th class="text-end">Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${incoming}">
+                    <td>
+                        <div class="fw-semibold" th:text="${@correspondenceService.formatProtocol(c)}"></div>
+                        <div class="text-muted small" th:text="${c.data}"></div>
+                    </td>
+                    <td>
+                        <div class="fw-semibold" th:text="${c.descrizione}"></div>
+                        <div class="text-muted small">
+                            <span th:text="${c.sender}"></span>
+                            <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:text="${c.notes}"></div>
+                        <div th:if="${c.document != null}">
+                            <a th:href="@{|/correspondence/docs/${c.document.id}|}"
+                               th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></a>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <a th:href="@{|/correspondence/${c.id}/edit|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
+                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="out" role="tabpanel">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Protocollo</th>
+                    <th>Dettagli</th>
+                    <th>Note/Documento</th>
+                    <th class="text-end">Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${outgoing}">
+                    <td>
+                        <div class="fw-semibold" th:text="${@correspondenceService.formatProtocol(c)}"></div>
+                        <div class="text-muted small" th:text="${c.data}"></div>
+                    </td>
+                    <td>
+                        <div class="fw-semibold" th:text="${c.descrizione}"></div>
+                        <div class="text-muted small">
+                            <span th:text="${c.sender}"></span>
+                            <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:text="${c.notes}"></div>
+                        <div th:if="${c.document != null}">
+                            <a th:href="@{|/correspondence/docs/${c.document.id}|}"
+                               th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></a>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <a th:href="@{|/correspondence/${c.id}/edit|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
+                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
 <div th:insert="~{fragments/footer :: mainFooter}"></div>
 </body>

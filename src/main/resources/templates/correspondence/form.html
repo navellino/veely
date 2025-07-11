@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head th:replace="~{fragments/head :: commonHead('Modifica Corrispondenza – Veely')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<main class="container my-5 flex-fill">
+    <h2 class="fw-semibold mb-3">Modifica Corrispondenza</h2>
+    <form class="row g-2" th:action="@{/correspondence/{id}/edit(id=${correspondence.id})}" method="post" enctype="multipart/form-data">
+        <div class="col-auto">
+            <select name="tipo" class="form-select" th:value="${correspondence.tipo}" required>
+                <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}" th:selected="${t == correspondence.tipo}"></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="descrizione" class="form-control" th:value="${correspondence.progressivo}" required />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="descrizione" class="form-control" th:value="${correspondence.descrizione}" required />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="sender" class="form-control" th:value="${correspondence.sender}" required />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="recipient" class="form-control" th:value="${correspondence.recipient}" />
+        </div>
+        <div class="col-auto">
+            <input type="text" name="notes" class="form-control" th:value="${correspondence.notes}" />
+        </div>
+        <div class="col-auto">
+            <input type="date" name="data" class="form-control" th:value="${correspondence.data}" />
+        </div>
+        <div class="col-auto">
+            <input type="file" name="file" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Salva</button>
+        </div>
+    </form>
+</main>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

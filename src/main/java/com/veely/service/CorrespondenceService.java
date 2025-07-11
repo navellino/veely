@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.veely.exception.ResourceNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +44,16 @@ public class CorrespondenceService {
     }
 
     @Transactional(readOnly = true)
-    public java.util.List<Correspondence> getAll() {
+    public List<Correspondence> getAll() {
         return repo.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public java.util.List<Correspondence> searchByType(int year, CorrespondenceType tipo, String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return repo.findByAnnoAndTipoOrderByProgressivoDesc(year, tipo);
+        }
+        return repo.searchByAnnoAndTipoAndKeyword(year, tipo, keyword.toLowerCase());
     }
     
     @Transactional(readOnly = true)
@@ -54,11 +63,29 @@ public class CorrespondenceService {
     }
 
     @Transactional(readOnly = true)
-    public java.util.List<Correspondence> search(int year, String keyword) {
+    public List<Correspondence> search(int year, String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return repo.findByAnnoOrderByProgressivoDesc(year);
         }
         return repo.searchByAnnoAndKeyword(year, keyword.toLowerCase());
     }
+    
+    public Correspondence update(Long id, CorrespondenceType tipo, String descrizione, LocalDate data, String sender,
+					            String recipient,
+					            String notes) {
+			Correspondence c = findByIdOrThrow(id);
+			c.setTipo(tipo);
+			c.setDescrizione(descrizione);
+			c.setData(data);
+			c.setSender(sender);
+			c.setRecipient(recipient);
+			c.setNotes(notes);
+			return c;
+		}
+			
+			public void delete(Long id) {
+				Correspondence c = findByIdOrThrow(id);
+				repo.delete(c);
+			}
     
 }

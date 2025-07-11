@@ -33,10 +33,11 @@ public class CorrespondenceController {
 
     @GetMapping
     public String index(@RequestParam(value = "year", required = false) Integer year,
-            @RequestParam(value = "keyword", required = false) String keyword,
+    		@RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 			int y = (year == null) ? LocalDate.now().getYear() : year;
-			model.addAttribute("items", service.search(y, keyword));
+			model.addAttribute("incoming", service.searchByType(y, CorrespondenceType.E, keyword));
+			model.addAttribute("outgoing", service.searchByType(y, CorrespondenceType.U, keyword));
 			model.addAttribute("types", CorrespondenceType.values());
 			model.addAttribute("year", y);
 			model.addAttribute("keyword", keyword);
@@ -56,6 +57,45 @@ public class CorrespondenceController {
         if (file != null && !file.isEmpty()) {
             documentService.uploadCorrespondenceDocument(saved.getId(), file, DocumentType.OTHER, null, null);
         }
+        return "redirect:/correspondence";
+    }
+    
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Correspondence c = service.findByIdOrThrow(id);
+        model.addAttribute("correspondence", c);
+        model.addAttribute("types", CorrespondenceType.values());
+        return "correspondence/form";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable Long id,
+                         @RequestParam("tipo") CorrespondenceType tipo,
+                         @RequestParam("descrizione") String descrizione,
+                         @RequestParam(value = "data", required = false) String data,
+                         @RequestParam("sender") String sender,
+                         @RequestParam(value = "recipient", required = false) String recipient,
+                         @RequestParam(value = "notes", required = false) String notes,
+                         @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
+        LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
+        service.update(id, tipo, descrizione, d, sender, recipient, notes);
+        if (file != null && !file.isEmpty()) {
+            documentService.getCorrespondenceDocument(id)
+                    .ifPresent(doc -> {
+                        try { documentService.deleteDocument(doc.getId()); } catch (java.io.IOException e) { /* ignore */ }
+                    });
+            documentService.uploadCorrespondenceDocument(id, file, DocumentType.OTHER, null, null);
+        }
+        return "redirect:/correspondence";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) throws java.io.IOException {
+        documentService.getCorrespondenceDocument(id)
+                .ifPresent(doc -> {
+                    try { documentService.deleteDocument(doc.getId()); } catch (java.io.IOException e) { /* ignore */ }
+                });
+        service.delete(id);
         return "redirect:/correspondence";
     }
     
