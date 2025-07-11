@@ -33,14 +33,16 @@ public class CorrespondenceController {
 
     @GetMapping
     public String index(@RequestParam(value = "year", required = false) Integer year,
-    		@RequestParam(value = "keyword", required = false) String keyword,
-            Model model) {
+			    		@RequestParam(value = "keyword", required = false) String keyword,
+			            @RequestParam(value = "tab", required = false) String tab,
+			            Model model) {
 			int y = (year == null) ? LocalDate.now().getYear() : year;
 			model.addAttribute("incoming", service.searchByType(y, CorrespondenceType.E, keyword));
 			model.addAttribute("outgoing", service.searchByType(y, CorrespondenceType.U, keyword));
 			model.addAttribute("types", CorrespondenceType.values());
 			model.addAttribute("year", y);
 			model.addAttribute("keyword", keyword);
+			model.addAttribute("tab", tab);
         return "correspondence/index";
     }
 
@@ -61,10 +63,13 @@ public class CorrespondenceController {
     }
     
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+            @RequestParam(value = "tab", required = false) String tab,
+            Model model) {
         Correspondence c = service.findByIdOrThrow(id);
         model.addAttribute("correspondence", c);
         model.addAttribute("types", CorrespondenceType.values());
+        model.addAttribute("tab", tab);
         return "correspondence/form";
     }
 
@@ -77,7 +82,8 @@ public class CorrespondenceController {
                          @RequestParam("sender") String sender,
                          @RequestParam(value = "recipient", required = false) String recipient,
                          @RequestParam(value = "notes", required = false) String notes,
-                         @RequestParam(value = "file", required = false) MultipartFile file) throws java.io.IOException {
+                         @RequestParam(value = "file", required = false) MultipartFile file,
+                         @RequestParam(value = "tab", required = false) String tab) throws java.io.IOException {
         LocalDate d = (data == null || data.isBlank()) ? LocalDate.now() : LocalDate.parse(data);
         service.update(id, progressivo, tipo, descrizione, d, sender, recipient, notes);
         if (file != null && !file.isEmpty()) {
@@ -87,7 +93,7 @@ public class CorrespondenceController {
                     });
             documentService.uploadCorrespondenceDocument(id, file, DocumentType.OTHER, null, null);
         }
-        return "redirect:/correspondence";
+        return "redirect:/correspondence" + (tab != null ? "?tab=" + tab : "");
     }
 
     @PostMapping("/{id}/delete")

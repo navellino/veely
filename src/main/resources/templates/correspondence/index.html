@@ -48,15 +48,17 @@
 	
     <ul class="nav nav-tabs mb-3" id="corrTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button" role="tab">Entrata</button>
+            <button id="in-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#in"
+                    th:class="'nav-link' + (${tab} != 'out' ? ' active' : '')">Entrata</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="out-tab" data-bs-toggle="tab" data-bs-target="#out" type="button" role="tab">Uscita</button>
+            <button id="out-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#out"
+                    th:class="'nav-link' + (${tab} == 'out' ? ' active' : '')">Uscita</button>
         </li>
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="in" role="tabpanel">
+        <div id="in" role="tabpanel" th:class="'tab-pane fade' + (${tab} != 'out' ? ' show active' : '')">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -69,7 +71,7 @@
                 <tbody>
                 <tr th:each="c : ${incoming}">
                     <td>
-                        <div class="fw-semibold" th:text="${c.progressivo}"></div>
+                        <div class="fw-semibold" th:text="${#strings.format('%03d/%d', c.progressivo, c.anno)}"></div>
                         <div class="text-muted small" th:text="${c.data}"></div>
                     </td>
                     <td>
@@ -88,7 +90,7 @@
                         </div>
                     </td>
                     <td class="text-end">
-                        <a th:href="@{|/correspondence/${c.id}/edit|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{|/correspondence/${c.id}/edit?tab=in|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
                         <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
                         </form>
@@ -97,7 +99,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="tab-pane fade" id="out" role="tabpanel">
+        <div id="out" role="tabpanel" th:class="'tab-pane fade' + (${tab} == 'out' ? ' show active' : '')">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -110,7 +112,7 @@
                 <tbody>
                 <tr th:each="c : ${outgoing}">
                     <td>
-                        <div class="fw-semibold" th:text="${c.progressivo}"></div>
+                        <div class="fw-semibold" th:text="${#strings.format('%03d/%d', c.progressivo, c.anno)}"></div>
                         <div class="text-muted small" th:text="${c.data}"></div>
                     </td>
                     <td>
@@ -128,7 +130,7 @@
                         </div>
                     </td>
                     <td class="text-end">
-                        <a th:href="@{|/correspondence/${c.id}/edit|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{|/correspondence/${c.id}/edit?tab=out|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
                         <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
                         </form>
