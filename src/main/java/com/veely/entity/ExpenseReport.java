@@ -1,0 +1,61 @@
+package com.veely.entity;
+
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+import com.veely.model.ExpenseStatus;
+import com.veely.model.PaymentMethod;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "expense_report")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class ExpenseReport {
+	
+	private long expenseReportID; //Chiave primaria univoca per la nota spese.
+	
+	private String expenseReportNum; //Numero di riferimento univoco e leggibile per la nota spese, che segue le policy di numerazione aziendali.
+	private long parentExpenseReportID; //Identificatore di una nota spese padre, utile per raggruppare note spese correlate.
+	private long orgID; //Identificatore dell'unità organizzativa (business unit) a cui la nota spese è associata.
+	
+	@ManyToOne(optional = false)
+    private Employee employee; //Identificatore della persona le cui spese sono incluse nella nota spese (il richiedente).
+	
+	private String puorpose;  //Descrizione testuale dello scopo della nota spese (es. "Viaggio cliente a Roma", "Fiera di settore").
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate creationDate; //data della nota spese;
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate reportSubmitDate; //Data in cui la nota spese viene sottomessa per l'approvazione.
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startDate; //Data di inizio del periodo coperto dalla nota spese.
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate endDate; //Data di fine del periodo coperto dalla nota spese.
+	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate finalApprovalDate; //Data in cui si ottiene l'approvazione finale.
+	
+	private long expenseReportTotal; //Importo totale della nota spese nella valuta di rimborso.
+	
+	private long reimbursableTotal; //Totale degli importi rimborsabili al dipendente.
+	
+	private long nonReimbursableTotal; //Totale degli importi non rimborsabili (es. spese pagate con carta aziendale).
+	
+	@Enumerated(EnumType.STRING)
+	private PaymentMethod paymentMethodCode; //Metodo di pagamento per il rimborso (es. Bonifico, Busta Paga).
+	
+	@Enumerated(EnumType.STRING)
+	private ExpenseStatus expenseStatus; //Stato corrente del workflow (es. Draft, Submitted, Approved, Rejected, Paid).
+
+}
