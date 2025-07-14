@@ -76,6 +76,15 @@ public class EmployeeController {
                                      .toList();
         List<Employment> allEmpls = employmentService.findByEmployeeIds(ids);
         
+     // Mappa delle foto profilo dei dipendenti
+        Map<Long, Document> profilePhotos = new HashMap<>();
+        for (Long empId : ids) {
+            Document photo = documentService.getEmployeeProfilePhoto(empId);
+            if (photo != null) {
+                profilePhotos.put(empId, photo);
+            }
+        }
+        
      // 4) Popolo la mappa
         for (Employment empl : allEmpls) {
             Long empId = empl.getEmployee().getId();
@@ -92,6 +101,7 @@ public class EmployeeController {
 
         model.addAttribute("empToEmpls", empToEmpls);
         model.addAttribute("activeEmployments", activeEmpls);
+        model.addAttribute("profilePhotos", profilePhotos);
         return "fleet/employees/manage";
     }
         

@@ -48,6 +48,8 @@ public class Employee {
     // --- Contatti ---
     private String phone;
     private String mobile;
+    @Column(nullable = true)
+    private String iban;
 
     @Column(nullable = false, unique = true)
     private String email;

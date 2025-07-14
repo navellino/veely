@@ -41,17 +41,47 @@
                    class="btn btn-sm btn-secondary me-1" title="Modifica">
                   <i class="bi bi-pencil"></i>
                 </a>
-                <a th:href="@{|/fleet/employees/${emp.id}|}"
-                   class="btn btn-sm btn-info me-1" title="Dettaglio">
+               <button type="button"
+                        class="btn btn-sm btn-info me-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#employeeDetailModal"
+                        th:data-firstname="${emp.firstName}"
+                        th:data-lastname="${emp.lastName}"
+                        th:data-email="${emp.email}"
+                        th:data-phone="${emp.phone}"
+                        th:data-mobile="${emp.mobile}"
+                        th:data-photo="${profilePhotos[emp.id] != null ? '/fleet/employees/' + emp.id + '/docs/' + profilePhotos[emp.id].path.substring(profilePhotos[emp.id].path.lastIndexOf('/') + 1) : ''}"
+                        title="Dettaglio">
                   <i class="bi bi-eye"></i>
-                </a>
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </main>
+    
+	<!-- Modal Dettaglio Dipendente -->
+    <div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="employeeDetailLabel">Dettaglio</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img id="empModalPhoto" class="rounded-circle shadow-sm mb-3" style="width:150px;height:150px;object-fit:cover;" alt="Foto profilo" />
+            <ul class="list-unstyled text-start mx-auto" style="max-width:300px;">
+              <li><strong>Email:</strong> <span id="empModalEmail"></span></li>
+              <li><strong>Telefono:</strong> <span id="empModalPhone"></span></li>
+              <li><strong>Cellulare:</strong> <span id="empModalMobile"></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <script th:src="@{/js/employee-detail-modal.js}"></script>
     <div th:insert="~{fragments/footer :: mainFooter}"></div>
   </body>
 </html>

@@ -75,6 +75,7 @@ public class EmployeeService {
         existing.setBirthPlace(payload.getBirthPlace());
         existing.setGender(payload.getGender());
         existing.setFiscalCode(payload.getFiscalCode());
+        existing.setIban(payload.getIban());
         
      // 2) Contatti e ruolo
         existing.setEmail(payload.getEmail());

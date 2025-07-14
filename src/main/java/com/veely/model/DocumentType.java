@@ -13,7 +13,11 @@ public enum DocumentType {
     SPACE("---- RAPPORTO DI LAVORO ----"),
     EMPLOYMENT_CONTRACT("Contratto di lavoro"),
     PAY_RISE("Aumento retribuzione"),
+    EXTENTION("Contratto di Proroga"),
+    UNILAV("Comunicazione Obbligatoria"),
+    TRANSFER_ORDER("Lettera di Trasferimento"),
     DISCIPLINARY_LETTER("Lettera di richiamo"),
+    
 
     // ---- PERSONA ----
     SPACE2("---- PERSONA ----"),

@@ -1,8 +1,8 @@
 package com.veely.model;
 
 public enum Gender {
-    MALE("Maschio"),
-    FEMALE("Femmina"),
+    MALE("M"),
+    FEMALE("F"),
     OTHER("Altro");
 
     private final String displayName;

@@ -40,10 +40,10 @@
           <th>Scadenza</th>
           <th>Qualifica</th>
           <th>Mansione</th>
-          <th>Sede</th>
+          <th>Luogo di Lavoro</th>
           <th>Livello</th>
           <th>Sesso</th>
-          <th>Data nascita</th>
+         <!--  <th>Data nascita</th> -->
           <th>Cod. fiscale</th>
           <th>Età</th>
           <th class="text-end">Azioni</th>
@@ -61,8 +61,8 @@
           <td th:text="${e.workplace != null ? e.workplace.siteName : ''}">Sede</td>
           <td th:text="${e.contractLevel}">Livello</td>
           <td th:text="${e.employee.gender != null ? e.employee.gender.displayName : ''}">M</td>
-          <td th:text="${e.employee.birthDate}">1980-01-01</td>
-          <td th:text="${e.employee.fiscalCode}">RSSMRA80A01F205X</td>
+         <!--  <td th:text="${e.employee.birthDate}">1980-01-01</td> -->
+          <td class="text-uppercase" th:text="${e.employee.fiscalCode}">RSSMRA80A01F205X</td>
           <td th:text="${e.employee.age}">45</td>
           <td class="text-end">
             <a th:href="@{|/fleet/employments/${e.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">

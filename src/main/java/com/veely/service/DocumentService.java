@@ -231,4 +231,14 @@ public class DocumentService {
             .build();
         return documentRepo.save(doc);
     }
+    
+    /** Restituisce la foto profilo del dipendente, se presente */
+    @Transactional(readOnly = true)
+    public Document getEmployeeProfilePhoto(Long employeeId) {
+        return documentRepo
+                .findByEmployeeIdAndType(employeeId, DocumentType.IDENTITY_PHOTO)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 }
