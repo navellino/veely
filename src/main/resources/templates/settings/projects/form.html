@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: commonHead('Commessa – Veely')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<main class="container my-5 flex-fill">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/settings}">Impostazioni</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/settings/projects}">Commesse</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${project.id == null ? 'Nuova' : 'Modifica'}"></li>
+        </ol>
+    </nav>
+    <form th:object="${project}"
+          th:action="${project.id == null} ? @{/settings/projects/new} : @{/settings/projects/{id}(id=${project.id})}"
+          method="post" class="row g-3">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div class="col-md-6">
+            <label class="form-label">Codice Commessa</label>
+            <input class="form-control" th:field="*{code}" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Nome</label>
+            <input class="form-control" th:field="*{name}" required />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">CIG</label>
+            <input class="form-control" th:field="*{cig}" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">CUP</label>
+            <input class="form-control" th:field="*{cup}" />
+        </div>
+        <div class="col-12 d-flex justify-content-end">
+            <a class="btn btn-outline-secondary me-auto" th:href="@{/settings/projects}"><i class="bi bi-list-ul me-1"></i> Lista</a>
+            <button type="submit" class="btn btn-primary me-2" th:text="${project.id == null ? 'Crea' : 'Aggiorna'}"></button>
+            <a class="btn btn-outline-secondary" th:href="@{/settings/projects}">Annulla</a>
+        </div>
+    </form>
+</main>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

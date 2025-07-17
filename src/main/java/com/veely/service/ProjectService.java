@@ -21,7 +21,10 @@ public class ProjectService {
 
     public Project update(Long id, Project payload) {
         Project existing = findByIdOrThrow(id);
+        existing.setCode(payload.getCode());
         existing.setName(payload.getName());
+        existing.setCig(payload.getCig());
+        existing.setCup(payload.getCup());
         return projectRepo.save(existing);
     }
 
