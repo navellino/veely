@@ -61,6 +61,10 @@ public class Employee {
     // --- Ruolo Spring Security ---
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    
+    @ManyToOne
+    @JoinColumn(name = "employee_role_id")
+    private EmployeeRole employeeRole;
 
     /** Stato civile ← enum con displayName */
     @Enumerated(EnumType.STRING)

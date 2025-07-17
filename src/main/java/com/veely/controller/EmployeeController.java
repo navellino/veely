@@ -18,6 +18,7 @@ import com.veely.service.LocationService;
 import com.veely.service.LocationService.CityDto;
 import com.veely.service.LocationService.ProvinceDto;
 import com.veely.service.LocationService.RegionDto;
+import com.veely.service.EmployeeRoleService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -49,7 +50,8 @@ public class EmployeeController {
     private final DocumentService documentService;
     private final EmploymentService employmentService;
     private final CountryService countryService;
-    private final LocationService locationService; 
+    private final LocationService locationService;
+    private final EmployeeRoleService employeeRoleService;
     
     @GetMapping("/manage")
     public String manage(
@@ -163,6 +165,7 @@ public class EmployeeController {
             model.addAttribute("maritalStatuses", MaritalStatus.values());
             model.addAttribute("educationLevels", EducationLevel.values());
             model.addAttribute("genders", Gender.values());
+            model.addAttribute("employeeRoles", employeeRoleService.findAll());
             model.addAttribute("docTypes", DocumentType.values());
             return "fleet/employees/form";
         }
@@ -212,6 +215,7 @@ public class EmployeeController {
         model.addAttribute("maritalStatuses", MaritalStatus.values());
         model.addAttribute("educationLevels", EducationLevel.values());
         model.addAttribute("genders", Gender.values());
+        model.addAttribute("employeeRoles", employeeRoleService.findAll());
         model.addAttribute("countries", countryService.getAll());
 
         // 5) aggiungi tutto al Model
@@ -278,6 +282,7 @@ public class EmployeeController {
             model.addAttribute("maritalStatuses", MaritalStatus.values());
             model.addAttribute("educationLevels", EducationLevel.values());
             model.addAttribute("genders", Gender.values());
+            model.addAttribute("employeeRoles", employeeRoleService.findAll());
             model.addAttribute("countries", countryService.getAll());
             String cc = employee.getResidenceAddress().getCountryCode();
             String rc = employee.getResidenceAddress().getRegionCode();

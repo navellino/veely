@@ -183,6 +183,12 @@
 										<label class="form-label">PEC (opzionale)</label> <input
 											type="email" class="form-control" th:field="*{pec}" />
 									</div>
+									<div class="col-md-4">
+                                            <label class="form-label">Ruolo Dipendente</label>
+                                            <select class="form-select" th:field="*{employeeRole.id}">
+                                                    <option th:each="r : ${employeeRoles}" th:value="${r.id}" th:text="${r.name}"></option>
+                                            </select>
+                                     </div>
 								</div>
 
 								<h5 class="fw-semibold mb-3">Credenziali</h5>

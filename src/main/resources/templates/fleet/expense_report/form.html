@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head th:replace="~{fragments/head :: commonHead('Nota Spese – Veely')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<main class="container my-5 flex-fill">
+    <form th:object="${report}" th:action="${report.expenseReportID == null} ? @{/fleet/expense-reports/new} : @{/fleet/expense-reports/{id}(id=${report.expenseReportID})}" method="post" class="row g-3">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div class="col-md-6">
+            <label class="form-label">Dipendente</label>
+            <select class="form-select" th:field="*{employee.id}">
+                <option th:each="e : ${employees}" th:value="${e.id}" th:text="${e.firstName + ' ' + e.lastName}"></option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Dal</label>
+            <input type="date" class="form-control" th:field="*{startDate}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Al</label>
+            <input type="date" class="form-control" th:field="*{endDate}" />
+        </div>
+        <div class="col-md-12">
+            <label class="form-label">Scopo</label>
+            <input class="form-control" th:field="*{puorpose}" />
+        </div>
+        <div class="col-12">
+            <h5>Voci di spesa</h5>
+            <table class="table" id="itemsTable">
+                <thead>
+                    <tr><th>Data</th><th>Descrizione</th><th>Importo</th><th></th></tr>
+                </thead>
+                <tbody id="itemsBody">
+                    <tr th:each="it, iterStat : ${items}">
+                        <td><input type="date" class="form-control" name="itemDate" th:value="${it.date}" /></td>
+                        <td><input type="text" class="form-control" name="itemDesc" th:value="${it.description}" /></td>
+                        <td><input type="number" step="0.01" class="form-control" name="itemAmount" th:value="${it.amount}" /></td>
+                        <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" onclick="addRow()"><i class="bi bi-plus-lg"></i> Aggiungi Riga</button>
+        </div>
+        <div class="col-12 d-flex justify-content-end">
+            <a class="btn btn-outline-secondary me-auto" th:href="@{/fleet/expense-reports}"><i class="bi bi-list-ul me-1"></i> Lista</a>
+            <button type="submit" class="btn btn-primary me-2" th:text="${report.expenseReportID == null ? 'Crea' : 'Aggiorna'}"></button>
+            <a class="btn btn-outline-secondary" th:href="@{/fleet/expense-reports}">Annulla</a>
+        </div>
+    </form>
+</main>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
+<script>
+function addRow(){
+    const tbody = document.getElementById('itemsBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="date" class="form-control" name="itemDate"/></td>
+                    <td><input type="text" class="form-control" name="itemDesc"/></td>
+                    <td><input type="number" step="0.01" class="form-control" name="itemAmount"/></td>
+                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>`;
+    tbody.appendChild(tr);
+}
+function removeRow(btn){
+    btn.closest('tr').remove();
+}
+</script>
+</body>
+</html>

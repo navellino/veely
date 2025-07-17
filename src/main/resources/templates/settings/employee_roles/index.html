@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: commonHead('Ruoli Dipendenti – Veely')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<main class="container my-5 flex-fill">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-semibold">Ruoli Dipendenti</h2>
+        <a th:href="@{/settings/employee-roles/new}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nuovo Ruolo
+        </a>
+    </div>
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th class="text-end">Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${roles}">
+                    <td th:text="${r.name}"></td>
+                    <td class="text-end">
+                        <a th:href="@{|/settings/employee-roles/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form th:action="@{|/settings/employee-roles/${r.id}/delete|}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare il ruolo?');" title="Elimina">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<div th:insert="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

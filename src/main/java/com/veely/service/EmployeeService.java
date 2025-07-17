@@ -83,6 +83,7 @@ public class EmployeeService {
         existing.setMobile(payload.getMobile());
         existing.setPec(payload.getPec());
         existing.setRole(payload.getRole());
+        existing.setEmployeeRole(payload.getEmployeeRole());
 
         // 3) password: se ne è stata fornita una nuova, la codifico e la setto
         String newPwd = payload.getPassword();
