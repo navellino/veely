@@ -22,6 +22,7 @@ public class ExpenseReportService {
 
     public ExpenseReport create(ExpenseReport report, List<ExpenseItem> items) {
         report.setExpenseStatus(ExpenseStatus.Draft);
+        report.setExpenseReportTotal(sumItems(items));
         ExpenseReport saved = reportRepo.save(report);
         for (ExpenseItem item : items) {
             item.setExpenseReport(saved);
@@ -38,6 +39,7 @@ public class ExpenseReportService {
         existing.setPaymentMethodCode(payload.getPaymentMethodCode());
         existing.setExpenseStatus(payload.getExpenseStatus());
         existing.setEmployee(payload.getEmployee());
+        existing.setExpenseReportTotal(sumItems(items));
         // replace items
         List<ExpenseItem> current = itemRepo.findByExpenseReportId(id);
         itemRepo.deleteAll(current);
@@ -68,5 +70,12 @@ public class ExpenseReportService {
         ExpenseReport r = findByIdOrThrow(id);
         itemRepo.deleteAll(itemRepo.findByExpenseReportId(id));
         reportRepo.delete(r);
+    }
+    
+    private long sumItems(List<ExpenseItem> items) {
+        return items.stream()
+                .filter(i -> i.getAmount() != null)
+                .map(i -> i.getAmount().longValue())
+                .reduce(0L, Long::sum);
     }
 }

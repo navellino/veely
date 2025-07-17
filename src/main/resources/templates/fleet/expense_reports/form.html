@@ -20,6 +20,42 @@
             <label class="form-label">Al</label>
             <input type="date" class="form-control" th:field="*{endDate}" />
         </div>
+        <div class="col-md-3">
+            <label class="form-label">Numero Nota</label>
+            <input class="form-control" th:field="*{expenseReportNum}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Nota Padre</label>
+            <input type="number" class="form-control" th:field="*{parentExpenseReportID}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Organizzazione</label>
+            <input type="number" class="form-control" th:field="*{orgID}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Stato</label>
+            <select class="form-select" th:field="*{expenseStatus}">
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Creata il</label>
+            <input type="date" class="form-control" th:field="*{creationDate}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Sottomessa il</label>
+            <input type="date" class="form-control" th:field="*{reportSubmitDate}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Approvata il</label>
+            <input type="date" class="form-control" th:field="*{finalApprovalDate}" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Metodo Pagamento</label>
+            <select class="form-select" th:field="*{paymentMethodCode}">
+                <option th:each="p : ${paymentMethods}" th:value="${p}" th:text="${p.displayName}"></option>
+            </select>
+        </div>
         <div class="col-md-12">
             <label class="form-label">Scopo</label>
             <input class="form-control" th:field="*{puorpose}" />
@@ -28,22 +64,75 @@
             <h5>Voci di spesa</h5>
             <table class="table" id="itemsTable">
                 <thead>
-                    <tr><th>Data</th><th>Descrizione</th><th>Importo</th><th></th></tr>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrizione</th>
+                        <th>Importo</th>
+                        <th>Nr. Fattura</th>
+                        <th>Fornitore</th>
+                        <th>Commessa</th>
+                        <th>Note</th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody id="itemsBody">
                     <tr th:each="it, iterStat : ${items}">
                         <td><input type="date" class="form-control" name="itemDate" th:value="${it.date}" /></td>
                         <td><input type="text" class="form-control" name="itemDesc" th:value="${it.description}" /></td>
                         <td><input type="number" step="0.01" class="form-control" name="itemAmount" th:value="${it.amount}" /></td>
+                        <td><input type="text" class="form-control" name="itemInvoice" th:value="${it.invoiceNumber}" /></td>
+                        <td>
+                            <select class="form-select" name="itemSupplierId" th:value="${it.supplier != null ? it.supplier.id : ''}">
+                                <option value=""></option>
+                                <option th:each="s : ${suppliers}" th:value="${s.id}" th:text="${s.name}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select" name="itemProjectId" th:value="${it.project != null ? it.project.id : ''}">
+                                <option value=""></option>
+                                <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control" name="itemNote" th:value="${it.note}" /></td>
                         <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
+             <template id="rowTemplate">
+                <tr>
+                    <td><input type="date" class="form-control" name="itemDate"/></td>
+                    <td><input type="text" class="form-control" name="itemDesc"/></td>
+                    <td><input type="number" step="0.01" class="form-control" name="itemAmount"/></td>
+                    <td><input type="text" class="form-control" name="itemInvoice"/></td>
+                    <td>
+                        <select class="form-select" name="itemSupplierId">
+                            <option value=""></option>
+                            <option th:each="s : ${suppliers}" th:value="${s.id}" th:text="${s.name}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" name="itemProjectId">
+                            <option value=""></option>
+                            <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control" name="itemNote"/></td>
+                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                </tr>
+            </template>
             <button type="button" class="btn btn-outline-primary" onclick="addRow()"><i class="bi bi-plus-lg"></i> Aggiungi Riga</button>
         </div>
         <div class="col-md-4">
             <label class="form-label">Totale Nota Spese</label>
             <input class="form-control" th:field="*{expenseReportTotal}" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Totale Rimborsabile</label>
+            <input class="form-control" th:field="*{reimbursableTotal}" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Totale Non Rimborsabile</label>
+            <input class="form-control" th:field="*{nonReimbursableTotal}" />
         </div>
         <div class="col-12 d-flex justify-content-end">
             <a class="btn btn-outline-secondary me-auto" th:href="@{/fleet/expense-reports}"><i class="bi bi-list-ul me-1"></i> Lista</a>
@@ -53,15 +142,12 @@
     </form>
 </main>
 <div th:insert="~{fragments/footer :: mainFooter}"></div>
-<script>
+<script th:inline="javascript">
 function addRow(){
     const tbody = document.getElementById('itemsBody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="date" class="form-control" name="itemDate"/></td>
-                    <td><input type="text" class="form-control" name="itemDesc"/></td>
-                    <td><input type="number" step="0.01" class="form-control" name="itemAmount"/></td>
-                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>`;
-    tbody.appendChild(tr);
+    const tpl = document.getElementById('rowTemplate');
+    const clone = tpl.content.firstElementChild.cloneNode(true);
+    tbody.appendChild(clone);
 }
 function removeRow(btn){
     btn.closest('tr').remove();

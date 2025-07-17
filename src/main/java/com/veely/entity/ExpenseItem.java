@@ -24,4 +24,14 @@ public class ExpenseItem {
     private String description;
 
     private BigDecimal amount;
+    
+    private String invoiceNumber;
+
+    @ManyToOne
+    private Supplier supplier;
+
+    @ManyToOne
+    private Project project;
+
+    private String note;
 }
