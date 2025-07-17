@@ -14,6 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,11 +105,25 @@ public class ExpenseReportController {
 
     private List<ExpenseItem> buildItems(List<String> descs, List<String> amounts, List<String> dates) {
         List<ExpenseItem> list = new ArrayList<>();
-        for (int i = 0; i < descs.size(); i++) {
+        int size = Math.min(descs.size(), Math.min(amounts.size(), dates.size()));
+        for (int i = 0; i < size; i++) {
+            String desc = descs.get(i);
+            String amountStr = amounts.get(i);
+            String dateStr = dates.get(i);
+
+            if ((desc == null || desc.isBlank()) &&
+                (amountStr == null || amountStr.isBlank()) &&
+                (dateStr == null || dateStr.isBlank())) {
+                continue;
+            }
             ExpenseItem it = new ExpenseItem();
-            it.setDescription(descs.get(i));
-            it.setAmount(new java.math.BigDecimal(amounts.get(i)));
-            it.setDate(java.time.LocalDate.parse(dates.get(i)));
+            it.setDescription(desc);
+            if (amountStr != null && !amountStr.isBlank()) {
+                it.setAmount(new BigDecimal(amountStr.replace(',', '.')));
+            }
+            if (dateStr != null && !dateStr.isBlank()) {
+                it.setDate(LocalDate.parse(dateStr));
+            }
             list.add(it);
         }
         return list;
