@@ -53,7 +53,7 @@ public class ExpenseReportController {
         }
         List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate);
         ExpenseReport saved = reportService.create(report, items);
-        return "redirect:/fleet/expense-reports/" + saved.getExpenseReportID() + "/edit";
+        return "redirect:/fleet/expense-reports/" + saved.getId() + "/edit";
     }
 
     @GetMapping("/{id}/edit")

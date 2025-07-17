@@ -23,15 +23,15 @@
             </thead>
             <tbody>
                 <tr th:each="r : ${reports}">
-                    <td th:text="${r.expenseReportID}"></td>
+                    <td th:text="${r.id}"></td>
                     <td th:text="${r.employee.lastName + ' ' + r.employee.firstName}"></td>
                     <td th:text="${r.startDate} + ' - ' + ${r.endDate}"></td>
                     <td th:text="${r.expenseStatus}"></td>
                     <td class="text-end">
-                        <a th:href="@{|/fleet/expense-reports/${r.expenseReportID}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
+                        <a th:href="@{|/fleet/expense-reports/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form th:action="@{|/fleet/expense-reports/${r.expenseReportID}/delete|}" method="post" class="d-inline">
+                        <form th:action="@{|/fleet/expense-reports/${r.id}/delete|}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare la nota spese?');" title="Elimina">
                                 <i class="bi bi-trash"></i>
                             </button>

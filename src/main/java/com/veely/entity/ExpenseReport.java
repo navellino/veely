@@ -28,7 +28,7 @@ public class ExpenseReport {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "expense_report_id")
-    private Long expenseReportID; //Chiave primaria univoca per la nota spese.
+	 private Long id; //Chiave primaria univoca per la nota spese.
 	
 	private String expenseReportNum; //Numero di riferimento univoco e leggibile per la nota spese, che segue le policy di numerazione aziendali.
 	private long parentExpenseReportID; //Identificatore di una nota spese padre, utile per raggruppare note spese correlate.
