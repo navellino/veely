@@ -95,5 +95,22 @@ public class CorrespondenceService {
 				Correspondence c = findByIdOrThrow(id);
 				repo.delete(c);
 			}
+		
+			 @Transactional(readOnly = true)
+			    public String getLastProtocol(CorrespondenceType type) {
+			        int year = LocalDate.now().getYear();
+			        return repo.findFirstByAnnoAndTipoOrderByProgressivoDesc(year, type)
+			                .map(this::formatProtocol)
+			                .orElse("--");
+			    }
+
+			    public String getLastIncomingProtocol() {
+			        return getLastProtocol(CorrespondenceType.E);
+			    }
+
+			    public String getLastOutgoingProtocol() {
+			        return getLastProtocol(CorrespondenceType.U);
+			    }
+
     
 }

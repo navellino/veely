@@ -131,3 +131,46 @@
 .table-striped > tbody > tr:nth-of-type(odd):hover {
     background-color: #e0e0e0; /* Hover leggermente più scuro per le righe alternate */
 }
+
+/* === ANIMAZIONE DI ENTRATA sul wrapper === */
+    @keyframes zoomInLoad {
+      0%   { transform: scale(.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* === CARD con effetto lift/colore === */
+    .hover-lift-card {
+      background-color: #eaf2ff;
+      color: #fff;
+      transition: transform .3s ease, background-color .3s ease, box-shadow .3s ease;
+    }
+    .hover-lift-card:hover {
+      transform: translateY(-8px);          /* ora funziona! */
+      background-color: #eaf2ff;
+      box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.25);
+    }
+:root{
+    --icon-1:#DC3B3B; --icon-2:#DC7C3B; --icon-3:#DCBC3B;
+    --icon-4:#BCDC3B; --icon-5:#7CDC3B; --icon-6:#3BDC3B;
+    --icon-7:#3BDC7C; --icon-8:#3BDCBC; --icon-9:#3BBCDC;
+    --icon-10:#3B7CDC; --icon-11:#3B3BDC; --icon-12:#7C3BDC;
+    --icon-13:#BC3BDC; --icon-14:#DC3BBC; --icon-15:#DC3B7C;
+    --icon-16: #ffffff;
+  }
+  [class^="text-icon-"]{display:inline-block; color:currentColor;}
+  .text-icon-1{color:var(--icon-1)}
+  .text-icon-2{color:var(--icon-2)}
+	.text-icon-3{color:var(--icon-3)}
+.text-icon-4{color:var(--icon-4)}
+.text-icon-5{color:var(--icon-5)}
+.text-icon-6{color:var(--icon-6)}
+.text-icon-7{color:var(--icon-7)}
+.text-icon-8{color:var(--icon-8)}
+.text-icon-9{color:var(--icon-9)}
+.text-icon-10{color:var(--icon-10)}
+.text-icon-11{color:var(--icon-11)}
+.text-icon-12{color:var(--icon-12)}
+.text-icon-13{color:var(--icon-13)}
+.text-icon-14{color:var(--icon-14)}
+  .text-icon-15{color:var(--icon-15)}
+  .text-icon-16{color:var(--icon-16)}

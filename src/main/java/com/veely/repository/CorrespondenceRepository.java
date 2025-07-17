@@ -4,6 +4,7 @@ import com.veely.entity.Correspondence;
 import com.veely.model.CorrespondenceType;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +41,6 @@ public interface CorrespondenceRepository extends JpaRepository<Correspondence, 
     List<Correspondence> searchByAnnoAndTipoAndKeyword(@Param("anno") int anno,
                                                        @Param("tipo") CorrespondenceType tipo,
                                                        @Param("kw") String keyword);
+    
+    Optional<Correspondence> findFirstByAnnoAndTipoOrderByProgressivoDesc(int anno, CorrespondenceType tipo);
 }
