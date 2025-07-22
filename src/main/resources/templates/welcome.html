@@ -80,16 +80,16 @@
 	
 	 <div class="row">
         <div class="col-lg-6 mb-4">
-            <canvas id="vehicleChart"></canvas>
+            <canvas id="vehicleChart" style="max-height:300px;"></canvas>
         </div>
         <div class="col-lg-6 mb-4">
-            <canvas id="fuelChart"></canvas>
+            <canvas id="fuelChart" style="max-height:300px;"></canvas>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-6 mb-4">
-            <canvas id="reportChart"></canvas>
+            <canvas id="reportChart" style="max-height:300px;"></canvas>
         </div>
         <div class="col-lg-6 mb-4">
             <h5>Ultime Attività</h5>
@@ -115,15 +115,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script th:inline="javascript">
-        const vsLabels = [[${vehicleStatusLabels}]];
-        const vsValues = [[${vehicleStatusValues}]];
+    const vsLabels = /*[[${vehicleStatusLabels}]]*/ [];
+    const vsValues = /*[[${vehicleStatusValues}]]*/ [];
         new Chart(document.getElementById('vehicleChart'), {
             type: 'doughnut',
             data: {labels: vsLabels, datasets:[{data: vsValues}]},
             options: {plugins:{legend:{position:'bottom'}}}
         });
 
-        const fuelData = [[${fuelCosts}]];
+        const fuelData = /*[[${fuelCosts}]]*/ [];
         const fuelLabels = fuelData.map(v => v.month);
         const fuelValues = fuelData.map(v => v.total);
         new Chart(document.getElementById('fuelChart'), {
@@ -132,7 +132,7 @@
             options:{plugins:{legend:{display:false}}}
         });
 
-        const repData = [[${reportTotals}]];
+        const repData = /*[[${reportTotals}]]*/ [];
         const repLabels = repData.map(v => v.month);
         const repValues = repData.map(v => v.total);
         new Chart(document.getElementById('reportChart'), {
