@@ -4,8 +4,11 @@ import com.veely.entity.ExpenseItem;
 import com.veely.entity.ExpenseReport;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.ExpenseStatus;
+import com.veely.repository.EmployeeRepository;
 import com.veely.repository.ExpenseItemRepository;
 import com.veely.repository.ExpenseReportRepository;
+import com.veely.repository.ProjectRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +22,18 @@ public class ExpenseReportService {
 
     private final ExpenseReportRepository reportRepo;
     private final ExpenseItemRepository itemRepo;
+    private final EmployeeRepository employeeRepo;
+    private final ProjectRepository projectRepo;
 
     public ExpenseReport create(ExpenseReport report, List<ExpenseItem> items) {
+    	 if (report.getEmployee() != null && report.getEmployee().getId() != null) {
+             employeeRepo.findById(report.getEmployee().getId()).ifPresent(report::setEmployee);
+         }
+         if (report.getProject() != null && report.getProject().getId() != null) {
+             projectRepo.findById(report.getProject().getId()).ifPresent(report::setProject);
+         } else {
+             report.setProject(null);
+         }
         report.setExpenseStatus(ExpenseStatus.Draft);
         report.setExpenseReportTotal(sumItems(items));
         report.setNonReimbursableTotal(report.getExpenseReportTotal() - report.getReimbursableTotal());
@@ -39,8 +52,16 @@ public class ExpenseReportService {
         existing.setEndDate(payload.getEndDate());
         existing.setPaymentMethodCode(payload.getPaymentMethodCode());
         existing.setExpenseStatus(payload.getExpenseStatus());
-        existing.setEmployee(payload.getEmployee());
-        existing.setProject(payload.getProject());
+        if (payload.getEmployee() != null && payload.getEmployee().getId() != null) {
+            employeeRepo.findById(payload.getEmployee().getId()).ifPresent(existing::setEmployee);
+        } else {
+            existing.setEmployee(null);
+        }
+        if (payload.getProject() != null && payload.getProject().getId() != null) {
+            projectRepo.findById(payload.getProject().getId()).ifPresent(existing::setProject);
+        } else {
+            existing.setProject(null);
+        }
         existing.setReimbursableTotal(payload.getReimbursableTotal());
         existing.setExpenseReportTotal(sumItems(items));
         existing.setNonReimbursableTotal(existing.getExpenseReportTotal() - existing.getReimbursableTotal());
