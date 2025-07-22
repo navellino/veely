@@ -1,221 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
-  <head th:replace="~{fragments/head :: commonHead('Welcome to Veely')}"></head>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                500: '#3b82f6',
-                600: '#2563eb',
-                700: '#1d4ed8',
-                900: '#0f2547' // più scuro per hero
-              },
-              indigo: {
-                600: '#4f46e5'
-              },
-              warning: {
-                500: '#facc15'
-              },
-              success: {
-                600: '#10b981'
-              }
-            }
-          }
-        }
-      };
-    </script>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0 text-dark">Dashboard</h1>
+        <a href="#" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle-fill me-2"></i>Azione Rapida
+        </a>
+    </div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <div class="row">
 
-    <style>
-
-    body { font-family: 'Inter', sans-serif; }
-      /* Logo e tab in linea verticale */
-      header, nav { @apply flex items-center; }
-      nav ul, nav div { @apply flex items-center gap-7; }
-      header img, nav img { max-height: 48px; height: auto; width: auto; }
-      .nav-link { @apply font-medium text-primary-700 hover:text-primary-600 transition; }
-      .nav-link-active { @apply font-semibold text-primary-600 border-b-2 border-primary-600; }
-      .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-      .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-    </style>
-  </head>
-  <body class="flex flex-col min-h-screen bg-gray-50">
-    <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
-
-    <section class="bg-primary-900 text-white py-36 relative">
-    
-      <div class="container mx-auto px-4 text-center mb-10">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Benvenuto in Veely</h1>
-        <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Tieni sotto controllo veicoli, scadenze e costi in un'unica dashboard</p>
-      </div>
-
-      <div class="absolute inset-x-0 -bottom-28 md:-bottom-32">
-        <div class="container mx-auto px-4">
-         <div class="text-center grid grid-flow-col auto-cols-[17rem] gap-5 overflow-x-auto snap-x snap-mandatory md:grid-flow-row md:auto-cols-fr md:grid-cols-4 md:overflow-visible hide-scrollbar">
-            <a th:href="@{/vehicleList}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between h-72 p-6 rounded-xl text-white bg-gradient-to-br from-primary-500 to-primary-700 hover:shadow-2xl snap-start ring-1 ring-white/10">
-              <i class="bi bi-car-front text-7xl"></i>
-              <div class="mt-auto">
-                <h3 class="text-2xl font-semibold tracking-wide">Veicoli</h3>
-                <p id="vehicles-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.vehicles}">--</p>
-                <p class="text-sm mt-1">In servizio: <span id="vehicles-in-service" th:text="${metrics.vehiclesInService}">--</span></p>
-                <p class="text-sm">Assegnati: <span id="vehicles-assigned" th:text="${metrics.vehiclesAssigned}">--</span></p>
-              </div>
-            </a>
-
-            <a th:href="@{/assignmentList}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between h-72 p-6 rounded-xl text-white bg-indigo-600 hover:shadow-2xl snap-start ring-1 ring-white/10">
-              <i class="bi bi-arrow-left-right text-7xl"></i>
-              <div class="mt-auto">
-                <h3 class="text-2xl font-semibold tracking-wide">Assegnazioni</h3>
-                <p id="assignments-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.assignments}">--</p>
-                <p class="text-lg mt-1">Lunghe attive: <span id="assignments-long" th:text="${metrics.longAssignmentsActive}">--</span></p>
-                <p class="text-lg">Brevi attive: <span id="assignments-short" th:text="${metrics.shortAssignmentsActive}">--</span></p>
-              </div>
-            </a>
-			
-            <a th:href="@{/deadlines}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between h-72 p-6 rounded-xl text-gray-900 bg-warning-500 hover:shadow-xl snap-start ring-1 ring-black/10">
-              <i class="bi bi-exclamation-triangle text-7xl"></i>
-              <div class="mt-auto">
-                <h3 class="text-2xl font-semibold tracking-wide">Scadenze imminenti</h3>
-               <p id="deadlines-total" class="text-4xl font-extrabold mt-3" th:text="${metrics.deadlines}">--</p>
-                <p class="text-lg mt-1">
-                  <span id="deadlines-60" th:text="${metrics.deadlines60}">--</span>
-                  <span class="text-lg font-normal">entro 60gg</span>
-                </p>
-                <p class="text-lg"><span id="deadlines-30" th:text="${metrics.deadlines30}">--</span> entro 30gg</p>
-              </div>
-            </a>
-
-             <a th:href="@{/fuel}" data-aos="zoom-in" data-aos-duration="800" class="flex flex-col justify-between h-72 p-6 rounded-xl text-white bg-success-600 hover:shadow-2xl snap-start ring-1 ring-white/10">
-              <i class="bi bi-fuel-pump text-7xl"></i>
-              <div class="mt-auto">
-                <h3 class="text-2xl font-semibold tracking-wide">Carburante (mese)</h3>
-                <!-- 
-                <p class="text-4xl font-extrabold mt-3"><span class="align-middle text-3xl">€</span> <span id="fuel-cost" th:text="${metrics.fuelMonth}">--</span></p>
-                 -->
-              </div>
-            </a>
-          </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-danger shadow h-100">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">Prossima Scadenza</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">Bollo Auto (12gg)</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-calendar-x-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
 
-     <div class="h-10 md:h-14"></div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-warning shadow h-100">
+                <div class="card-body">
+                     <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Note Spesa da Approvare</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">3</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-wallet2 fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-primary shadow h-100">
+                <div class="card-body">
+                     <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Veicoli in Flotta</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">12</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-car-front-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <main class="container mx-auto px-4 py-10 md:py-16">
-      <hr class="my-6 border-gray-200" />
-      <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        <!-- CARD FORNITORI -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         	<i class="bi bi-building text-6xl text-icon-2"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Fornitori</h4>
-	            <p class="text-sm text-gray-500">Gestisci concessionari e leasing</p>
-	            <br>
-	            <br>
-	             <a th:href="@{/supplierList}" class="stretched-link"></a>
-	          </div>
-	        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-info shadow h-100">
+                <div class="card-body">
+                     <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">Corrispondenza Non Letta</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">5</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-envelope-exclamation-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /CARD -->
-        <!-- CARD DIPENDENTI -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         	<i class="bi bi-people-fill text-6xl text-icon-11"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Dipendenti</h4>
-	            <p class="text-sm text-gray-500">Anagrafica e documenti del personale</p>
-	            <br>
-	            <br>
-	             <a th:href="@{/fleet/employees/manage}" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
-        <!-- CARD RAPPORTI DI LAVORO -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         	<i class="bi bi-file-earmark-text text-6xl text-icon-7"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Rapporti</h4>
-	            <p class="text-sm text-gray-500">Gestisci contratti di lavoro</p>
-	            <br>
-	            <br>
-	             <a th:href="@{/employmentList}" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
- 	 <!-- CARD NOTE SPESE -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         	<i class="bi bi-list-columns text-6xl text-icon-4"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Nota Spese</h4>
-	            <p class="text-sm text-gray-500">Gestione Note Spesa</p>
-	            <br>
-	            <br>
-	             <a th:href="@{/fleet/expense-reports}" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
-       <!-- CARD CONTRATTI -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         	<i class="bi bi-file-earmark-richtext text-6xl text-icon-1"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Contratti</h4>
-	            <p class="text-sm text-gray-500">Gestione Contratti</p>
-	            <br>
-	            <br>
-	             <a href="#" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
-        <!-- CARD CORRISPONDENZA -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         <i class="bi bi-envelope text-6xl text-icon-3"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Corrispondenza</h4>
-	            <p class="text-sm text-gray-500">Protocolla lettere in entrata e uscita</p>
-	            <p class="text-sm text-gray-500 mt-1">Ultimo uscita: <span th:text="${metrics.lastOutgoingProtocol}">--</span></p>
-	            <p class="text-sm text-gray-500">Ultimo entrata: <span th:text="${metrics.lastIncomingProtocol}">--</span></p>
-	             <a th:href="@{/correspondence}" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
-         <!-- CARD SETTINGS -->
-        <div data-aos="zoom-in" data-aos-duration="800">
-	        <div class="card hover-lift-card rounded-xl p-6 shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-300 flex flex-col gap-3">        
-	         <i class="bi bi-sliders text-6xl text-icon-8"></i>
-	          <div>
-	            <h4 class="text-lg font-semibold">Impostazioni</h4>
-	            <p class="text-sm text-gray-500">Gestione Impostazioni Portale</p>
-				<br>
-	            <br>
-	             <a th:href="@{/settings}" class="stretched-link"></a>
-	          </div>
-	        </div>
-        </div>
-        <!-- /CARD -->
-      </div>
-    </main>
-    <div th:insert="~{fragments/footer :: mainFooter}"></div>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script>AOS.init();</script>
-  </body>
+    </div>
+
+    </body>
 </html>
