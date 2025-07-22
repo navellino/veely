@@ -125,11 +125,11 @@ public class ExpenseReportController {
     }
 
     @PostMapping("/{id}/approve")
-    public String approve(@PathVariable Long id, @RequestParam Long employeeId) {
+    public String toggleApprove(@PathVariable Long id) {
         ExpenseReport r = reportService.findByIdOrThrow(id);
-        Employee approver = employeeService.findByIdOrThrow(employeeId);
-        EmployeeRole role = approver.getEmployeeRole();
-        if (role != null && "administrator".equalsIgnoreCase(role.getName())) {
+        if (r.getExpenseStatus() == ExpenseStatus.Approved) {
+            r.setExpenseStatus(ExpenseStatus.Draft);
+        } else {
             r.setExpenseStatus(ExpenseStatus.Approved);
         }
         return "redirect:/fleet/expense-reports/" + id + "/edit";

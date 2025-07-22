@@ -6,6 +6,7 @@
 <main class="container my-5 flex-fill">
      <form th:object="${report}" th:action="${report.id == null} ? @{/fleet/expense-reports/new} : @{/fleet/expense-reports/{id}/edit(id=${report.id})}" method="post" class="row g-3">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+         <fieldset th:disabled="${report.expenseStatus.name() == 'Approved'}" >
         <div class="col-md-6">
             <label class="form-label">Dipendente</label>
             <select class="form-select" th:field="*{employee.id}" id="employeeSelect">
@@ -128,6 +129,7 @@
             <label class="form-label">Totale Non Rimborsabile</label>
             <input class="form-control" th:field="*{nonReimbursableTotal}" id="nonReimbursableTotal" readonly />
         </div>
+         </fieldset>
         <div class="col-12 d-flex justify-content-end">
             <a class="btn btn-outline-secondary me-auto" th:href="@{/fleet/expense-reports}"><i class="bi bi-list-ul me-1"></i> Lista</a>
             <button type="submit" class="btn btn-primary me-2" th:text="${report.id == null ? 'Crea' : 'Aggiorna'}"></button>
@@ -156,9 +158,16 @@ document.getElementById('reimbursableTotal').addEventListener('input', updateNon
 updateNonReimbursable();
 function updateReportNum(){
     const select = document.getElementById('employeeSelect');
-    const base = document.getElementById('expenseReportNum').dataset.base || '';
-    if(!select){
+    const input = document.getElementById('expenseReportNum');
+    if(!select || !input){
         return;
+    }
+    let base = input.dataset.base || '';
+    if(!base){
+        const m = (input.value || '').match(/^(\d+\/\d+\/)/);
+        if(m){
+            base = m[1];
+        }
     }
     if(!base){
         return;
@@ -169,7 +178,7 @@ function updateReportNum(){
     const first = parts.shift() || '';
     const last = parts.join(' ') || '';
     const initials = (last.charAt(0) || '').toUpperCase() + (first.charAt(0) || '').toUpperCase();
-    document.getElementById('expenseReportNum').value = base + initials;
+    input.value = base + initials;
 }
 
 document.getElementById('employeeSelect').addEventListener('change', updateReportNum);

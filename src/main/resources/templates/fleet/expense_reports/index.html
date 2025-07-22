@@ -1,3 +1,4 @@
+<!-- src/main/resources/templates/fleet/expense_reports/index.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: commonHead('Note Spese – Veely')}"></head>
@@ -14,7 +15,7 @@
         <table class="table table-hover align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>Numero Nota</th>
                     <th>Dipendente</th>
                     <th>Periodo</th>
                     <th>Stato</th>
@@ -23,7 +24,7 @@
             </thead>
             <tbody>
                 <tr th:each="r : ${reports}">
-                    <td th:text="${r.id}"></td>
+                     <td th:text="${r.expenseReportNum}"></td>
                     <td th:text="${r.employee.lastName + ' ' + r.employee.firstName}"></td>
                     <td th:text="${r.startDate} + ' - ' + ${r.endDate}"></td>
                     <td th:text="${r.expenseStatus}"></td>
@@ -31,6 +32,9 @@
                         <a th:href="@{|/fleet/expense-reports/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
                             <i class="bi bi-pencil"></i>
                         </a>
+                         <form th:action="@{|/fleet/expense-reports/${r.id}/approve|}" method="post" class="d-inline me-1">
+                            <button type="submit" class="btn btn-sm btn-success" th:text="${r.expenseStatus.name() == 'Approved' ? 'Bozza' : 'Approva'}"></button>
+                        </form>
                         <form th:action="@{|/fleet/expense-reports/${r.id}/delete|}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare la nota spese?');" title="Elimina">
                                 <i class="bi bi-trash"></i>
