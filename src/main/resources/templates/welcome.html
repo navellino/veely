@@ -89,35 +89,42 @@
             <canvas id="vehicleChart" style="max-height:300px;"></canvas>
         </div>
         <div class="col-lg-6 mb-4">
-        	<h5>Storico Carburante</h5>
-            <canvas id="fuelChart" style="max-height:300px;"></canvas>
+             <h5>Prossime Scadenze</h5>
+            <table class="table table-striped">
+                <thead>
+                 <tr><th>Tipo</th><th>Descrizione</th><th>Data</th><th>Gestione</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${upcomingDeadlines}">
+                    <td th:text="${d.category}">Scadenza</td>
+                    <td th:text="${d.name}">Item</td>
+                    <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                    <td>
+                        <a th:href="@{|/deadlines#deadline-${d.type}-${d.refId}|}" class="btn btn-sm btn-primary">Gestisci</a>
+                    </td>
+                </tr>
+                <!-- 
+                <tr th:each="r : ${pendingReports}">
+                    <td>Nota Spese</td>
+                    <td th:text="${r.expenseReportNum}"></td>
+                    <td th:text="${r.reportSubmitDate}"></td>
+                    <td></td>
+                </tr>
+                 -->
+                </tbody>
+            </table>
         </div>
+        
     </div>
 
     <div class="row">
         <div class="col-lg-6 mb-4">
         	<h5>Storico Note Spese</h5>
-            <canvas id="reportChart" style="max-height:300px;"></canvas>
+            <canvas id="reportChart" style="max-height:280px;"></canvas>
         </div>
         <div class="col-lg-6 mb-4">
-            <h5>Ultime Attività</h5>
-            <table class="table table-striped">
-                <thead>
-                <tr><th>Tipo</th><th>Descrizione</th><th>Data</th></tr>
-                </thead>
-                <tbody>
-                <tr th:each="d : ${upcomingDeadlines}" th:remove="all-but-first">
-                    <td>Scadenza</td>
-                    <td th:text="${d.category}"></td>
-                    <td th:text="${d.dueDate}"></td>
-                </tr>
-                <tr th:each="r : ${pendingReports}">
-                    <td>Nota Spese</td>
-                    <td th:text="${r.expenseReportNum}"></td>
-                    <td th:text="${r.reportSubmitDate}"></td>
-                </tr>
-                </tbody>
-            </table>
+        	<h5>Storico Carburante</h5>
+            <canvas id="fuelChart" style="max-height:280px;"></canvas>
         </div>
     </div>
 

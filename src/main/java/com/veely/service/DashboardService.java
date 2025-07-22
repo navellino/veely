@@ -2,6 +2,7 @@ package com.veely.service;
 
 import com.veely.model.AssignmentStatus;
 import com.veely.model.AssignmentType;
+import com.veely.model.DeadlineItem;
 import com.veely.model.ExpenseStatus;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.AssignmentRepository;
@@ -9,6 +10,11 @@ import com.veely.repository.ExpenseItemRepository;
 import com.veely.repository.ExpenseReportRepository;
 import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.time.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 
@@ -54,7 +60,7 @@ public class DashboardService {
     }
 
     /** Last {@code months} monthly fuel costs aggregated from expense items. */
-    public java.util.List<MonthAmount> getFuelCosts(int months) {
+    public List<MonthAmount> getFuelCosts(int months) {
         java.time.YearMonth start = java.time.YearMonth.now().minusMonths(months - 1);
         java.time.LocalDate from = start.atDay(1);
         java.time.LocalDate to = java.time.LocalDate.now();
@@ -65,7 +71,7 @@ public class DashboardService {
             long sum = ((Number) row[2]).longValue();
             tmp.put(java.time.YearMonth.of(y, m), sum);
         }
-        java.util.List<MonthAmount> result = new java.util.ArrayList<>();
+        List<MonthAmount> result = new java.util.ArrayList<>();
         for (int i = 0; i < months; i++) {
             java.time.YearMonth ym = start.plusMonths(i);
             long val = tmp.getOrDefault(ym, 0L);
@@ -75,20 +81,20 @@ public class DashboardService {
     }
 
     /** Last {@code months} total expense report amounts. */
-    public java.util.List<MonthAmount> getExpenseReportTotals(int months) {
-        java.time.YearMonth start = java.time.YearMonth.now().minusMonths(months - 1);
-        java.time.LocalDate from = start.atDay(1);
+    public List<MonthAmount> getExpenseReportTotals(int months) {
+        YearMonth start = YearMonth.now().minusMonths(months - 1);
+        LocalDate from = start.atDay(1);
         java.time.LocalDate to = java.time.LocalDate.now();
-        java.util.Map<java.time.YearMonth, Long> tmp = new java.util.LinkedHashMap<>();
+        java.util.Map<YearMonth, Long> tmp = new LinkedHashMap<>();
         for (Object[] row : expenseReportRepo.sumTotalsByMonth(from, to)) {
             int y = ((Number) row[0]).intValue();
             int m = ((Number) row[1]).intValue();
             long sum = ((Number) row[2]).longValue();
-            tmp.put(java.time.YearMonth.of(y, m), sum);
+            tmp.put(YearMonth.of(y, m), sum);
         }
-        java.util.List<MonthAmount> result = new java.util.ArrayList<>();
+        List<MonthAmount> result = new java.util.ArrayList<>();
         for (int i = 0; i < months; i++) {
-            java.time.YearMonth ym = start.plusMonths(i);
+            YearMonth ym = start.plusMonths(i);
             long val = tmp.getOrDefault(ym, 0L);
             result.add(new MonthAmount(ym.toString(), val));
         }
@@ -96,16 +102,16 @@ public class DashboardService {
     }
 
     /** Upcoming deadlines sorted by due date. */
-    public java.util.List<com.veely.model.DeadlineItem> getUpcomingDeadlines(int limit) {
+    public List<DeadlineItem> getUpcomingDeadlines(int limit) {
         return deadlineService.getAllDeadlines().stream()
                 .filter(d -> d.dueDate() != null)
-                .sorted(java.util.Comparator.comparing(com.veely.model.DeadlineItem::dueDate))
+                .sorted(java.util.Comparator.comparing(DeadlineItem::dueDate))
                 .limit(limit)
                 .toList();
     }
 
     /** Latest expense reports waiting for approval. */
-    public java.util.List<com.veely.entity.ExpenseReport> getPendingExpenseReports(int limit) {
+    public List<com.veely.entity.ExpenseReport> getPendingExpenseReports(int limit) {
         return expenseReportRepo
                 .findTop5ByExpenseStatusOrderByReportSubmitDateDesc(ExpenseStatus.Submitted)
                 .stream()

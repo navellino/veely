@@ -44,7 +44,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="d : ${vehicleDeadlines['Assicurazione']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')" th:id="${'deadline-' + d.type + '-' + d.refId}">
+                        <tr th:each="d : ${vehicleDeadlines['Assicurazione']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')">
                             <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy/MM/dd')}">2024-01-01</td>
                             <td>
@@ -90,7 +90,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="d : ${vehicleDeadlines['Leasing']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')" th:id="${'deadline-' + d.type + '-' + d.refId}">
+                        <tr th:each="d : ${vehicleDeadlines['Leasing']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')">
                             <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
                             <td>
@@ -113,7 +113,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                         <tr th:each="d : ${vehicleDeadlines['Fuel Card']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')" th:id="${'deadline-' + d.type + '-' + d.refId}">
+                        <tr th:each="d : ${vehicleDeadlines['Fuel Card']}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')">
                             <td th:text="${d.name + ' - ' + (d.brand ?: '') + ' ' + (d.model ?: '') + ' ' + (d.series ?: '')}">AA000AA</td>
                             <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
                             <td>
@@ -174,7 +174,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                 <tr th:each="d : ${employmentDeadlines}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')" th:id="${'deadline-' + d.type + '-' + d.refId}">
+                <tr th:each="d : ${employmentDeadlines}" th:with="diff=${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), d.dueDate)}" th:classappend="${diff <= 30} ? 'table-danger' : (${diff <= 60} ? 'table-warning' : '')">
                     <td th:text="${d.name}">EMP001</td>
                     <td th:text="${#temporals.format(d.startDate, 'yyyy-MM-dd')}">2023-01-01</td>
                     <td th:text="${#temporals.format(d.dueDate, 'yyyy-MM-dd')}">2024-01-01</td>
