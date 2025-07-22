@@ -27,6 +27,12 @@
     border-bottom: 1px solid var(--bs-table-border-color);
 }
 
+/* Versione compatta della tabella */
+.table.table-sm th,
+.table.table-sm td {
+    padding: 0.3rem 0.5rem;
+}
+
 .table tbody tr:last-child td {
     border-bottom: none; /* Rimuove il bordo inferiore per l'ultima riga */
 }
