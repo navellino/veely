@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-
+/*
 @Configuration
 public class SecurityConfig {
 
@@ -57,14 +57,14 @@ public class SecurityConfig {
       return new BCryptPasswordEncoder();
     }
 }
-
+*/
 
 /**
  * Sicurezza HTTP + autenticazione via:
  *  • Form-login (tabella employees)
  *  • OAuth2 Google (opzionale)
  */
-/*
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity       // abilita @PreAuthorize, @Secured, ecc.
@@ -130,4 +130,4 @@ public class SecurityConfig {
     }
  
 }
-*/
+

@@ -140,13 +140,12 @@
 
     /* === CARD con effetto lift/colore === */
     .hover-lift-card {
-      background-color: #eaf2ff;
+      background-color: #fff;
       color: #fff;
       transition: transform .3s ease, background-color .3s ease, box-shadow .3s ease;
     }
     .hover-lift-card:hover {
       transform: translateY(-8px);          /* ora funziona! */
-      background-color: #eaf2ff;
       box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.25);
     }
 :root{

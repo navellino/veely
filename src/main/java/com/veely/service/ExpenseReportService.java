@@ -53,6 +53,7 @@ public class ExpenseReportService {
         existing.setEndDate(payload.getEndDate());
         existing.setPaymentMethodCode(payload.getPaymentMethodCode());
         existing.setExpenseStatus(payload.getExpenseStatus());
+        existing.setExpenseReportNum(payload.getExpenseReportNum());
         if (payload.getEmployee() != null && payload.getEmployee().getId() != null) {
             employeeRepo.findById(payload.getEmployee().getId()).ifPresent(existing::setEmployee);
         } else {
