@@ -8,9 +8,6 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0 text-dark">Dashboard</h1>
-        <a href="#" class="btn btn-primary shadow-sm">
-            <i class="bi bi-plus-circle-fill me-2"></i>Azione Rapida
-        </a>
     </div>
 
     <div class="row">
@@ -21,7 +18,8 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs fw-bold text-danger text-uppercase mb-1">Prossima Scadenza</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">Bollo Auto (12gg)</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${upcomingDeadlines[0].category + ' (' + upcomingDeadlines[0].dueDate + ')'}">-</div>
+                            <a th:href="@{/deadlines}" class="stretched-link"></a>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-calendar-x-fill fs-2 text-gray-300"></i>
@@ -37,7 +35,7 @@
                      <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs fw-bold text-warning text-uppercase mb-1">Note Spesa da Approvare</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">3</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${pendingReports.size()}">0</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-wallet2 fs-2 text-gray-300"></i>
@@ -53,7 +51,7 @@
                      <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs fw-bold text-primary text-uppercase mb-1">Veicoli in Flotta</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">12</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${metrics.vehicles}">0</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-car-front-fill fs-2 text-gray-300"></i>
@@ -69,7 +67,7 @@
                      <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs fw-bold text-info text-uppercase mb-1">Corrispondenza Non Letta</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">5</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800" th:text="${metrics.vehiclesAssigned}">0</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-envelope-exclamation-fill fs-2 text-gray-300"></i>
@@ -79,6 +77,70 @@
             </div>
         </div>
     </div>
+	
+	 <div class="row">
+        <div class="col-lg-6 mb-4">
+            <canvas id="vehicleChart"></canvas>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <canvas id="fuelChart"></canvas>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <canvas id="reportChart"></canvas>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <h5>Ultime Attività</h5>
+            <table class="table table-striped">
+                <thead>
+                <tr><th>Tipo</th><th>Descrizione</th><th>Data</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${upcomingDeadlines}" th:remove="all-but-first">
+                    <td>Scadenza</td>
+                    <td th:text="${d.category}"></td>
+                    <td th:text="${d.dueDate}"></td>
+                </tr>
+                <tr th:each="r : ${pendingReports}">
+                    <td>Nota Spese</td>
+                    <td th:text="${r.expenseReportNum}"></td>
+                    <td th:text="${r.reportSubmitDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        const vsLabels = [[${vehicleStatusLabels}]];
+        const vsValues = [[${vehicleStatusValues}]];
+        new Chart(document.getElementById('vehicleChart'), {
+            type: 'doughnut',
+            data: {labels: vsLabels, datasets:[{data: vsValues}]},
+            options: {plugins:{legend:{position:'bottom'}}}
+        });
+
+        const fuelData = [[${fuelCosts}]];
+        const fuelLabels = fuelData.map(v => v.month);
+        const fuelValues = fuelData.map(v => v.total);
+        new Chart(document.getElementById('fuelChart'), {
+            type: 'bar',
+            data: {labels: fuelLabels, datasets:[{data:fuelValues, backgroundColor:'#0d6efd'}]},
+            options:{plugins:{legend:{display:false}}}
+        });
+
+        const repData = [[${reportTotals}]];
+        const repLabels = repData.map(v => v.month);
+        const repValues = repData.map(v => v.total);
+        new Chart(document.getElementById('reportChart'), {
+            type:'bar',
+            data:{labels: repLabels, datasets:[{data:repValues, backgroundColor:'#198754'}]},
+            options:{plugins:{legend:{display:false}}}
+        });
+    </script>
+	
     </body>
 </html>

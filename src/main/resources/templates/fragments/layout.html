@@ -21,12 +21,11 @@
         </div>
         <div class="list-group list-group-flush">
             <a th:href="@{/welcome}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-house-door-fill me-3"></i>Dashboard</a>
-            <a th:href="@{/fleet}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-car-front-fill me-3"></i>Parco Auto</a>
-            <a th:href="@{/employees}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-people-fill me-3"></i>Dipendenti</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-wallet-fill me-3"></i>Note Spese</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-envelope-paper-fill me-3"></i>Corrispondenza</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-calendar-check-fill me-3"></i>Scadenze</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-fuel-pump-fill me-3"></i>Spese Carburante</a>
+            <a th:href="@{/fleet/vehicles}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-car-front-fill me-3"></i>Parco Auto</a>
+            <a th:href="@{/fleet/employees/manage}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-people-fill me-3"></i>Dipendenti</a>
+            <a th:href="@{/fleet/expense-reports}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-wallet-fill me-3"></i>Note Spese</a>
+            <a th:href="@{/correspondence}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-envelope-paper-fill me-3"></i>Corrispondenza</a>
+            <a th:href="@{/deadlines}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-calendar-check-fill me-3"></i>Scadenze</a>
         </div>
     </div>
 
@@ -41,7 +40,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Profilo</a>
-                            <a class="dropdown-item" href="#">Logout</a>
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
                         </div>
                     </li>
                 </ul>

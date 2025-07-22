@@ -18,6 +18,12 @@ public class HomeController {
     @GetMapping({"/", "/welcome"})
     public String home(Model model) {
         model.addAttribute("metrics", dashboardService.getMetrics());
+        model.addAttribute("vehicleStatusLabels", dashboardService.getVehicleStatusCounts().keySet());
+        model.addAttribute("vehicleStatusValues", dashboardService.getVehicleStatusCounts().values());
+        model.addAttribute("fuelCosts", dashboardService.getFuelCosts(6));
+        model.addAttribute("reportTotals", dashboardService.getExpenseReportTotals(6));
+        model.addAttribute("upcomingDeadlines", dashboardService.getUpcomingDeadlines(5));
+        model.addAttribute("pendingReports", dashboardService.getPendingExpenseReports(5));
         return "welcome";   // template: src/main/resources/templates/welcome.html
     }
 

@@ -7,6 +7,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.veely.entity.Employee;
+import com.veely.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
 @Configuration
 public class SecurityConfig {
 
@@ -48,6 +58,7 @@ public class SecurityConfig {
     }
 }
 
+
 /**
  * Sicurezza HTTP + autenticazione via:
  *  • Form-login (tabella employees)
@@ -71,30 +82,28 @@ public class SecurityConfig {
     // === UserDetailsService: carica l’utente dal DB ===
     @Bean
     public UserDetailsService userDetailsService() {
-        return (String username) -> {
+    	return username -> {
             Employee emp = employeeRepository.findByEmail(username)
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException("Utente non trovato: " + username));
+            		.orElseThrow(() -> new UsernameNotFoundException("Utente non trovato: " + username));
 
             return User.builder()
-                       .username(emp.getEmail())
-                       .password(emp.getPassword())              // già cifrata BCrypt
-                       .roles(emp.getRole().name())              // enum → “ADMIN”, “MANAGER”, “USER”
-                       .build();
+            		.username(emp.getEmail())
+                    .password(emp.getPassword())
+                    .roles(emp.getRole().name())
+                    .build();
         };
     }
 
     // === HTTP security filter chain ===
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
             // Risorse pubbliche
+        	.headers(headers -> headers.httpStrictTransportSecurity(hsts -> hsts.disable()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**","/js/**","/images/**",
-                                 "/login","/oauth2/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/fleet/**").hasAnyRole("ADMIN","MANAGER")
+            		.requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/oauth2/**").permitAll()
+                    .requestMatchers("/settings/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
 
@@ -106,7 +115,7 @@ public class SecurityConfig {
             )
 
             // Logout
-            .logout(out -> out
+            .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
             )
@@ -119,6 +128,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-    
+ 
 }
 */
