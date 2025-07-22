@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -103,4 +104,13 @@ public class ExpenseReportService {
                 .map(i -> i.getAmount().longValue())
                 .reduce(0L, Long::sum);
     }
+    
+    @Transactional(readOnly = true)
+    public String getNextExpenseReportBase() {
+        Long maxId = reportRepo.findMaxId();
+        long next = maxId == null ? 1 : maxId + 1;
+        int year = LocalDate.now().getYear();
+        return String.format("%03d/%d/", next, year);
+    }
+
 }

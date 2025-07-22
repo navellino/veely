@@ -44,9 +44,18 @@ public class ExpenseReportController {
 
     @GetMapping("/new")
     public String newForm(Model model) {
-        model.addAttribute("report", new ExpenseReport());
+    	List<Employee> employees = employeeService.findAll();
+        ExpenseReport report = new ExpenseReport();
+        String baseNum = reportService.getNextExpenseReportBase();
+        if (!employees.isEmpty()) {
+            report.setExpenseReportNum(baseNum + getInitials(employees.get(0)));
+        } else {
+            report.setExpenseReportNum(baseNum);
+        }
+        model.addAttribute("report", report);
+        model.addAttribute("baseReportNum", baseNum);
         model.addAttribute("items", new ArrayList<ExpenseItem>());
-        model.addAttribute("employees", employeeService.findAll());
+        model.addAttribute("employees", employees);
         model.addAttribute("statuses", ExpenseStatus.values());
         model.addAttribute("paymentMethods", PaymentMethod.values());
         model.addAttribute("suppliers", supplierService.findAll());
@@ -167,5 +176,16 @@ public class ExpenseReportController {
             list.add(it);
         }
         return list;
+    }
+    
+    private String getInitials(Employee e) {
+        if (e == null) {
+            return "";
+        }
+        String first = e.getFirstName() == null ? "" : e.getFirstName();
+        String last = e.getLastName() == null ? "" : e.getLastName();
+        char li = last.isEmpty() ? ' ' : Character.toUpperCase(last.charAt(0));
+        char fi = first.isEmpty() ? ' ' : Character.toUpperCase(first.charAt(0));
+        return "" + li + fi;
     }
 }

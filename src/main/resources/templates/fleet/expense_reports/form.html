@@ -8,7 +8,7 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="col-md-6">
             <label class="form-label">Dipendente</label>
-            <select class="form-select" th:field="*{employee.id}">
+            <select class="form-select" th:field="*{employee.id}" id="employeeSelect">
                 <option th:each="e : ${employees}" th:value="${e.id}" th:text="${e.firstName + ' ' + e.lastName}"></option>
             </select>
         </div>
@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-3">
             <label class="form-label">Numero Nota</label>
-            <input class="form-control" th:field="*{expenseReportNum}" />
+            <input class="form-control" th:field="*{expenseReportNum}" id="expenseReportNum" th:attr="data-base=${baseReportNum}" />
         </div>
         <div class="col-md-3">
             <label class="form-label">Nota Padre</label>
@@ -154,6 +154,27 @@ function updateNonReimbursable(){
 document.getElementById('expenseReportTotal').addEventListener('input', updateNonReimbursable);
 document.getElementById('reimbursableTotal').addEventListener('input', updateNonReimbursable);
 updateNonReimbursable();
+function updateReportNum(){
+    const select = document.getElementById('employeeSelect');
+    const base = document.getElementById('expenseReportNum').dataset.base || '';
+    if(!select){
+        return;
+    }
+    if(!base){
+        return;
+    }
+    const option = select.options[select.selectedIndex];
+    const text = option ? option.text.trim() : '';
+    const parts = text.split(' ');
+    const first = parts.shift() || '';
+    const last = parts.join(' ') || '';
+    const initials = (last.charAt(0) || '').toUpperCase() + (first.charAt(0) || '').toUpperCase();
+    document.getElementById('expenseReportNum').value = base + initials;
+}
+
+document.getElementById('employeeSelect').addEventListener('change', updateReportNum);
+updateReportNum();
+
 </script>
 </body>
 </html>
