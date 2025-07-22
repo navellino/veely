@@ -23,6 +23,7 @@ public class ExpenseReportService {
     public ExpenseReport create(ExpenseReport report, List<ExpenseItem> items) {
         report.setExpenseStatus(ExpenseStatus.Draft);
         report.setExpenseReportTotal(sumItems(items));
+        report.setNonReimbursableTotal(report.getExpenseReportTotal() - report.getReimbursableTotal());
         ExpenseReport saved = reportRepo.save(report);
         for (ExpenseItem item : items) {
             item.setExpenseReport(saved);
@@ -39,7 +40,10 @@ public class ExpenseReportService {
         existing.setPaymentMethodCode(payload.getPaymentMethodCode());
         existing.setExpenseStatus(payload.getExpenseStatus());
         existing.setEmployee(payload.getEmployee());
+        existing.setProject(payload.getProject());
+        existing.setReimbursableTotal(payload.getReimbursableTotal());
         existing.setExpenseReportTotal(sumItems(items));
+        existing.setNonReimbursableTotal(existing.getExpenseReportTotal() - existing.getReimbursableTotal());
         // replace items
         List<ExpenseItem> current = itemRepo.findByExpenseReportId(id);
         itemRepo.deleteAll(current);

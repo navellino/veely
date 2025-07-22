@@ -59,9 +59,12 @@ public class ExpenseReport {
 	private long reimbursableTotal; //Totale degli importi rimborsabili al dipendente.
 	
 	private long nonReimbursableTotal; //Totale degli importi non rimborsabili (es. spese pagate con carta aziendale).
-	
-	@Enumerated(EnumType.STRING)
-	private PaymentMethod paymentMethodCode; //Metodo di pagamento per il rimborso (es. Bonifico, Busta Paga).
+
+    @ManyToOne
+    private Project project; // Commessa associata alla nota spese
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethodCode; //Metodo di pagamento per il rimborso (es. Bonifico, Busta Paga).
 	
 	@Enumerated(EnumType.STRING)
 	private ExpenseStatus expenseStatus; //Stato corrente del workflow (es. Draft, Submitted, Approved, Rejected, Paid).

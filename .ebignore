@@ -1,0 +1,5 @@
+# esclude tutto
+**
+# ma include JAR e Procfile
+!veely-0.0.1-SNAPSHOT.jar
+!Procfile

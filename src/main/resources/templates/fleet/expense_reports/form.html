@@ -60,6 +60,13 @@
             <label class="form-label">Scopo</label>
             <input class="form-control" th:field="*{puorpose}" />
         </div>
+        <div class="col-md-3">
+            <label class="form-label">Commessa</label>
+            <select class="form-select" th:field="*{project.id}">
+                <option value=""></option>
+                <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
+            </select>
+        </div>
         <div class="col-12">
             <h5>Voci di spesa</h5>
             <table class="table" id="itemsTable">
@@ -70,7 +77,6 @@
                         <th>Importo</th>
                         <th>Nr. Fattura</th>
                         <th>Fornitore</th>
-                        <th>Commessa</th>
                         <th>Note</th>
                         <th></th>
                     </tr>
@@ -85,12 +91,6 @@
                             <select class="form-select" name="itemSupplierId" th:value="${it.supplier != null ? it.supplier.id : ''}">
                                 <option value=""></option>
                                 <option th:each="s : ${suppliers}" th:value="${s.id}" th:text="${s.name}"></option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-select" name="itemProjectId" th:value="${it.project != null ? it.project.id : ''}">
-                                <option value=""></option>
-                                <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
                             </select>
                         </td>
                         <td><input type="text" class="form-control" name="itemNote" th:value="${it.note}" /></td>
@@ -110,12 +110,6 @@
                             <option th:each="s : ${suppliers}" th:value="${s.id}" th:text="${s.name}"></option>
                         </select>
                     </td>
-                    <td>
-                        <select class="form-select" name="itemProjectId">
-                            <option value=""></option>
-                            <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
-                        </select>
-                    </td>
                     <td><input type="text" class="form-control" name="itemNote"/></td>
                     <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                 </tr>
@@ -124,15 +118,15 @@
         </div>
         <div class="col-md-4">
             <label class="form-label">Totale Nota Spese</label>
-            <input class="form-control" th:field="*{expenseReportTotal}" />
+            <input class="form-control" th:field="*{expenseReportTotal}" id="expenseReportTotal" />
         </div>
         <div class="col-md-4">
             <label class="form-label">Totale Rimborsabile</label>
-            <input class="form-control" th:field="*{reimbursableTotal}" />
+            <input class="form-control" th:field="*{reimbursableTotal}" id="reimbursableTotal" />
         </div>
         <div class="col-md-4">
             <label class="form-label">Totale Non Rimborsabile</label>
-            <input class="form-control" th:field="*{nonReimbursableTotal}" />
+            <input class="form-control" th:field="*{nonReimbursableTotal}" id="nonReimbursableTotal" readonly />
         </div>
         <div class="col-12 d-flex justify-content-end">
             <a class="btn btn-outline-secondary me-auto" th:href="@{/fleet/expense-reports}"><i class="bi bi-list-ul me-1"></i> Lista</a>
@@ -152,6 +146,14 @@ function addRow(){
 function removeRow(btn){
     btn.closest('tr').remove();
 }
+function updateNonReimbursable(){
+    const total = parseFloat(document.getElementById('expenseReportTotal').value || '0');
+    const reimb = parseFloat(document.getElementById('reimbursableTotal').value || '0');
+    document.getElementById('nonReimbursableTotal').value = total - reimb;
+}
+document.getElementById('expenseReportTotal').addEventListener('input', updateNonReimbursable);
+document.getElementById('reimbursableTotal').addEventListener('input', updateNonReimbursable);
+updateNonReimbursable();
 </script>
 </body>
 </html>

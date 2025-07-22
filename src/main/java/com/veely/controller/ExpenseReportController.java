@@ -11,7 +11,6 @@ import com.veely.service.ExpenseReportService;
 import com.veely.service.SupplierService;
 
 import com.veely.model.PaymentMethod;
-import com.veely.entity.Project;
 import com.veely.service.ProjectService;
 
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,6 @@ public class ExpenseReportController {
                          @RequestParam("itemDate") List<String> itemDate,
                          @RequestParam("itemInvoice") List<String> itemInvoice,
                          @RequestParam("itemSupplierId") List<String> itemSupplier,
-                         @RequestParam("itemProjectId") List<String> itemProject,
                          @RequestParam("itemNote") List<String> itemNote,
                          Model model) {
         if (binding.hasErrors()) {
@@ -70,7 +68,7 @@ public class ExpenseReportController {
             model.addAttribute("statuses", ExpenseStatus.values());
             return "fleet/expense_reports/form";
         }
-        List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate, itemInvoice, itemSupplier, itemProject, itemNote);
+        List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate, itemInvoice, itemSupplier, itemNote);
         ExpenseReport saved = reportService.create(report, items);
         return "redirect:/fleet/expense-reports/" + saved.getId() + "/edit";
     }
@@ -96,7 +94,6 @@ public class ExpenseReportController {
                          @RequestParam("itemDate") List<String> itemDate,
                          @RequestParam("itemInvoice") List<String> itemInvoice,
                          @RequestParam("itemSupplierId") List<String> itemSupplier,
-                         @RequestParam("itemProjectId") List<String> itemProject,
                          @RequestParam("itemNote") List<String> itemNote,
                          Model model) {
         if (binding.hasErrors()) {
@@ -107,7 +104,7 @@ public class ExpenseReportController {
             model.addAttribute("projects", projectService.findAll());
             return "fleet/expense_reports/form";
         }
-        List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate, itemInvoice, itemSupplier, itemProject, itemNote);
+        List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate, itemInvoice, itemSupplier, itemNote);
         reportService.update(id, report, items);
         return "redirect:/fleet/expense-reports/" + id + "/edit";
     }
@@ -130,16 +127,15 @@ public class ExpenseReportController {
     }
 
     private List<ExpenseItem> buildItems(List<String> descs, List<String> amounts, List<String> dates,
-            List<String> invoices, List<String> suppliers, List<String> projects, List<String> notes) {
+    		List<String> invoices, List<String> suppliers, List<String> notes) {
         List<ExpenseItem> list = new ArrayList<>();
-        int size = Math.min(Math.min(descs.size(), amounts.size()), Math.min(dates.size(), Math.min(invoices.size(), Math.min(suppliers.size(), Math.min(projects.size(), notes.size())))));
+        int size = Math.min(Math.min(descs.size(), amounts.size()), Math.min(dates.size(), Math.min(invoices.size(), Math.min(suppliers.size(), notes.size()))));
         for (int i = 0; i < size; i++) {
             String desc = descs.get(i);
             String amountStr = amounts.get(i);
             String dateStr = dates.get(i);
             String invoice = invoices.get(i);
             String supplierId = suppliers.get(i);
-            String projectId = projects.get(i);
             String note = notes.get(i);
 
             if ((desc == null || desc.isBlank()) &&
@@ -147,7 +143,6 @@ public class ExpenseReportController {
                 (dateStr == null || dateStr.isBlank()) &&
                 (invoice == null || invoice.isBlank()) &&
                 (supplierId == null || supplierId.isBlank()) &&
-                (projectId == null || projectId.isBlank()) &&
                 (note == null || note.isBlank())) {
                 continue;
             }
@@ -165,10 +160,6 @@ public class ExpenseReportController {
             if (supplierId != null && !supplierId.isBlank()) {
                 Supplier s = supplierService.findByIdOrThrow(Long.parseLong(supplierId));
                 it.setSupplier(s);
-            }
-            if (projectId != null && !projectId.isBlank()) {
-                Project p = projectService.findByIdOrThrow(Long.parseLong(projectId));
-                it.setProject(p);
             }
             if (note != null && !note.isBlank()) {
                 it.setNote(note);
