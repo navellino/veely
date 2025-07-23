@@ -1,9 +1,14 @@
 <!-- src/main/resources/templates/fleet/expense_reports/index.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: commonHead('Note Spese – Veely')}"></head>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+      
+   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+<head>
+    <title>Dashboard</title>
+</head>
 <body class="d-flex flex-column min-vh-100">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 <main class="container my-5 flex-fill">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-semibold">Note Spese</h2>
@@ -50,6 +55,5 @@
         </table>
     </div>
 </main>
-<div th:insert="~{fragments/footer :: mainFooter}"></div>
 </body>
 </html>

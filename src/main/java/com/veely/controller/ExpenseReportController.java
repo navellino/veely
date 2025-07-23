@@ -9,22 +9,24 @@ import com.veely.model.ExpenseStatus;
 import com.veely.service.EmployeeService;
 import com.veely.service.ExpenseReportService;
 import com.veely.service.SupplierService;
-
+import com.veely.service.DocumentService;
 import com.veely.model.PaymentMethod;
 import com.veely.service.ProjectService;
-
+import com.veely.model.DocumentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+
 
 @Controller
 @RequestMapping("/fleet/expense-reports")
@@ -35,6 +37,7 @@ public class ExpenseReportController {
     private final EmployeeService employeeService;
     private final SupplierService supplierService;
     private final ProjectService projectService;
+    private final DocumentService documentService;
 
     @GetMapping
     public String list(Model model) {
@@ -133,6 +136,19 @@ public class ExpenseReportController {
             r.setExpenseStatus(ExpenseStatus.Approved);
         }
         return "redirect:/fleet/expense-reports/" + id + "/edit";
+    }
+    
+    @PostMapping("/items/{itemId}/docs")
+    public String uploadItemDocument(@PathVariable Long itemId,
+                                     @RequestParam("file") MultipartFile file,
+                                     @RequestParam("type") DocumentType type,
+                                     @RequestParam(value = "issueDate", required = false) String issueDate,
+                                     @RequestParam(value = "expiryDate", required = false) String expiryDate,
+                                     @RequestParam("reportId") Long reportId) throws IOException {
+        LocalDate issued = (issueDate == null || issueDate.isBlank()) ? null : LocalDate.parse(issueDate);
+        LocalDate exp = (expiryDate == null || expiryDate.isBlank()) ? null : LocalDate.parse(expiryDate);
+        documentService.uploadExpenseItemDocument(itemId, file, type, issued, exp);
+        return "redirect:/fleet/expense-reports/" + reportId + "/edit";
     }
 
     private List<ExpenseItem> buildItems(List<String> descs, List<String> amounts, List<String> dates,

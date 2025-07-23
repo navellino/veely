@@ -1,5 +1,7 @@
 package com.veely.model;
 
+import javax.print.attribute.standard.PrinterMoreInfoManufacturer;
+
 public enum DocumentType {
     // ---- VEICOLO ----
 	SPACE1("---- VEICOLO ----"),
@@ -18,7 +20,6 @@ public enum DocumentType {
     TRANSFER_ORDER("Lettera di Trasferimento"),
     DISCIPLINARY_LETTER("Lettera di richiamo"),
     
-
     // ---- PERSONA ----
     SPACE2("---- PERSONA ----"),
     IDENTITY_PHOTO("Foto Profilo"),
@@ -33,6 +34,10 @@ public enum DocumentType {
     ASSIGNMENT_REPORT("Report riconsegna / danni"),
     ASSIGNMENT_LETTER("Lettera di assegnazione veicolo"),
     
+    // ------ NOTE SPESE ------
+    SPACE4("---- NOTE SPESE ----"),
+    INVOICE("Fattura"),
+    RECEIPT("Scontrino/Ricevuta"),
     
     OTHER("Altro");
 

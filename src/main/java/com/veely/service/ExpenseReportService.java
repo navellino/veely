@@ -92,6 +92,12 @@ public class ExpenseReportService {
     public List<ExpenseItem> findItems(Long reportId) {
         return itemRepo.findByExpenseReportId(reportId);
     }
+    
+    @Transactional(readOnly = true)
+    public ExpenseItem findItemById(Long id) {
+        return itemRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Voce spesa non trovata: " + id));
+    }
 
     public void delete(Long id) {
         ExpenseReport r = findByIdOrThrow(id);

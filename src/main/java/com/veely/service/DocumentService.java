@@ -5,10 +5,12 @@ import com.veely.entity.Correspondence;
 import com.veely.entity.Document;
 import com.veely.entity.Employee;
 import com.veely.entity.Employment;
+import com.veely.entity.ExpenseItem;
 import com.veely.entity.Vehicle;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.DocumentType;
 import com.veely.repository.DocumentRepository;
+import com.veely.service.ExpenseReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class DocumentService {
     private final VehicleService vehicleService;
     private final AssignmentService assignmentService;
     private final CorrespondenceService correspondenceService;
+    private final ExpenseReportService expenseReportService;
 
 
     /** Recupera un documento o lancia eccezione */
@@ -140,6 +143,32 @@ public class DocumentService {
 
         Document doc = Document.builder()
             .assignment(asg)
+            .type(type)
+            .issueDate(issueDate)
+            .expiryDate(expiryDate)
+            .path(subdir + "/" + filename)
+            .build();
+        return documentRepo.save(doc);
+    }
+    
+ // --- Expense Item Documents ---
+    @Transactional(readOnly = true)
+    public List<Document> getExpenseItemDocuments(Long itemId) {
+        return documentRepo.findByExpenseItemId(itemId);
+    }
+
+    public Document uploadExpenseItemDocument(Long itemId,
+                                              MultipartFile file,
+                                              DocumentType type,
+                                              LocalDate issueDate,
+                                              LocalDate expiryDate) throws IOException {
+        ExpenseItem item = expenseReportService.findItemById(itemId);
+        String subdir = "expense_items/" + itemId + "/docs";
+        fileStorage.initDirectory(subdir);
+        String filename = fileStorage.store(file, subdir);
+
+        Document doc = Document.builder()
+            .expenseItem(item)
             .type(type)
             .issueDate(issueDate)
             .expiryDate(expiryDate)

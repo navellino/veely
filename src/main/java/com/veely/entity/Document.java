@@ -27,6 +27,10 @@ public class Document {
 
     @ManyToOne @JoinColumn(name="assignment_id")
     private Assignment assignment;
+    
+    @ManyToOne
+    @JoinColumn(name="expense_item_id")
+    private ExpenseItem expenseItem;
 
     @OneToOne
     @JoinColumn(name="correspondence_id", unique = true)
