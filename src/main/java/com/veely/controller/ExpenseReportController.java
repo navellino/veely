@@ -102,9 +102,9 @@ public class ExpenseReportController {
     public String editForm(@PathVariable Long id, Model model) {
         ExpenseReport r = reportService.findByIdOrThrow(id);
         List<ExpenseItem> items = reportService.findItems(id);
-        Map<Long, List<Document>> docs = new java.util.HashMap<>();
+        Map<Long, List<com.veely.model.DocumentInfo>> docs = new java.util.HashMap<>();
         for (ExpenseItem it : items) {
-            docs.put(it.getId(), documentService.getExpenseItemDocuments(it.getId()));
+        	docs.put(it.getId(), documentService.getExpenseItemDocumentInfo(it.getId()));
         }
         model.addAttribute("report", r);
         model.addAttribute("items", items);

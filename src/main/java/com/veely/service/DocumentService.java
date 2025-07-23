@@ -178,6 +178,18 @@ public class DocumentService {
     }
     
     /**
+     * Returns lightweight document info for an expense item to avoid
+     * serialization loops when rendering views.
+     */
+    @Transactional(readOnly = true)
+    public List<com.veely.model.DocumentInfo> getExpenseItemDocumentInfo(Long itemId) {
+        return documentRepo.findByExpenseItemId(itemId)
+                .stream()
+                .map(d -> new com.veely.model.DocumentInfo(d.getId(), d.getPath()))
+                .toList();
+    }
+    
+    /**
      * Carica e salva un documento per un dipendente.
      */
     /** Carica fisicamente e salva in DB un documento per un dipendente */
