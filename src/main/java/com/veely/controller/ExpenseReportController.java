@@ -5,6 +5,7 @@ import com.veely.entity.EmployeeRole;
 import com.veely.entity.ExpenseItem;
 import com.veely.entity.ExpenseReport;
 import com.veely.entity.Supplier;
+import com.veely.entity.Document;
 import com.veely.model.ExpenseStatus;
 import com.veely.service.EmployeeService;
 import com.veely.service.ExpenseReportService;
@@ -19,13 +20,24 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 
 @Controller
@@ -63,6 +75,7 @@ public class ExpenseReportController {
         model.addAttribute("paymentMethods", PaymentMethod.values());
         model.addAttribute("suppliers", supplierService.findAll());
         model.addAttribute("projects", projectService.findAll());
+        model.addAttribute("docTypes", new DocumentType[]{DocumentType.INVOICE, DocumentType.RECEIPT, DocumentType.OTHER});
         return "fleet/expense_reports/form";
     }
 
@@ -88,13 +101,20 @@ public class ExpenseReportController {
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         ExpenseReport r = reportService.findByIdOrThrow(id);
+        List<ExpenseItem> items = reportService.findItems(id);
+        Map<Long, List<Document>> docs = new java.util.HashMap<>();
+        for (ExpenseItem it : items) {
+            docs.put(it.getId(), documentService.getExpenseItemDocuments(it.getId()));
+        }
         model.addAttribute("report", r);
-        model.addAttribute("items", reportService.findItems(id));
+        model.addAttribute("items", items);
+        model.addAttribute("itemDocs", docs);
         model.addAttribute("employees", employeeService.findAll());
         model.addAttribute("statuses", ExpenseStatus.values());
         model.addAttribute("paymentMethods", PaymentMethod.values());
         model.addAttribute("suppliers", supplierService.findAll());
         model.addAttribute("projects", projectService.findAll());
+        model.addAttribute("docTypes", new DocumentType[]{DocumentType.INVOICE, DocumentType.RECEIPT, DocumentType.OTHER});
         return "fleet/expense_reports/form";
     }
 
@@ -114,6 +134,14 @@ public class ExpenseReportController {
             model.addAttribute("paymentMethods", PaymentMethod.values());
             model.addAttribute("suppliers", supplierService.findAll());
             model.addAttribute("projects", projectService.findAll());
+            List<ExpenseItem> items = reportService.findItems(id);
+            Map<Long, List<com.veely.entity.Document>> itemDocs = new HashMap<>();
+            for (ExpenseItem it : items) {
+                itemDocs.put(it.getId(), documentService.getExpenseItemDocuments(it.getId()));
+            }
+            model.addAttribute("items", items);
+            model.addAttribute("itemDocs", itemDocs);
+            model.addAttribute("docTypes", new DocumentType[]{DocumentType.INVOICE, DocumentType.RECEIPT, DocumentType.OTHER});
             return "fleet/expense_reports/form";
         }
         List<ExpenseItem> items = buildItems(itemDesc, itemAmount, itemDate, itemInvoice, itemSupplier, itemNote);
@@ -138,6 +166,27 @@ public class ExpenseReportController {
         return "redirect:/fleet/expense-reports/" + id + "/edit";
     }
     
+    @GetMapping("/docs/{docId}")
+    public ResponseEntity<Resource> downloadItemDocument(@PathVariable Long docId, HttpServletRequest request) throws IOException {
+        Resource res = documentService.loadDocument(docId);
+        String ct = request.getServletContext().getMimeType(res.getFile().getAbsolutePath());
+        if (ct == null) ct = "application/octet-stream";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(ct))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
+                .body(res);
+    }
+
+    @GetMapping("/items/{itemId}/docs/{docId}/delete")
+    public String deleteItemDocument(@PathVariable Long itemId,
+                                     @PathVariable Long docId) throws IOException {
+        Document doc = documentService.getDocument(docId);
+        Long reportId = doc.getExpenseItem().getExpenseReport().getId();
+        documentService.deleteDocument(docId);
+        return "redirect:/fleet/expense-reports/" + reportId + "/edit";
+    }
+
+    
     @PostMapping("/items/{itemId}/docs")
     public String uploadItemDocument(@PathVariable Long itemId,
                                      @RequestParam("file") MultipartFile file,
@@ -151,6 +200,17 @@ public class ExpenseReportController {
         return "redirect:/fleet/expense-reports/" + reportId + "/edit";
     }
 
+    @GetMapping("/docs/{docId}")
+    public ResponseEntity<org.springframework.core.io.Resource> downloadDoc(@PathVariable Long docId, jakarta.servlet.http.HttpServletRequest request) throws IOException {
+        org.springframework.core.io.Resource res = documentService.loadDocument(docId);
+        String ct = request.getServletContext().getMimeType(res.getFile().getAbsolutePath());
+        if (ct == null) ct = "application/octet-stream";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(ct))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
+                .body(res);
+    }
+    
     private List<ExpenseItem> buildItems(List<String> descs, List<String> amounts, List<String> dates,
     		List<String> invoices, List<String> suppliers, List<String> notes) {
         List<ExpenseItem> list = new ArrayList<>();
