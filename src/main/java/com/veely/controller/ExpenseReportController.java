@@ -166,6 +166,15 @@ public class ExpenseReportController {
         return "redirect:/fleet/expense-reports/" + id + "/edit";
     }
     
+    @GetMapping("/{id}/export")
+    public ResponseEntity<byte[]> exportPdf(@PathVariable Long id) {
+        byte[] pdf = reportService.exportPdf(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=expense-report-" + id + ".pdf")
+                .body(pdf);
+    }
+    
     @GetMapping("/docs/{docId}")
     public ResponseEntity<Resource> downloadItemDocument(@PathVariable Long docId, HttpServletRequest request) throws IOException {
         Resource res = documentService.loadDocument(docId);

@@ -34,7 +34,6 @@ public class DocumentService {
     private final VehicleService vehicleService;
     private final AssignmentService assignmentService;
     private final CorrespondenceService correspondenceService;
-    private final ExpenseReportService expenseReportService;
     private final ExpenseItemRepository itemRepo;
 
 

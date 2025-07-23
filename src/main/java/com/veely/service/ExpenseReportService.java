@@ -8,7 +8,9 @@ import com.veely.repository.EmployeeRepository;
 import com.veely.repository.ExpenseItemRepository;
 import com.veely.repository.ExpenseReportRepository;
 import com.veely.repository.ProjectRepository;
-import com.veely.service.DocumentService;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,4 +139,75 @@ public class ExpenseReportService {
         return String.format("%03d/%d/", next, year);
     }
 
+    /**
+     * Genera la versione PDF di una singola nota spese.
+     */
+    @Transactional(readOnly = true)
+    public byte[] exportPdf(Long id) {
+        ExpenseReport report = findByIdOrThrow(id);
+        List<ExpenseItem> items = findItems(id);
+
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        Document pdfDoc = new Document(PageSize.A4);
+        try {
+            PdfWriter.getInstance(pdfDoc, out);
+            pdfDoc.open();
+
+            pdfDoc.add(new Paragraph("Nota Spese"));
+            pdfDoc.add(new Paragraph(" "));
+
+            // Intestazione principale
+            PdfPTable header = new PdfPTable(1);
+            header.setWidthPercentage(100f);
+            header.addCell("Dipendente: "
+                    + (report.getEmployee() != null
+                        ? report.getEmployee().getFirstName() + " " + report.getEmployee().getLastName()
+                        : ""));
+            header.addCell("Numero: " + report.getExpenseReportNum());
+            header.addCell("Data creazione: " +
+                    (report.getCreationDate() != null ? report.getCreationDate().toString() : ""));
+            header.addCell("Scopo: " + (report.getPuorpose() != null ? report.getPuorpose() : ""));
+            header.addCell("Periodo: " +
+                    (report.getStartDate() != null ? report.getStartDate().toString() : "") +
+                    " - " + (report.getEndDate() != null ? report.getEndDate().toString() : ""));
+            pdfDoc.add(header);
+
+            pdfDoc.add(new Paragraph(" "));
+
+            // Tabella righe di spesa
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(100f);
+            table.addCell("Data");
+            table.addCell("Descrizione e Note");
+            table.addCell("Importo");
+            for (ExpenseItem it : items) {
+                table.addCell(it.getDate() != null ? it.getDate().toString() : "");
+                String desc = it.getDescription() == null ? "" : it.getDescription();
+                if (it.getNote() != null && !it.getNote().isBlank()) {
+                    desc += " - " + it.getNote();
+                }
+                table.addCell(desc);
+                table.addCell(it.getAmount() != null ? it.getAmount().toString() : "");
+            }
+            pdfDoc.add(table);
+
+            pdfDoc.add(new Paragraph(" "));
+
+            pdfDoc.add(new Paragraph("Totale Nota Spese: " +
+                    (report.getExpenseReportTotal() != null ? report.getExpenseReportTotal().toString() : "")));
+            pdfDoc.add(new Paragraph("Totale Rimborsabile: " +
+                    (report.getReimbursableTotal() != null ? report.getReimbursableTotal().toString() : "")));
+            pdfDoc.add(new Paragraph("Totale Non Rimborsabile: " +
+                    (report.getNonReimbursableTotal() != null ? report.getNonReimbursableTotal().toString() : "")));
+            pdfDoc.add(new Paragraph("Metodo di Pagamento: " +
+                    (report.getPaymentMethodCode() != null ? report.getPaymentMethodCode().getDisplayName() : "")));
+
+            pdfDoc.close();
+        } catch (DocumentException e) {
+            throw new RuntimeException("Errore nella creazione del PDF", e);
+        }
+
+        return out.toByteArray();
+    }
+    
 }

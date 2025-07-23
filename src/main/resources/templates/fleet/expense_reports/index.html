@@ -39,6 +39,9 @@
                         <a th:href="@{|/fleet/expense-reports/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
                             <i class="bi bi-pencil"></i>
                         </a>
+                        <a th:href="@{|/fleet/expense-reports/${r.id}/export|}" class="btn btn-sm btn-outline-primary me-1" title="PDF">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </a>
                         <!-- 
                          <form th:action="@{|/fleet/expense-reports/${r.id}/approve|}" method="post" class="d-inline me-1">
                             <button type="submit" class="btn btn-sm btn-success" th:text="${r.expenseStatus.name() == 'Approved' ? 'Bozza' : 'Approva'}"></button>
