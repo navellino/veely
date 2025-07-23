@@ -148,59 +148,93 @@ public class ExpenseReportService {
         List<ExpenseItem> items = findItems(id);
 
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        Document pdfDoc = new Document(PageSize.A4);
+        Document pdfDoc = new Document(PageSize.A4, 36, 36, 36, 36);
         try {
             PdfWriter.getInstance(pdfDoc, out);
             pdfDoc.open();
 
-            pdfDoc.add(new Paragraph("Nota Spese"));
-            pdfDoc.add(new Paragraph(" "));
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+            Paragraph title = new Paragraph("Nota Spese", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(10f);
+            pdfDoc.add(title);
 
             // Intestazione principale
-            PdfPTable header = new PdfPTable(1);
+            Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+            Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+            PdfPTable header = new PdfPTable(new float[]{1f, 2f});
             header.setWidthPercentage(100f);
-            header.addCell("Dipendente: "
-                    + (report.getEmployee() != null
-                        ? report.getEmployee().getFirstName() + " " + report.getEmployee().getLastName()
-                        : ""));
-            header.addCell("Numero: " + report.getExpenseReportNum());
-            header.addCell("Data creazione: " +
-                    (report.getCreationDate() != null ? report.getCreationDate().toString() : ""));
-            header.addCell("Scopo: " + (report.getPuorpose() != null ? report.getPuorpose() : ""));
-            header.addCell("Periodo: " +
+            header.setSpacingAfter(10f);
+
+            header.addCell(new Phrase("Dipendente:", labelFont));
+            header.addCell(new Phrase(
+                    report.getEmployee() != null
+                            ? report.getEmployee().getFirstName() + " " + report.getEmployee().getLastName()
+                            : "",
+                    valueFont));
+
+            header.addCell(new Phrase("Numero:", labelFont));
+            header.addCell(new Phrase(report.getExpenseReportNum() == null ? "" : report.getExpenseReportNum(), valueFont));
+
+            header.addCell(new Phrase("Data creazione:", labelFont));
+            header.addCell(new Phrase(
+                    report.getCreationDate() != null ? report.getCreationDate().toString() : "",
+                    valueFont));
+
+            header.addCell(new Phrase("Scopo:", labelFont));
+            header.addCell(new Phrase(report.getPuorpose() != null ? report.getPuorpose() : "", valueFont));
+
+            header.addCell(new Phrase("Periodo:", labelFont));
+            header.addCell(new Phrase(
                     (report.getStartDate() != null ? report.getStartDate().toString() : "") +
-                    " - " + (report.getEndDate() != null ? report.getEndDate().toString() : ""));
+                    " - " + (report.getEndDate() != null ? report.getEndDate().toString() : ""),
+                    valueFont));
+
             pdfDoc.add(header);
 
-            pdfDoc.add(new Paragraph(" "));
-
             // Tabella righe di spesa
-            PdfPTable table = new PdfPTable(3);
+            PdfPTable table = new PdfPTable(new float[]{2f, 6f, 2f});
             table.setWidthPercentage(100f);
-            table.addCell("Data");
-            table.addCell("Descrizione e Note");
-            table.addCell("Importo");
+            table.addCell(new Phrase("Data", labelFont));
+            table.addCell(new Phrase("Descrizione e Note", labelFont));
+            table.addCell(new Phrase("Importo", labelFont));
             for (ExpenseItem it : items) {
-                table.addCell(it.getDate() != null ? it.getDate().toString() : "");
+            	table.addCell(new Phrase(it.getDate() != null ? it.getDate().toString() : "", valueFont));
                 String desc = it.getDescription() == null ? "" : it.getDescription();
                 if (it.getNote() != null && !it.getNote().isBlank()) {
                     desc += " - " + it.getNote();
                 }
-                table.addCell(desc);
-                table.addCell(it.getAmount() != null ? it.getAmount().toString() : "");
+                table.addCell(new Phrase(desc, valueFont));
+                table.addCell(new Phrase(it.getAmount() != null ? it.getAmount().toString() : "", valueFont));
             }
+            table.setSpacingAfter(10f);
             pdfDoc.add(table);
 
-            pdfDoc.add(new Paragraph(" "));
+            PdfPTable totals = new PdfPTable(new float[]{3f, 2f});
+            totals.setWidthPercentage(60f);
+            totals.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            pdfDoc.add(new Paragraph("Totale Nota Spese: " +
-                    (report.getExpenseReportTotal() != null ? report.getExpenseReportTotal().toString() : "")));
-            pdfDoc.add(new Paragraph("Totale Rimborsabile: " +
-                    (report.getReimbursableTotal() != null ? report.getReimbursableTotal().toString() : "")));
-            pdfDoc.add(new Paragraph("Totale Non Rimborsabile: " +
-                    (report.getNonReimbursableTotal() != null ? report.getNonReimbursableTotal().toString() : "")));
-            pdfDoc.add(new Paragraph("Metodo di Pagamento: " +
-                    (report.getPaymentMethodCode() != null ? report.getPaymentMethodCode().getDisplayName() : "")));
+            totals.addCell(new Phrase("Totale Nota Spese", labelFont));
+            totals.addCell(new Phrase(
+                    report.getExpenseReportTotal() != null ? report.getExpenseReportTotal().toString() : "",
+                    valueFont));
+
+            totals.addCell(new Phrase("Totale Rimborsabile", labelFont));
+            totals.addCell(new Phrase(
+                    report.getReimbursableTotal() != null ? report.getReimbursableTotal().toString() : "",
+                    valueFont));
+
+            totals.addCell(new Phrase("Totale Non Rimborsabile", labelFont));
+            totals.addCell(new Phrase(
+                    report.getNonReimbursableTotal() != null ? report.getNonReimbursableTotal().toString() : "",
+                    valueFont));
+
+            totals.addCell(new Phrase("Metodo di Pagamento", labelFont));
+            totals.addCell(new Phrase(
+                    report.getPaymentMethodCode() != null ? report.getPaymentMethodCode().getDisplayName() : "",
+                    valueFont));
+
+            pdfDoc.add(totals);
 
             pdfDoc.close();
         } catch (DocumentException e) {
