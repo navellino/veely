@@ -1,5 +1,6 @@
 package com.veely.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -55,11 +56,11 @@ public class ExpenseReport {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate finalApprovalDate; //Data in cui si ottiene l'approvazione finale.
 	
-	private long expenseReportTotal; //Importo totale della nota spese nella valuta di rimborso.
-	
-	private long reimbursableTotal; //Totale degli importi rimborsabili al dipendente.
-	
-	private long nonReimbursableTotal; //Totale degli importi non rimborsabili (es. spese pagate con carta aziendale).
+	private BigDecimal expenseReportTotal; //Importo totale della nota spese nella valuta di rimborso.
+
+    private BigDecimal reimbursableTotal; //Totale degli importi rimborsabili al dipendente.
+
+    private BigDecimal nonReimbursableTotal; //Totale degli importi non rimborsabili (es. spese pagate con carta aziendale).
 
     @ManyToOne
     private Project project; // Commessa associata alla nota spese

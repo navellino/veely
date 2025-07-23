@@ -37,7 +37,10 @@ public class ExpenseReportService {
          }
         report.setExpenseStatus(ExpenseStatus.Draft);
         report.setExpenseReportTotal(sumItems(items));
-        report.setNonReimbursableTotal(report.getExpenseReportTotal() - report.getReimbursableTotal());
+        if (report.getReimbursableTotal() == null) {
+            report.setReimbursableTotal(java.math.BigDecimal.ZERO);
+        }
+        report.setNonReimbursableTotal(report.getExpenseReportTotal().subtract(report.getReimbursableTotal()));
         ExpenseReport saved = reportRepo.save(report);
         for (ExpenseItem item : items) {
             item.setExpenseReport(saved);
@@ -66,7 +69,10 @@ public class ExpenseReportService {
         }
         existing.setReimbursableTotal(payload.getReimbursableTotal());
         existing.setExpenseReportTotal(sumItems(items));
-        existing.setNonReimbursableTotal(existing.getExpenseReportTotal() - existing.getReimbursableTotal());
+        if (existing.getReimbursableTotal() == null) {
+            existing.setReimbursableTotal(java.math.BigDecimal.ZERO);
+        }
+        existing.setNonReimbursableTotal(existing.getExpenseReportTotal().subtract(existing.getReimbursableTotal()));
         // replace items
         List<ExpenseItem> current = itemRepo.findByExpenseReportId(id);
         itemRepo.deleteAll(current);
@@ -105,11 +111,14 @@ public class ExpenseReportService {
         reportRepo.delete(r);
     }
     
-    private long sumItems(List<ExpenseItem> items) {
-        return items.stream()
-                .filter(i -> i.getAmount() != null)
-                .map(i -> i.getAmount().longValue())
-                .reduce(0L, Long::sum);
+    private java.math.BigDecimal sumItems(List<ExpenseItem> items) {
+        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+        for (ExpenseItem i : items) {
+            if (i.getAmount() != null) {
+                total = total.add(i.getAmount());
+            }
+        }
+        return total;
     }
     
     @Transactional(readOnly = true)

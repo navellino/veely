@@ -11,9 +11,11 @@ import com.veely.repository.ExpenseReportRepository;
 import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -63,19 +65,19 @@ public class DashboardService {
     public List<MonthAmount> getFuelCosts(int months) {
         java.time.YearMonth start = java.time.YearMonth.now().minusMonths(months - 1);
         java.time.LocalDate from = start.atDay(1);
-        java.time.LocalDate to = java.time.LocalDate.now();
-        java.util.Map<java.time.YearMonth, Long> tmp = new java.util.LinkedHashMap<>();
+        LocalDate to = LocalDate.now();
+        Map<java.time.YearMonth, java.math.BigDecimal> tmp = new java.util.LinkedHashMap<>();
         for (Object[] row : expenseItemRepo.sumByMonth(from, to)) {
             int y = ((Number) row[0]).intValue();
             int m = ((Number) row[1]).intValue();
-            long sum = ((Number) row[2]).longValue();
+            BigDecimal sum = new java.math.BigDecimal(row[2].toString());
             tmp.put(java.time.YearMonth.of(y, m), sum);
         }
         List<MonthAmount> result = new java.util.ArrayList<>();
         for (int i = 0; i < months; i++) {
-            java.time.YearMonth ym = start.plusMonths(i);
-            long val = tmp.getOrDefault(ym, 0L);
-            result.add(new MonthAmount(ym.toString(), val));
+        	YearMonth ym = start.plusMonths(i);
+        	BigDecimal val = tmp.getOrDefault(ym, BigDecimal.ZERO);
+        	result.add(new MonthAmount(ym.toString(), val));
         }
         return result;
     }
@@ -85,17 +87,17 @@ public class DashboardService {
         YearMonth start = YearMonth.now().minusMonths(months - 1);
         LocalDate from = start.atDay(1);
         java.time.LocalDate to = java.time.LocalDate.now();
-        java.util.Map<YearMonth, Long> tmp = new LinkedHashMap<>();
+        Map<YearMonth, java.math.BigDecimal> tmp = new LinkedHashMap<>();
         for (Object[] row : expenseReportRepo.sumTotalsByMonth(from, to)) {
             int y = ((Number) row[0]).intValue();
             int m = ((Number) row[1]).intValue();
-            long sum = ((Number) row[2]).longValue();
+            BigDecimal sum = new java.math.BigDecimal(row[2].toString());
             tmp.put(YearMonth.of(y, m), sum);
         }
         List<MonthAmount> result = new java.util.ArrayList<>();
         for (int i = 0; i < months; i++) {
             YearMonth ym = start.plusMonths(i);
-            long val = tmp.getOrDefault(ym, 0L);
+            BigDecimal val = tmp.getOrDefault(ym, java.math.BigDecimal.ZERO);
             result.add(new MonthAmount(ym.toString(), val));
         }
         return result;
@@ -119,7 +121,7 @@ public class DashboardService {
                 .toList();
     }
 
-    public record MonthAmount(String month, long total) {}
+    public record MonthAmount(String month, java.math.BigDecimal total) {}
 
     public record DashboardMetrics(long vehicles,
             long vehiclesInService,
