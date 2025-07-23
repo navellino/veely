@@ -1,7 +1,6 @@
 package com.veely.controller;
 
 import com.veely.entity.Employee;
-import com.veely.entity.EmployeeRole;
 import com.veely.entity.ExpenseItem;
 import com.veely.entity.ExpenseReport;
 import com.veely.entity.Supplier;
@@ -75,6 +74,7 @@ public class ExpenseReportController {
         model.addAttribute("paymentMethods", PaymentMethod.values());
         model.addAttribute("suppliers", supplierService.findAll());
         model.addAttribute("projects", projectService.findAll());
+        
         model.addAttribute("docTypes", new DocumentType[]{DocumentType.INVOICE, DocumentType.RECEIPT, DocumentType.OTHER});
         return "fleet/expense_reports/form";
     }
@@ -200,17 +200,6 @@ public class ExpenseReportController {
         return "redirect:/fleet/expense-reports/" + reportId + "/edit";
     }
 
-    @GetMapping("/docs/{docId}")
-    public ResponseEntity<org.springframework.core.io.Resource> downloadDoc(@PathVariable Long docId, jakarta.servlet.http.HttpServletRequest request) throws IOException {
-        org.springframework.core.io.Resource res = documentService.loadDocument(docId);
-        String ct = request.getServletContext().getMimeType(res.getFile().getAbsolutePath());
-        if (ct == null) ct = "application/octet-stream";
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(ct))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
-                .body(res);
-    }
-    
     private List<ExpenseItem> buildItems(List<String> descs, List<String> amounts, List<String> dates,
     		List<String> invoices, List<String> suppliers, List<String> notes) {
         List<ExpenseItem> list = new ArrayList<>();

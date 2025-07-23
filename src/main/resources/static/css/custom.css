@@ -179,3 +179,15 @@
 .text-icon-14{color:var(--icon-14)}
   .text-icon-15{color:var(--icon-15)}
   .text-icon-16{color:var(--icon-16)}
+  
+/* Stili aggiuntivi per il form Note Spesa */
+
+/* Migliora la leggibilità della tabella delle voci di spesa */
+#itemsTable .form-control, #itemsTable .form-select {
+    font-size: 0.875rem; /* Rimpicciolisce leggermente il testo nei campi */
+    padding: 0.375rem 0.75rem;
+}
+
+#itemsTable td {
+    vertical-align: middle;
+}

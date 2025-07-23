@@ -1,6 +1,7 @@
 package com.veely.entity;
 
 import java.time.LocalDate;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import com.veely.model.ExpenseStatus;
 import com.veely.model.PaymentMethod;
@@ -68,5 +69,5 @@ public class ExpenseReport {
 	
 	@Enumerated(EnumType.STRING)
 	private ExpenseStatus expenseStatus; //Stato corrente del workflow (es. Draft, Submitted, Approved, Rejected, Paid).
-
+	
 }
