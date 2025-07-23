@@ -10,7 +10,7 @@ import com.veely.entity.Vehicle;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.DocumentType;
 import com.veely.repository.DocumentRepository;
-import com.veely.service.ExpenseReportService;
+import com.veely.repository.ExpenseItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,7 @@ public class DocumentService {
     private final AssignmentService assignmentService;
     private final CorrespondenceService correspondenceService;
     private final ExpenseReportService expenseReportService;
+    private final ExpenseItemRepository itemRepo;
 
 
     /** Recupera un documento o lancia eccezione */
@@ -162,7 +163,8 @@ public class DocumentService {
                                               DocumentType type,
                                               LocalDate issueDate,
                                               LocalDate expiryDate) throws IOException {
-        ExpenseItem item = expenseReportService.findItemById(itemId);
+    	ExpenseItem item = itemRepo.findById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Voce spesa non trovata: " + itemId));
         String subdir = "expense_items/" + itemId + "/docs";
         fileStorage.initDirectory(subdir);
         String filename = fileStorage.store(file, subdir);
@@ -187,6 +189,19 @@ public class DocumentService {
                 .stream()
                 .map(d -> new com.veely.model.DocumentInfo(d.getId(), d.getPath()))
                 .toList();
+    }
+    
+    /**
+     * Elimina tutti i documenti collegati a una voce di spesa, inclusi i file su disco.
+     */
+    public void deleteExpenseItemDocuments(Long itemId) {
+        List<Document> docs = documentRepo.findByExpenseItemId(itemId);
+        for (Document doc : docs) {
+            Path p = Path.of(doc.getPath());
+            fileStorage.delete(p.getFileName().toString(), p.getParent().toString());
+            documentRepo.delete(doc);
+        }
+        fileStorage.deleteDirectory("expense_items/" + itemId + "/docs");
     }
     
     /**

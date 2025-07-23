@@ -8,7 +8,7 @@ import com.veely.repository.EmployeeRepository;
 import com.veely.repository.ExpenseItemRepository;
 import com.veely.repository.ExpenseReportRepository;
 import com.veely.repository.ProjectRepository;
-
+import com.veely.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +25,7 @@ public class ExpenseReportService {
     private final ExpenseItemRepository itemRepo;
     private final EmployeeRepository employeeRepo;
     private final ProjectRepository projectRepo;
+    private final DocumentService documentService;
 
     public ExpenseReport create(ExpenseReport report, List<ExpenseItem> items) {
     	 if (report.getEmployee() != null && report.getEmployee().getId() != null) {
@@ -75,6 +76,9 @@ public class ExpenseReportService {
         existing.setNonReimbursableTotal(existing.getExpenseReportTotal().subtract(existing.getReimbursableTotal()));
         // replace items
         List<ExpenseItem> current = itemRepo.findByExpenseReportId(id);
+        for (ExpenseItem it : current) {
+            documentService.deleteExpenseItemDocuments(it.getId());
+        }
         itemRepo.deleteAll(current);
         for (ExpenseItem item : items) {
             item.setExpenseReport(existing);
@@ -107,7 +111,11 @@ public class ExpenseReportService {
 
     public void delete(Long id) {
         ExpenseReport r = findByIdOrThrow(id);
-        itemRepo.deleteAll(itemRepo.findByExpenseReportId(id));
+        List<ExpenseItem> items = itemRepo.findByExpenseReportId(id);
+        for (ExpenseItem it : items) {
+            documentService.deleteExpenseItemDocuments(it.getId());
+        }
+        itemRepo.deleteAll(items);
         reportRepo.delete(r);
     }
     
