@@ -1,13 +1,13 @@
 <!-- src/main/resources/templates/fleet/employees/form.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
 
-<head
-	th:replace="~{fragments/head :: commonHead(${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'})}"></head>
+<head>
+        <title th:text="${employee.id == null ? 'Nuovo Dipendente' : 'Modifica Dipendente'}">Dipendente</title>
+</head>
 
-<body class="d-flex flex-column min-vh-100">
-	<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
-
+<body>
 	<main class="container my-5 flex-fill">
 		<!-- Breadcrumb -->
 		<nav aria-label="breadcrumb" class="mb-4">

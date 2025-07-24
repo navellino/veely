@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
-<head th:replace="~{fragments/head :: commonHead('Nota Spese – Veely')}"></head>
-<body class="d-flex flex-column min-vh-100 bg-light">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Nota Spese – Veely</title>
+</head>
+<body class="bg-light">
 
 <main class="container my-5 flex-fill">
     <form th:object="${report}"

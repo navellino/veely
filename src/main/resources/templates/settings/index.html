@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: commonHead('Settings – Veely')}"></head>
-<body class="d-flex flex-column min-vh-100">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Settings – Veely</title>
+</head>
+<body>
 <main class="container my-5 flex-fill">
     <h2 class="fw-semibold mb-4">Impostazioni</h2>
     <ul>

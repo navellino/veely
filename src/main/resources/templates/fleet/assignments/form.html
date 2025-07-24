@@ -1,7 +1,9 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: commonHead(${assignment.id == null ? 'Nuova Assegnazione – Veely' : 'Modifica Assegnazione – Veely'})}"></head>
-<body class="d-flex flex-column min-vh-100">
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title th:text="${assignment.id == null ? 'Nuova Assegnazione – Veely' : 'Modifica Assegnazione – Veely'}">Assegnazione</title>
+</head>
+<body>
 <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
 <main class="container my-5 flex-fill">
   <nav aria-label="breadcrumb" class="mb-4">

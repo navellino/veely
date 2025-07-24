@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
-<head th:replace="~{fragments/head :: commonHead(${employment.id == null ? 'Nuovo Rapporto' : 'Modifica Rapporto'})}"></head>
-<body class="d-flex flex-column min-vh-100">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title th:text="${employment.id == null ? 'Nuovo Rapporto' : 'Modifica Rapporto'}">Rapporto</title>
+</head>
+<body>
 <main class="container my-5 flex-fill">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb mb-0">

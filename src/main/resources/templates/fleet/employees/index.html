@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{fragments/head :: commonHead('Elenco Dipendenti – Veely')}"></head>
-  <body class="d-flex flex-column min-vh-100">
-
-    <!-- Navbar -->
-    <div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+  <head>
+      <title>Elenco Dipendenti – Veely</title>
+  </head>
+  <body>
 
     <!-- Main content -->
     <main class="container my-5 flex-fill">

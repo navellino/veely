@@ -6,6 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * Scheda carburante associata a un veicolo o a un dipendente.
  */
@@ -28,6 +30,7 @@ public class FuelCard {
 
     /** Data di scadenza della carta */
     @Column(name = "expiry_date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate expiryDate;
 
     /** Fornitore della carta carburante */

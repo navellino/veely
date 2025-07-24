@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
-<head th:replace="~{fragments/head :: commonHead('Modifica Corrispondenza – Veely')}"></head>
-<body class="d-flex flex-column min-vh-100">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Modifica Corrispondenza – Veely</title>
+</head>
+<body>
 <main class="container my-5 flex-fill">
     <h2 class="fw-semibold mb-3">Modifica Corrispondenza</h2>
    <form class="row g-2" th:action="@{|/correspondence/${correspondence.id}/edit?tab=${tab}|}" method="post" enctype="multipart/form-data">
