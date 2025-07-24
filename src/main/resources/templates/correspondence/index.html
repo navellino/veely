@@ -1,153 +1,182 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: commonHead('Corrispondenza – Veely')}"></head>
-<body class="d-flex flex-column min-vh-100">
-<div th:insert="~{fragments/navbar :: mainNavbar}"></div>
-<main class="container my-5 flex-fill">
-    <h2 class="fw-semibold mb-3">Corrispondenza</h2>
-   	<form class="row g-2 mb-4" method="post" th:action="@{/correspondence}" enctype="multipart/form-data">
-        <div class="row g-3">
-	        <div class="col-md-2">
-	        	<select name="tipo" class="form-select" required>
-	                <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}"></option>
-	            </select>
-	        </div>
-	        <div class="col-2">
-	            <input type="date" name="data" class="form-control" />
-	        </div>
-	        <div class="col-md-1">
-	            <input type="text" name="progressivo" class="form-control" placeholder="Protocollo" />
-	        </div>
-	        <div class="col-md-3">
-	            <input type="text" name="sender" class="form-control" placeholder="Mittente" required />
-	        </div>
-	        <div class="col-md-4">
-	            <input type="text" name="recipient" class="form-control" placeholder="Destinatario" />
-	        </div>
-	        <div class="col-md-6">
-	            <input type="text" name="descrizione" class="form-control" placeholder="Oggetto" required />
-	        </div>
-	        
-	        <div class="col-md-6">
-	            <input type="text" name="notes" class="form-control" placeholder="Note" />
-	        </div>
-	        
-	         <div class="col-auto">
-	            <input type="file" name="file" class="form-control" />
-	        </div>
-	        <div class="col-auto">
-	            <button type="submit" class="btn btn-primary">Aggiungi</button>
-	        </div>
-        </div>
-    </form>
-	<div><p>Filtra Corrispondenza</p></div>
-	 <form class="row g-2 mb-4" method="get" th:action="@{/correspondence}">
-        <div class="col-auto">
-            <input type="text" name="keyword" class="form-control" placeholder="Cerca…" th:value="${keyword}" />
-        </div>
-        <div class="col-auto">
-            <input type="number" name="year" class="form-control" th:value="${year}" />
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
-        </div>
-    </form>
-	
-    <ul class="nav nav-tabs mb-3" id="corrTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button id="in-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#in"
-                    th:class="'nav-link' + (${tab} != 'out' ? ' active' : '')">Entrata</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button id="out-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#out"
-                    th:class="'nav-link' + (${tab} == 'out' ? ' active' : '')">Uscita</button>
-        </li>
-    </ul>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Corrispondenza – Veely</title>
+</head>
+<body>
+<main class="container my-4 flex-fill">
 
-    <div class="tab-content">
-        <div id="in" role="tabpanel" th:class="'tab-pane fade' + (${tab} != 'out' ? ' show active' : '')">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Protocollo</th>
-                    <th>Dettagli</th>
-                    <th>Note/Documento</th>
-                    <th class="text-end">Azioni</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="c : ${incoming}">
-                    <td>
-                        <div class="fw-semibold" th:text="${T(java.lang.String).format('%03d/%d', c.progressivo, c.anno)}"></div>
-                        <div class="text-muted small" th:text="${c.data}"></div>
-                    </td>
-                    <td>
-                        <div class="fw-semibold" th:text="${c.descrizione}"></div>
-                       <!--  <div class="text-muted small" th:text="${c.progressivo}"></div> -->
-                        <div class="text-muted small">
-                            <span th:text="${c.sender}"></span>
-                            <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
-                        </div>
-                    </td>
-                    <td>
-                        <div th:text="${c.notes}"></div>
-                        <div th:if="${c.document != null}">
-                            <a th:href="@{|/correspondence/docs/${c.document.id}|}"
-                               th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></a>
-                        </div>
-                    </td>
-                    <td class="text-end">
-                        <a th:href="@{|/correspondence/${c.id}/edit?tab=in|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
-                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-envelope-paper-fill me-2"></i>Corrispondenza</h2>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addCorrespondenceCollapse" aria-expanded="false" aria-controls="addCorrespondenceCollapse">
+            <i class="bi bi-plus-circle-fill me-1"></i> Aggiungi Nuova
+        </button>
+    </div>
+
+    <div class="collapse mb-4" id="addCorrespondenceCollapse">
+        <div class="card form-card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Nuova Corrispondenza</h5>
+                <form class="row g-3" method="post" th:action="@{/correspondence}" enctype="multipart/form-data">
+                    <div class="col-md-3">
+                        <label for="tipo" class="form-label">Tipo</label>
+                        <select name="tipo" id="tipo" class="form-select" required>
+                            <option th:each="t : ${types}" th:value="${t}" th:text="${t.label}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="data" class="form-label">Data</label>
+                        <input type="date" id="data" name="data" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="progressivo" class="form-label">Protocollo</label>
+                        <input type="text" id="progressivo" name="progressivo" class="form-control" placeholder="Es. 123" />
+                    </div>
+                    <div class="col-md-4">
+                         <label for="sender" class="form-label">Mittente</label>
+                        <input type="text" id="sender" name="sender" class="form-control" placeholder="Nome mittente" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="recipient" class="form-label">Destinatario</label>
+                        <input type="text" id="recipient" name="recipient" class="form-control" placeholder="Nome destinatario" />
+                    </div>
+                    <div class="col-md-8">
+                        <label for="descrizione" class="form-label">Oggetto/Descrizione</label>
+                        <input type="text" id="descrizione" name="descrizione" class="form-control" placeholder="Oggetto o breve descrizione" required />
+                    </div>
+                     <div class="col-md-6">
+                        <label for="notes" class="form-label">Note Aggiuntive</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="2" placeholder="Eventuali note"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="file" class="form-label">Allega Documento</label>
+                        <input type="file" id="file" name="file" class="form-control">
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill me-1"></i> Salva</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div id="out" role="tabpanel" th:class="'tab-pane fade' + (${tab} == 'out' ? ' show active' : '')">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Protocollo</th>
-                    <th>Dettagli</th>
-                    <th>Note/Documento</th>
-                    <th class="text-end">Azioni</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="c : ${outgoing}">
-                    <td>
-                        <div class="fw-semibold" th:text="${T(java.lang.String).format('%03d/%d', c.progressivo, c.anno)}"></div>
-                        <div class="text-muted small" th:text="${c.data}"></div>
-                    </td>
-                    <td>
-                        <div class="fw-semibold" th:text="${c.descrizione}"></div>
-                        <div class="text-muted small">
-                            <span th:text="${c.sender}"></span>
-                            <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
-                        </div>
-                    </td>
-                    <td>
-                        <div th:text="${c.notes}"></div>
-                        <div th:if="${c.document != null}">
-                            <a th:href="@{|/correspondence/docs/${c.document.id}|}"
-                               th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></a>
-                        </div>
-                    </td>
-                    <td class="text-end">
-                        <a th:href="@{|/correspondence/${c.id}/edit?tab=out|}" class="btn btn-sm btn-secondary me-1"><i class="bi bi-pencil"></i></a>
-                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');"><i class="bi bi-trash"></i></button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    </div>
+    
+    <div class="card table-card">
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${tab == 'in' || tab == null} ? 'active'" th:href="@{/correspondence(tab='in', year=${param.year}, keyword=${param.keyword})}">In Entrata</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${tab == 'out'} ? 'active'" th:href="@{/correspondence(tab='out', year=${param.year}, keyword=${param.keyword})}">In Uscita</a>
+                </li>
+            </ul>
+
+            <form class="row g-2 mb-4" method="get">
+                 <input type="hidden" name="tab" th:value="${tab != null ? tab : 'in'}">
+                 <div class="col-md-3">
+                     <input type="number" min="2000" max="2100" name="year" class="form-control" placeholder="Filtra per anno..." th:value="${param.year != null ? param.year[0] : ''}">
+                 </div>
+                 <div class="col-md-7">
+                     <input type="text" name="keyword" class="form-control" placeholder="Cerca per parola chiave..." th:value="${param.keyword != null ? param.keyword[0] : ''}">
+                 </div>
+                 <div class="col-md-2">
+                     <button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-search me-1"></i> Cerca</button>
+                 </div>
+             </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">Protocollo</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Descrizione</th>
+                        <th scope="col">Note e Allegati</th>
+                        <th scope="col" class="text-end">Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${tab == 'in' || tab == null}" th:each="c : ${incoming}">
+                         <td>
+                            <span class="fw-bold" th:text="${c.progressivo}"></span>
+                        </td>
+                        <td>
+                            <div th:text="${#temporals.format(c.data, 'dd/MM/yyyy')}"></div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold" th:text="${c.descrizione}"></div>
+                            <div class="text-muted small" th:text="${c.sender}"></div>
+                        </td>
+                        <td>
+                            <div th:text="${c.notes}"></div>
+                            <div th:if="${c.document != null}">
+                                <a th:href="@{|/correspondence/docs/${c.document.id}|}" class="text-decoration-none">
+                                    <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                                    <span th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></span>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                             <div class="dropdown actions-dropdown">
+                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" th:href="@{|/correspondence/${c.id}/edit?tab=in|}"><i class="bi bi-pencil me-2"></i>Modifica</a></li>
+                                    <li>
+                                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Sei sicuro di voler eliminare?');"><i class="bi bi-trash me-2"></i>Elimina</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                     <tr th:if="${tab == 'out'}" th:each="c : ${outgoing}">
+                         <td>
+                            <span class="fw-bold" th:text="${c.progressivo}"></span>
+                        </td>
+                        <td>
+                            <div th:text="${#temporals.format(c.data, 'dd/MM/yyyy')}"></div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold" th:text="${c.descrizione}"></div>
+                             <div class="text-muted small">
+                                <span th:text="${c.sender}"></span>
+                                <span th:if="${c.recipient != null}"> → <span th:text="${c.recipient}"></span></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:text="${c.notes}"></div>
+                            <div th:if="${c.document != null}">
+                                 <a th:href="@{|/correspondence/docs/${c.document.id}|}" class="text-decoration-none">
+                                    <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                                    <span th:text="${c.document.path.substring(c.document.path.lastIndexOf('/')+1)}"></span>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                           <div class="dropdown actions-dropdown">
+                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" th:href="@{|/correspondence/${c.id}/edit?tab=out|}"><i class="bi bi-pencil me-2"></i>Modifica</a></li>
+                                    <li>
+                                        <form th:action="@{|/correspondence/${c.id}/delete|}" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Sei sicuro di voler eliminare?');"><i class="bi bi-trash me-2"></i>Elimina</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </main>
-<div th:insert="~{fragments/footer :: mainFooter}"></div>
 </body>
 </html>

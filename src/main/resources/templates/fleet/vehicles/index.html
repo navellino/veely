@@ -1,53 +1,82 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
-      
-   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-<!-- 
-<head th:replace="~{fragments/head :: commonHead('Elenco Veicoli – Veely')}"></head>
- -->
 <head>
     <title>Elenco Veicoli – Veely</title>
 </head>
-<body class="d-flex flex-column min-vh-100">
-<main class="container my-5 flex-fill">
-    <h2 class="fw-semibold">Veicoli</h2>
-    <a class="btn btn-primary mb-3" th:href="@{/fleet/vehicles/new}">Nuovo Veicolo</a>
-    <table class="table table-striped sortable">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Targa</th>
-            <th>Marca</th>
-            <th>Modello</th>
-            <th>Tipo</th>
-            <th>Anno</th>
-            <th>Stato</th>
-            <th>Azioni</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="v : ${vehicles}">
-            <td th:text="${v.id}">1</td>
-            <td th:text="${v.plate}">AA000BB</td>
-            <td th:text="${v.brand}">Fiat</td>
-            <td th:text="${v.model}">Panda</td>
-            <td th:text="${v.type.displayName}">Auto</td>
-            <td th:text="${v.year}">2022</td>
-            <td th:text="${v.status.displayName}">In servizio</td>
-            <td>
-                <a class="btn btn-sm btn-info" th:href="@{|/fleet/vehicles/${v.id}|}">Dettagli</a>
-                <a class="btn btn-sm btn-secondary" th:href="@{|/fleet/vehicles/${v.id}/edit|}">Modifica</a>
-                <form th:action="@{|/fleet/vehicles/${v.id}/delete|}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Sei sicuro?');">Elimina</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<body>
+<main class="container my-4 flex-fill">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-truck me-2"></i>Elenco Veicoli</h2>
+        <a class="btn btn-primary" th:href="@{/fleet/vehicles/new}">
+            <i class="bi bi-plus-circle-fill me-1"></i> Aggiungi Veicolo
+        </a>
+    </div>
+
+    <div class="card table-card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Targa</th>
+                            <th scope="col">Marca e Modello</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Anno</th>
+                            <th scope="col">Stato</th>
+                            <th scope="col" class="text-end">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${vehicles}">
+                            <td>
+                                <span class="fw-bold" th:text="${v.plate}">AA000BB</span>
+                            </td>
+                            <td>
+                                <div th:text="${v.brand}">Fiat</div>
+                                <div class="small text-muted" th:text="${v.model}">Panda</div>
+                            </td>
+                            <td th:text="${v.type.displayName}">Auto</td>
+                            <td th:text="${v.year}">2022</td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${v.status.name() == 'IN_SERVIZIO'} ? 'bg-success-subtle text-success-emphasis' : (${v.status.name() == 'IN_MANUTENZIONE'} ? 'bg-warning-subtle text-warning-emphasis' : 'bg-danger-subtle text-danger-emphasis')"
+                                      th:text="${v.status.displayName}">In servizio</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="dropdown actions-dropdown">
+                                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" th:href="@{|/fleet/vehicles/${v.id}|}">
+                                                <i class="bi bi-search me-2"></i>Dettagli
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" th:href="@{|/fleet/vehicles/${v.id}/edit|}">
+                                                <i class="bi bi-pencil me-2"></i>Modifica
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form th:action="@{|/fleet/vehicles/${v.id}/delete|}" method="post" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Sei sicuro di voler eliminare questo veicolo?');">
+                                                    <i class="bi bi-trash me-2"></i>Elimina
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </main>
-<div th:insert="~{fragments/footer :: mainFooter}"></div>
 </body>
 </html>

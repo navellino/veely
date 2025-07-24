@@ -50,4 +50,5 @@ public class FuelCard {
 
     /** Plafond mensile o totale della carta */
     private BigDecimal plafond;
+    
 }
