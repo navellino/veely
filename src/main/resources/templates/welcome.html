@@ -73,6 +73,7 @@
                         <div class="col">
                             <div class="text-xs fw-bold text-info text-uppercase mb-1">Carburante del mese</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" th:text="${metrics.vehiclesAssigned}">0</div>
+                            <a th:href="@{/fleet/refuels}" class="stretched-link"></a>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-fuel-pump fs-2 text-gray-300"></i>
@@ -119,11 +120,11 @@
 
     <div class="row">
         <div class="col-lg-6 mb-4">
-        	<h5>Storico Carburante</h5>
+        	<h5>Storico Note Spese</h5>
             <canvas id="reportChart" style="max-height:280px;"></canvas>
         </div>
         <div class="col-lg-6 mb-4">
-        	<h5>Storico Note Spese</h5>
+        	<h5>Storico Carburante</h5>
             <canvas id="fuelChart" style="max-height:280px;"></canvas>
         </div>
     </div>

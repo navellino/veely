@@ -8,6 +8,7 @@ import com.veely.model.VehicleStatus;
 import com.veely.repository.AssignmentRepository;
 import com.veely.repository.ExpenseItemRepository;
 import com.veely.repository.ExpenseReportRepository;
+import com.veely.repository.RefuelRepository;
 import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,7 @@ public class DashboardService {
     private final CorrespondenceService correspondenceService;
     private final ExpenseItemRepository expenseItemRepo;
     private final ExpenseReportRepository expenseReportRepo;
+    private final RefuelRepository refuelRepo;
 
     public DashboardMetrics getMetrics() {
         long vehicles = vehicleRepo.count();
@@ -67,7 +69,7 @@ public class DashboardService {
         java.time.LocalDate from = start.atDay(1);
         LocalDate to = LocalDate.now();
         Map<java.time.YearMonth, java.math.BigDecimal> tmp = new java.util.LinkedHashMap<>();
-        for (Object[] row : expenseItemRepo.sumByMonth(from, to)) {
+        for (Object[] row : refuelRepo.sumAmountByMonth(from, to)) {
             int y = ((Number) row[0]).intValue();
             int m = ((Number) row[1]).intValue();
             BigDecimal sum = new java.math.BigDecimal(row[2].toString());

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
+<head>
+    <title>Rifornimenti – Veely</title>
+</head>
+<body>
+<main class="container my-5 flex-fill">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-semibold">Rifornimenti</h2>
+        <a th:href="@{/fleet/refuels/new}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nuovo Rifornimento
+        </a>
+    </div>
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle sortable">
+            <thead class="table-dark">
+            <tr>
+                <th>Data</th>
+                <th>Veicolo</th>
+                <th>Carta</th>
+                <th>Litri</th>
+                <th>Importo</th>
+                <th class="text-end">Azioni</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${refuels}">
+                <td th:text="${r.date}">2024-01-01</td>
+                <td th:text="${r.vehicle.plate}">AA000AA</td>
+                <td th:text="${r.fuelCard != null ? r.fuelCard.cardNumber : ''}"></td>
+                <td th:text="${r.quantity}">0</td>
+                <td th:text="${r.amount}">0</td>
+                <td class="text-end">
+                    <a th:href="@{|/fleet/refuels/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form th:action="@{|/fleet/refuels/${r.id}/delete|}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare?');" title="Elimina">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>
