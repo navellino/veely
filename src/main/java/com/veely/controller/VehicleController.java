@@ -9,6 +9,7 @@ import com.veely.model.VehicleStatus;
 import com.veely.repository.DocumentRepository;
 import com.veely.service.AssignmentService;
 import com.veely.service.DocumentService;
+import com.veely.service.FuelCardService;
 import com.veely.service.SupplierService;
 import com.veely.service.VehicleService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,8 @@ public class VehicleController {
     private final DocumentRepository documentRepo; // per eventuali operazioni dirette
     private final SupplierService supplierService;
     private final AssignmentService assignmentService;
-
+    private final FuelCardService fuelCardService;
+    
     /** Mostra la lista (tabella) di tutti i veicoli **/
     @GetMapping
     public String list(Model model) {
@@ -191,5 +193,6 @@ public class VehicleController {
         model.addAttribute("docTypes", DocumentType.values());
         model.addAttribute("ownershipTypes", OwnershipType.values());
         model.addAttribute("suppliers", supplierService.findAll());
+        model.addAttribute("fuelCards", fuelCardService.findAll());
     }
 }

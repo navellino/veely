@@ -87,8 +87,11 @@ public class Vehicle {
     // -----------------------------------
     // Accessori gestionali
     // -----------------------------------
-    @Column(unique = true)
-    private String fuelCard;              // Carta carburante
+    @Column(name = "fuel_card_number", unique = true)
+    private String fuelCardNumber;              // Numero carta carburante
+
+    @OneToOne(mappedBy = "vehicle")
+    private FuelCard fuelCard;
     
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fuelCardExpiryDate;

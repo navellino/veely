@@ -41,7 +41,7 @@ public class FuelCard {
     private Employee employee;
 
     /** Veicolo associato alla carta */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 

@@ -2,11 +2,13 @@ package com.veely.service;
 
 
 import com.veely.entity.Document;
+import com.veely.entity.FuelCard;
 import com.veely.entity.Vehicle;
 import com.veely.exception.ResourceNotFoundException;
 import com.veely.model.DocumentType;
 import com.veely.model.VehicleStatus;
 import com.veely.repository.DocumentRepository;
+import com.veely.repository.FuelCardRepository;
 import com.veely.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -30,6 +32,7 @@ public class VehicleService {
     private final VehicleRepository vehicleRepo;
     private final DocumentRepository documentRepo;
     private final FileSystemStorageService fileStorage;
+    private final FuelCardRepository fuelCardRepo;
 
     // ---------------------- CRUD VEICOLO ----------------------
 
@@ -38,7 +41,16 @@ public class VehicleService {
         BigDecimal financial = safe(payload.getFinancialFee());
         BigDecimal assistance = safe(payload.getAssistanceFee());
         payload.setTotalFee(financial.add(assistance));
-        return vehicleRepo.save(payload);
+        Vehicle saved = vehicleRepo.save(payload);
+        if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
+            FuelCard card = fuelCardRepo.findById(payload.getFuelCard().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Fuel card non trovata: " + payload.getFuelCard().getId()));
+            saved.setFuelCardNumber(card.getCardNumber());
+            saved.setFuelCardExpiryDate(card.getExpiryDate());
+            card.setVehicle(saved);
+            fuelCardRepo.save(card);
+        }
+        return saved;
     }
 
     public Vehicle update(Long id, Vehicle payload) {
@@ -65,8 +77,17 @@ public class VehicleService {
         existing.setMonthlyFringeBenefit(payload.getMonthlyFringeBenefit());
         existing.setStatus(payload.getStatus());
         existing.setCurrentMileage(payload.getCurrentMileage());
-        existing.setFuelCard(payload.getFuelCard());
-        existing.setFuelCardExpiryDate(payload.getFuelCardExpiryDate());
+        if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
+            FuelCard card = fuelCardRepo.findById(payload.getFuelCard().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Fuel card non trovata: " + payload.getFuelCard().getId()));
+            existing.setFuelCardNumber(card.getCardNumber());
+            existing.setFuelCardExpiryDate(card.getExpiryDate());
+            card.setVehicle(existing);
+            fuelCardRepo.save(card);
+        } else {
+            existing.setFuelCardNumber(null);
+            existing.setFuelCardExpiryDate(null);
+        }
         existing.setTelepass(payload.getTelepass());
         existing.setInsuranceExpiryDate(payload.getInsuranceExpiryDate());
         existing.setCarTaxExpiryDate(payload.getCarTaxExpiryDate());

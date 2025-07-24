@@ -140,9 +140,13 @@
 															th:field="*{currentMileage}" />
 													</div>
 													<div class="col-md-4">
-														<label class="form-label">Fuel Card</label> <input
-															class="form-control" th:field="*{fuelCard}" />
-													</div>
+		                                                <label class="form-label">Fuel Card</label>
+		                                                <select class="form-select" th:field="*{fuelCard.id}">
+		                                                        <option value="">-</option>
+		                                                        <option th:each="fc : ${fuelCards}" th:value="${fc.id}"
+		                                                                th:text="${fc.cardNumber}"></option>
+		                                                </select>
+                                       			 </div>
 													<div class="col-md-4">
 														<label class="form-label">Scadenza Fuel Card</label> <input
 															type="date" class="form-control"
