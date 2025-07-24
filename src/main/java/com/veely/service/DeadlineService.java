@@ -5,6 +5,8 @@ import com.veely.entity.Vehicle;
 import com.veely.model.DeadlineItem;
 import com.veely.repository.EmploymentRepository;
 import com.veely.repository.VehicleRepository;
+import com.veely.repository.FuelCardRepository;
+import com.veely.entity.FuelCard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class DeadlineService {
 
     private final VehicleRepository vehicleRepo;
     private final EmploymentRepository employmentRepo;
+    private final FuelCardRepository fuelCardRepo;
 
     /**
      * Returns a list of deadlines extracted from vehicles.
@@ -58,14 +61,15 @@ public class DeadlineService {
                         null,
                         null));
             }
-            if (v.getFuelCardExpiryDate() != null) {
+            FuelCard card = fuelCardRepo.findByVehicleId(v.getId());
+            if (card != null && card.getExpiryDate() != null) {
                 items.add(new DeadlineItem(
                         "Fuel Card",
                         v.getPlate(),
                         v.getBrand(),
                         v.getModel(),
                         v.getSeries(),
-                        v.getFuelCardExpiryDate(),
+                        card.getExpiryDate(),
                         v.getId(),
                         "fuelCard",
                         null,

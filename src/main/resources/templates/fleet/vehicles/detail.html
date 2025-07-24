@@ -64,19 +64,6 @@
                 <span><i class="bi bi-router me-2"></i>Telepass</span>
                 <span th:text="${vehicle.telepass?:'N/D'}">987654321</span>
               </div>
-              <!-- Fuel Card -->
-              <div class="col d-flex justify-content-between">
-                <span><i class="bi bi-credit-card me-2"></i>Fuel Card</span>
-                <span th:text="${vehicle.fuelCardNumber?:'N/D'}">12345678</span>
-              </div>
-              <!-- Scad. Fuel Card -->
-              <div class="col d-flex justify-content-between">
-                <span><i class="bi bi-calendar-event me-2"></i>Scad. Fuel Card</span>
-                <span class="badge"
-                      th:classappend="${vehicle.fuelCardExpiryDate!=null?
-                         (T(java.time.temporal.ChronoUnit).DAYS.between(#temporals.createNow().toLocalDate(), vehicle.fuelCardExpiryDate)<=30?'bg-danger':'bg-success'):'bg-secondary'}"
-                      th:text="${vehicle.fuelCardExpiryDate!=null? #temporals.format(vehicle.fuelCardExpiryDate,'dd/MM/yyyy'):'-'}">-</span>
-              </div>
               <!-- Scad. Assicuraz. -->
               <div class="col d-flex justify-content-between">
                 <span><i class="bi bi-calendar-event me-2"></i>Scad. Assicuraz.</span>

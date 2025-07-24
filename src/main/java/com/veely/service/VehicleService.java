@@ -45,8 +45,6 @@ public class VehicleService {
         if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
             FuelCard card = fuelCardRepo.findById(payload.getFuelCard().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Fuel card non trovata: " + payload.getFuelCard().getId()));
-            saved.setFuelCardNumber(card.getCardNumber());
-            saved.setFuelCardExpiryDate(card.getExpiryDate());
             card.setVehicle(saved);
             fuelCardRepo.save(card);
         }
@@ -80,13 +78,8 @@ public class VehicleService {
         if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
             FuelCard card = fuelCardRepo.findById(payload.getFuelCard().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Fuel card non trovata: " + payload.getFuelCard().getId()));
-            existing.setFuelCardNumber(card.getCardNumber());
-            existing.setFuelCardExpiryDate(card.getExpiryDate());
             card.setVehicle(existing);
             fuelCardRepo.save(card);
-        } else {
-            existing.setFuelCardNumber(null);
-            existing.setFuelCardExpiryDate(null);
         }
         existing.setTelepass(payload.getTelepass());
         existing.setInsuranceExpiryDate(payload.getInsuranceExpiryDate());
@@ -219,8 +212,10 @@ public class VehicleService {
 
     /** Aggiorna la data di scadenza della fuel card. */
     public void updateFuelCardExpiry(Long vehicleId, LocalDate newDate) {
-        Vehicle v = findByIdOrThrow(vehicleId);
-        v.setFuelCardExpiryDate(newDate);
+    	FuelCard card = fuelCardRepo.findByVehicleId(vehicleId);
+        if (card != null) {
+            card.setExpiryDate(newDate);
+        }
     }
     /** Aggiorna la scadenza del contratto di leasing. */
     public void updateLeaseExpiry(Long vehicleId, LocalDate newDate) {

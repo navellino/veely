@@ -87,15 +87,10 @@ public class Vehicle {
     // -----------------------------------
     // Accessori gestionali
     // -----------------------------------
-    @Column(name = "fuel_card_number", unique = true)
-    private String fuelCardNumber;              // Numero carta carburante
 
     @OneToOne(mappedBy = "vehicle")
     private FuelCard fuelCard;
     
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate fuelCardExpiryDate;
-
     private String telepass;              // Telepass associato
     
     /** Scadenza polizza assicurativa (in precedenza telepassExpiryDate). */
