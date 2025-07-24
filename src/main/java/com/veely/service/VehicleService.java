@@ -37,17 +37,31 @@ public class VehicleService {
     // ---------------------- CRUD VEICOLO ----------------------
 
     public Vehicle create(Vehicle payload) {
+    	// Se dalla form arriva solo l'id della fuel card, recuperiamo l'entità
+        // prima di salvare il veicolo per evitare TransientObjectException
+        FuelCard card = null;
+        if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
+            card = fuelCardRepo.findById(payload.getFuelCard().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Fuel card non trovata: " + payload.getFuelCard().getId()));
+        }
+
+        // Rimuoviamo la relazione prima del salvataggio del veicolo per non
+        // avere riferimenti a entità non gestite
+        payload.setFuelCard(null);
+        
         payload.setStatus(VehicleStatus.IN_SERVICE);
         BigDecimal financial = safe(payload.getFinancialFee());
         BigDecimal assistance = safe(payload.getAssistanceFee());
         payload.setTotalFee(financial.add(assistance));
+        
         Vehicle saved = vehicleRepo.save(payload);
-        if (payload.getFuelCard() != null && payload.getFuelCard().getId() != null) {
-            FuelCard card = fuelCardRepo.findById(payload.getFuelCard().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Fuel card non trovata: " + payload.getFuelCard().getId()));
+        if (card != null) {
             card.setVehicle(saved);
             fuelCardRepo.save(card);
+            saved.setFuelCard(card);
         }
+        
         return saved;
     }
 

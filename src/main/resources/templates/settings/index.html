@@ -7,10 +7,57 @@
 <body>
 <main class="container my-5 flex-fill">
     <h2 class="fw-semibold mb-4">Impostazioni</h2>
-    <ul>
-        <li><a th:href="@{/settings/employee-roles}">Ruoli Dipendenti</a></li>
-        <li><a th:href="@{/settings/projects}">Commesse</a></li>
-    </ul>
+    
+        <div class="row">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-danger hover-lift-card shadow h-100">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">Ruolo Dipendenti</div>
+                            <a th:href="@{/settings/employee-roles}" class="stretched-link"></a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-video2 fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-warning hover-lift-card shadow h-100">
+                <div class="card-body">
+                     <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Commesse</div>
+                            <a th:href="@{/settings/projects}" class="stretched-link"></a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-server fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card card-widget border-left-primary hover-lift-card shadow h-100">
+                <div class="card-body">
+                     <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Carte Carburante</div>
+                            <a th:href="@{/fleet/fuel-cards}" class="stretched-link"></a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-fuel-pump-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 </body>
 </html>
