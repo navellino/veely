@@ -71,7 +71,9 @@
                                     <th>Dipendente</th>
                                     <th>Veicolo</th>
                                     <th>Dal</th>
+                                    <th>Ora inizio</th>
                                     <th>Al</th>
+                                    <th>Ora fine</th>
                                     <th>Nota</th>
                                     <th class="text-center">Stato</th>
                                     <th class="text-end">Azioni</th>
@@ -82,7 +84,9 @@
                                     <td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
                                     <td th:text="${a.vehicle.brand + ' ' + a.vehicle.model + ' (' + a.vehicle.plate + ')'}"></td>
                                     <td th:text="${#temporals.format(a.startDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${a.startTime != null ? a.startTime.toString() : '-'}"></td>
                                     <td th:text="${#temporals.format(a.endDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${a.endTime != null ? a.endTime.toString() : '-'}"></td>
                                     <td th:text="${a.note}"></td>
                                     <td class="text-center">
                                          <span class="badge rounded-pill bg-success-subtle border border-success-subtle text-success-emphasis"
@@ -114,15 +118,23 @@
                                     <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.brand + ' ' + v.model + ' - ' + v.plate}"></option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label">Dal</label>
                                 <input type="date" class="form-control" th:field="*{startDate}">
                             </div>
-                            <div class="col-md-3">
+                           <div class="col-md-2">
+                                <label class="form-label">Ora inizio</label>
+                                <input type="time" class="form-control" th:field="*{startTime}">
+                            </div>
+                            <div class="col-md-2">
                                 <label class="form-label">Al</label>
                                 <input type="date" class="form-control" th:field="*{endDate}">
                             </div>
-                            <div class="col-md-6">
+                             <div class="col-md-2">
+                                <label class="form-label">Ora fine</label>
+                                <input type="time" class="form-control" th:field="*{endTime}">
+                            </div>
+                            <div class="col-md-4">
                                 <label class="form-label">Nota</label>
                                 <input type="text" class="form-control" th:field="*{note}" placeholder="Es. Sostituzione temporanea">
                             </div>

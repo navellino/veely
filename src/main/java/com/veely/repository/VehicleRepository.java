@@ -15,4 +15,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     List<Vehicle> findByStatus(VehicleStatus status);
     
     long countByStatus(VehicleStatus status);
+    
+    /** Veicoli che non hanno lo stato specificato. */
+    List<Vehicle> findByStatusNot(VehicleStatus status);
 }

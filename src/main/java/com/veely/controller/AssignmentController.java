@@ -46,7 +46,7 @@ public class AssignmentController {
         model.addAttribute("shortAssignments", shortAsg);
         model.addAttribute("newShortAssignment", new Assignment());
         model.addAttribute("employments", employmentService.findAll());
-        model.addAttribute("vehicles", vehicleService.findAll());
+        model.addAttribute("vehicles", vehicleService.findAvailable());
         return "fleet/assignments/index";
     }
 
@@ -64,7 +64,7 @@ public class AssignmentController {
     public String createForm(Model model) {
         model.addAttribute("assignment", new Assignment());
         model.addAttribute("employments", employmentService.findAll());
-        model.addAttribute("vehicles", vehicleService.findAll());
+        model.addAttribute("vehicles", vehicleService.findAvailable());
         model.addAttribute("docTypes", DocumentType.values());
         return "fleet/assignments/form";
     }

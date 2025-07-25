@@ -112,6 +112,12 @@ public class VehicleService {
     public List<Vehicle> findAll() {
         return vehicleRepo.findAll();
     }
+    
+    /** Veicoli che non sono attualmente assegnati. */
+    @Transactional(readOnly = true)
+    public List<Vehicle> findAvailable() {
+        return vehicleRepo.findByStatusNot(VehicleStatus.ASSIGNED);
+    }
 
     public void delete(Long id) {
         Vehicle v = findByIdOrThrow(id);
