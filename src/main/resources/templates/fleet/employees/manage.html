@@ -1,87 +1,111 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it"
       th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
-  <head>
-      <title>Gestione Dipendenti – Veely</title>
-  </head>
-  <body>
+<head>
+    <title>Gestione Dipendenti – Veely</title>
+</head>
+<body>
 
-    <main class="container my-5 flex-fill">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-semibold">Gestione Dipendenti</h2>
-        <a th:href="@{/fleet/employees/new}" class="btn btn-primary">
-          <i class="bi bi-person-plus me-1"></i> Nuovo Dipendente
-        </a>
-      </div>
-
-      <div class="table-responsive shadow-sm">
-        <table class="table table-hover align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>Email</th>
-              <th>Qualifica</th>
-              <th>Rapporto di lavoro</th>
-              <th class="text-end">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="emp : ${employees}">
-              <td th:text="${emp.firstName}">Mario</td>
-              <td th:text="${emp.lastName}">Rossi</td>
-              <td th:text="${emp.email}">mario@esempio.com</td>
-              <td th:text="${activeEmployments[emp.id] != null ? activeEmployments[emp.id].jobTitle?.displayName : '-'}">-</td>
-              <td>
-                <span th:if="${#lists.size(empToEmpls[emp.id]) > 0}"
-                      class="badge bg-success">Sì</span>
-                <span th:if="${#lists.size(empToEmpls[emp.id]) == 0}"
-                      class="badge bg-danger">No</span>
-              </td>
-              <td class="text-end">
-                <a th:href="@{|/fleet/employees/${emp.id}/edit|}"
-                   class="btn btn-sm btn-secondary me-1" title="Modifica">
-                  <i class="bi bi-pencil"></i>
-                </a>
-               <button type="button"
-                        class="btn btn-sm btn-info me-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#employeeDetailModal"
-                        th:data-firstname="${emp.firstName}"
-                        th:data-lastname="${emp.lastName}"
-                        th:data-email="${emp.email}"
-                        th:data-phone="${emp.phone}"
-                        th:data-mobile="${emp.mobile}"
-                        th:data-photo="${profilePhotos[emp.id] != null ? '/fleet/employees/' + emp.id + '/docs/' + profilePhotos[emp.id].path.substring(profilePhotos[emp.id].path.lastIndexOf('/') + 1) : ''}"
-                        title="Dettaglio">
-                  <i class="bi bi-eye"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
+<main class="container my-5 flex-fill">
     
-	<!-- Modal Dettaglio Dipendente -->
-    <div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="employeeDetailLabel">Dettaglio</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-            <img id="empModalPhoto" class="rounded-circle shadow-sm mb-3" style="width:150px;height:150px;object-fit:cover;" alt="Foto profilo" />
-            <ul class="list-unstyled text-start mx-auto" style="max-width:300px;">
-              <li><strong>Email:</strong> <span id="empModalEmail"></span></li>
-              <li><strong>Telefono:</strong> <span id="empModalPhone"></span></li>
-              <li><strong>Cellulare:</strong> <span id="empModalMobile"></span></li>
-            </ul>
-          </div>
+    <div class="card table-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="fw-bold mb-0 fs-4">Gestione Dipendenti</h2>
+            <a th:href="@{/fleet/employees/new}" class="btn btn-primary">
+                <i class="bi bi-person-plus me-1"></i> Nuovo Dipendente
+            </a>
         </div>
-      </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 35%;">Dipendente</th>
+                        <th>Qualifica</th>
+                        <th>Rapporto di lavoro</th>
+                        <th class="text-end">Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="emp : ${employees}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img th:src="${profilePhotos[emp.id] != null ? '/fleet/employees/' + emp.id + '/docs/' + profilePhotos[emp.id].path.substring(profilePhotos[emp.id].path.lastIndexOf('/') + 1) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI2NjYyIgY2xhc3M9ImJpIGJpLXBlcnNvbi1jaXJjbGUiIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZD0iTTExIDZjMCAyLjc2LTMgNS0zIDVzLTMtMi4yNC0zLTVhMyAzIDAgMSAxIDYgMHptLTkgOGEzLjUgMy41IDAgMSAxIDcgMCAzLjUgMy41IDAgMCAxLTcgMHoiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDhBNCA0IDAgMSAwIDggMGExIDEgMCAwIDAgMCAyIDIgMiAwIDEgMSAwIDQgMSAxIDAgMCAwIDAgMnoiLz48L3N2Zz4='}"
+                                     class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;" alt="Foto"/>
+                                <div>
+                                    <div class="fw-bold" th:text="${emp.firstName + ' ' + emp.lastName}"></div>
+                                    <div class="text-muted" th:text="${emp.email}"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${activeEmployments[emp.id] != null ? activeEmployments[emp.id].jobTitle?.displayName : '-'}"></td>
+                        <td>
+                            <span th:if="${#lists.size(empToEmpls[emp.id]) > 0}"
+                                  class="badge rounded-pill bg-success-subtle border border-success-subtle text-success-emphasis">Attivo</span>
+                            <span th:if="${#lists.size(empToEmpls[emp.id]) == 0}"
+                                  class="badge rounded-pill bg-danger-subtle border border-danger-subtle text-danger-emphasis">Non attivo</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{|/fleet/employees/${emp.id}/edit|}">
+                                            <i class="bi bi-pencil me-2"></i>Modifica
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#employeeDetailModal"
+                                                th:data-firstname="${emp.firstName}"
+                                                th:data-lastname="${emp.lastName}"
+                                                th:data-email="${emp.email}"
+                                                th:data-phone="${emp.phone}"
+                                                th:data-mobile="${emp.mobile}"
+                                                th:data-photo="${profilePhotos[emp.id] != null ? '/fleet/employees/' + emp.id + '/docs/' + profilePhotos[emp.id].path.substring(profilePhotos[emp.id].path.lastIndexOf('/') + 1) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iIzY2NiIgY2xhc3M9ImJpIGJpLXBlcnNvbi1jaXJjbGUiIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZD0iTTExIDZjMCAyLjc2LTMgNS0zIDVzLTMtMi4yNC0zLTVhMyAzIDAgMSAxIDYgMHptLTkgOGEzLjUgMy41IDAgMSAxIDcgMCAzLjUgMy41IDAgMCAxLTcgMHoiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDhBNCA0IDAgMSAwIDggMGExIDEgMCAwIDAgMCAyIDIgMiAwIDEgMSAwIDQgMSAxIDAgMCAwIDAgMnoiLz48L3N2Zz4='}">
+                                            <i class="bi bi-eye me-2"></i>Visualizza Dettaglio
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <script th:src="@{/js/employee-detail-modal.js}"></script>
-  </body>
+</main>
+
+<div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="employeeDetailLabel">Dettaglio Dipendente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center pb-4">
+                <img id="empModalPhoto" class="rounded-circle shadow-sm mb-3" style="width:120px;height:120px;object-fit:cover;" alt="Foto profilo"/>
+                <h3 id="empModalName" class="fw-bold mb-1"></h3>
+                <p id="empModalEmail" class="text-muted"></p>
+                <hr class="my-4">
+                <ul class="list-unstyled text-start mx-auto" style="max-width:300px;">
+                    <li class="d-flex align-items-center mb-2">
+                        <i class="bi bi-telephone-fill text-secondary me-3 fs-5"></i>
+                        <span id="empModalPhone"></span>
+                    </li>
+                    <li class="d-flex align-items-center">
+                        <i class="bi bi-phone-fill text-secondary me-3 fs-5"></i>
+                        <span id="empModalMobile"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/employee-detail-modal.js}"></script>
+</body>
 </html>

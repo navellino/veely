@@ -1,61 +1,84 @@
-<!-- src/main/resources/templates/fleet/expense_reports/index.html -->
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(~{::title}, ~{::body})}">
-      
-   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-   	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
 <head>
-    <title>Dashboard</title>
+    <title>Note Spese – Veely</title>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
 <main class="container my-5 flex-fill">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-semibold">Note Spese</h2>
-        <a th:href="@{/fleet/expense-reports/new}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Nuova Nota Spese
-        </a>
-    </div>
-    <div class="table-responsive shadow-sm">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Numero Nota</th>
-                    <th>Dipendente</th>
-                    <th>Periodo</th>
-                    <th>Totale</th>
-                    <th>Stato</th>
-                    <th class="text-end">Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="r : ${reports}">
-                     <td th:text="${r.expenseReportNum}"></td>
-                    <td th:text="${r.employee.lastName + ' ' + r.employee.firstName}"></td>
-                    <td th:text="${r.startDate} + ' - ' + ${r.endDate}"></td>
-                    <td th:text="${r.expenseReportTotal}"></td>
-                    <td th:text="${r.expenseStatus}"></td>
-                    <td class="text-end">
-                        <a th:href="@{|/fleet/expense-reports/${r.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a th:href="@{|/fleet/expense-reports/${r.id}/export|}" class="btn btn-sm btn-outline-primary me-1" title="PDF">
-                            <i class="bi bi-file-earmark-pdf"></i>
-                        </a>
-                        <!-- 
-                         <form th:action="@{|/fleet/expense-reports/${r.id}/approve|}" method="post" class="d-inline me-1">
-                            <button type="submit" class="btn btn-sm btn-success" th:text="${r.expenseStatus.name() == 'Approved' ? 'Bozza' : 'Approva'}"></button>
-                        </form>
-                         -->
-                        <form th:action="@{|/fleet/expense-reports/${r.id}/delete|}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminare la nota spese?');" title="Elimina">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+    <div class="card table-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="fw-bold mb-0 fs-4">Note Spese</h2>
+            <a th:href="@{/fleet/expense-reports/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Nuova Nota Spese
+            </a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 sortable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Numero</th>
+                            <th>Dipendente</th>
+                            <th>Periodo</th>
+                            <th class="text-end">Totale</th>
+                            <th class="text-center">Stato</th>
+                            <th class="text-end">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${reports}">
+                            <td class="fw-bold" th:text="${r.expenseReportNum}"></td>
+                            
+                            <td th:text="${r.employee.lastName + ' ' + r.employee.firstName}"></td>
+                            
+                            <td th:text="${#temporals.format(r.startDate, 'dd/MM/yy')} + ' - ' + ${#temporals.format(r.endDate, 'dd/MM/yy')}"></td>
+                            
+                            <td class="text-end" th:text="${#numbers.formatCurrency(r.expenseReportTotal)}"></td>
+                            
+                            <td class="text-center">
+                                <th:block th:switch="${r.expenseStatus.name()}">
+                                    <span th:case="'DRAFT'" class="badge rounded-pill bg-secondary-subtle border border-secondary-subtle text-secondary-emphasis">Bozza</span>
+                                    <span th:case="'SUBMITTED'" class="badge rounded-pill bg-warning-subtle border border-warning-subtle text-warning-emphasis">Inviata</span>
+                                    <span th:case="'APPROVED'" class="badge rounded-pill bg-success-subtle border border-success-subtle text-success-emphasis">Approvata</span>
+                                    <span th:case="'REJECTED'" class="badge rounded-pill bg-danger-subtle border border-danger-subtle text-danger-emphasis">Respinta</span>
+                                    <span th:case="*" class="badge rounded-pill bg-light text-dark" th:text="${r.expenseStatus.displayName}"></span>
+                                </th:block>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" th:href="@{|/fleet/expense-reports/${r.id}/edit|}">
+                                                <i class="bi bi-pencil me-2"></i>Modifica
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" th:href="@{|/fleet/expense-reports/${r.id}/export|}">
+                                                <i class="bi bi-file-earmark-pdf me-2"></i>Esporta PDF
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form th:action="@{|/fleet/expense-reports/${r.id}/delete|}" method="post" onsubmit="return confirm('Sei sicuro di voler eliminare questa nota spese?');">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-trash me-2"></i>Elimina
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
 </body>

@@ -3,6 +3,7 @@ package com.veely.controller;
 import com.veely.entity.Employment;
 import com.veely.entity.EmploymentAddress;
 import com.veely.model.CcnlType;
+import com.veely.model.ContractType;
 import com.veely.model.DocumentType;
 import com.veely.model.EmploymentStatus;
 import com.veely.model.JobQualification;
@@ -80,6 +81,7 @@ public class EmploymentController {
         model.addAttribute("jobQualifications", JobQualification.values());
         model.addAttribute("ccnls", CcnlType.values());
         model.addAttribute("statuses", EmploymentStatus.values());
+        model.addAttribute("contractType", ContractType.values());
         return "fleet/employments/form";
     }
 
@@ -99,6 +101,7 @@ public class EmploymentController {
             model.addAttribute("ccnls", CcnlType.values());
             model.addAttribute("jobQualifications", JobQualification.values());
             model.addAttribute("statuses", EmploymentStatus.values());
+            model.addAttribute("contractType", ContractType.values());
             return "fleet/employments/form";
         }
 
@@ -131,6 +134,7 @@ public class EmploymentController {
         model.addAttribute("ccnls", CcnlType.values());
         model.addAttribute("jobQualifications", JobQualification.values());
         model.addAttribute("statuses", EmploymentStatus.values());
+        model.addAttribute("contractType", ContractType.values());
         return "fleet/employments/form";
     }
 
@@ -147,6 +151,7 @@ public class EmploymentController {
             model.addAttribute("jobQualifications", JobQualification.values());
             model.addAttribute("ccnls", CcnlType.values());
             model.addAttribute("statuses", EmploymentStatus.values());
+            model.addAttribute("contractType", ContractType.values());
             return "fleet/employments/form";
         }
         employmentService.update(id, employment);

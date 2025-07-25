@@ -32,6 +32,14 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
+                        	<div class="col-3">
+                                <label for="expenseReportNum" class="form-label">Numero Nota</label>
+                                <input class="form-control" th:field="*{expenseReportNum}" id="expenseReportNum" th:attr="data-base=${baseReportNum}"/>
+                           </div>
+                        	<div class="col-md-3">
+                        		<label class="form-label">Creata il</label>
+                                <input type="date" class="form-control mb-2" th:field="*{creationDate}" />
+                        	</div>
                             <div class="col-md-6">
                                 <label for="employeeSelect" class="form-label">Dipendente</label>
                                 <select class="form-select" th:field="*{employee.id}" id="employeeSelect" required>
@@ -118,10 +126,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                           <div class="col-12">
-                                <label for="expenseReportNum" class="form-label">Numero Nota</label>
-                                <input class="form-control" th:field="*{expenseReportNum}" id="expenseReportNum" th:attr="data-base=${baseReportNum}"/>
-                           </div>
+                           
                            <div class="col-12">
                                 <label class="form-label">Stato</label>
                                 <select class="form-select" th:field="*{expenseStatus}">
@@ -141,24 +146,13 @@
                                     <option th:each="p : ${paymentMethods}" th:value="${p}" th:text="${p.displayName}"></option>
                                 </select>
                             </div>
-                             <div class="accordion" id="dateAccordion">
-                                <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    Date di Riferimento
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#dateAccordion">
-                                    <div class="accordion-body">
-                                        <label class="form-label">Creata il</label>
-                                        <input type="date" class="form-control mb-2" th:field="*{creationDate}" />
-                                        <label class="form-label">Sottomessa il</label>
-                                        <input type="date" class="form-control mb-2" th:field="*{reportSubmitDate}" />
-                                        <label class="form-label">Approvata il</label>
-                                        <input type="date" class="form-control" th:field="*{finalApprovalDate}" />
-                                    </div>
-                                </div>
-                                </div>
+                            <div class="col-12">
+                                <label class="form-label">Sottomessa il</label>
+                                <input type="date" class="form-control mb-2" th:field="*{reportSubmitDate}" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Approvata il</label>
+                                <input type="date" class="form-control" th:field="*{finalApprovalDate}" />
                             </div>
                         </div>
                     </div>
