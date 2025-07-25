@@ -48,10 +48,16 @@ public class DashboardService {
         long deadlines = deadlines60 + deadlines30;
         String lastIncoming = correspondenceService.getLastIncomingProtocol();
         String lastOutgoing = correspondenceService.getLastOutgoingProtocol();
+        
+        YearMonth ym = java.time.YearMonth.now();
+       	LocalDate start = ym.atDay(1);
+        LocalDate end = ym.atEndOfMonth();
+        BigDecimal fuelMonth = refuelRepo.sumAmountBetween(start, end);
+        
         return new DashboardMetrics(vehicles, inService, assigned,
         		totalAssignments, longActive, shortActive,
                 deadlines60, deadlines30, deadlines,
-                lastIncoming, lastOutgoing);
+                lastIncoming, lastOutgoing, fuelMonth);
     }
     
     /** Returns vehicle counts grouped by status. */
@@ -135,5 +141,6 @@ public class DashboardService {
             long deadlines30,
             long deadlines,
             String lastIncomingProtocol,
-            String lastOutgoingProtocol) {}
+            String lastOutgoingProtocol,
+            java.math.BigDecimal fuelMonth) {}
 }

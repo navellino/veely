@@ -16,4 +16,9 @@ public interface RefuelRepository extends JpaRepository<Refuel, Long> {
             "order by yr, mth")
     List<Object[]> sumAmountByMonth(@Param("start") LocalDate start,
                                     @Param("end") LocalDate end);
+    
+    /** Total fuel cost between the given dates (inclusive). */
+    @Query("select coalesce(sum(r.amount),0) from Refuel r where r.date between :start and :end")
+    java.math.BigDecimal sumAmountBetween(@Param("start") LocalDate start,
+                                          @Param("end") LocalDate end);
 }

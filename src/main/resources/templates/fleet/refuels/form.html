@@ -71,8 +71,13 @@
                     </a>
                     <button type="submit" class="btn btn-primary">
                         <i th:class="${refuel.id == null} ? 'bi bi-check-lg me-1' : 'bi bi-pencil-square me-1'"></i>
-                        <span th:text="${refuel.id == null ? 'Crea Rifornimento' : 'Aggiorna'}"></span>
+                        <span th:text="${refuel.id == null ? 'Salva Rifornimento' : 'Aggiorna'}"></span>
                     </button>
+                    <a class="btn btn-success ms-2"
+                       th:href="${refuel.id != null} ? @{/fleet/refuels/new} : '#'"
+                       th:classappend="${refuel.id == null}? ' disabled'">
+                        <i class="bi bi-plus-lg me-1"></i> Crea Nuovo
+                    </a>
                 </div>
             </form>
         </div>
