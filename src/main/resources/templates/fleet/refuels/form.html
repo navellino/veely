@@ -5,55 +5,78 @@
     <title th:text="${refuel.id == null ? 'Nuovo Rifornimento' : 'Modifica Rifornimento'}">Rifornimento</title>
 </head>
 <body>
-<main class="container my-5 flex-fill">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/fleet/refuels}">Rifornimenti</a></li>
-            <li class="breadcrumb-item active" aria-current="page" th:text="${refuel.id == null ? 'Nuovo' : 'Modifica'}"></li>
-        </ol>
-    </nav>
+<main class="container my-5 flex-fill" style="max-width: 900px;">
 
-    <form th:object="${refuel}"
-          th:action="${refuel.id == null} ? @{/fleet/refuels/new} : @{/fleet/refuels/{id}/edit(id=${refuel.id})}"
-          method="post" class="row g-3">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div>
+        <h2 class="fw-bold" th:text="${refuel.id == null ? 'Nuovo Rifornimento' : 'Modifica Rifornimento'}"></h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/fleet/refuels}">Rifornimenti</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${refuel.id == null ? 'Nuovo' : 'Modifica'}"></li>
+            </ol>
+        </nav>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form th:object="${refuel}"
+                  th:action="${refuel.id == null} ? @{/fleet/refuels/new} : @{/fleet/refuels/{id}/edit(id=${refuel.id})}"
+                  method="post" class="row g-4">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-        <div class="col-md-4">
-            <label class="form-label">Data</label>
-            <input type="date" class="form-control" th:field="*{date}" required />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Veicolo</label>
-            <select class="form-select" th:field="*{vehicle.id}">
-                <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.plate}"></option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Carta Carburante</label>
-            <select class="form-select" th:field="*{fuelCard.id}">
-                <option value="">-</option>
-                <option th:each="c : ${fuelCards}" th:value="${c.id}" th:text="${c.cardNumber}"></option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Chilometraggio</label>
-            <input type="number" class="form-control" th:field="*{mileage}" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Litri</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{quantity}" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">Importo</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{amount}" />
-        </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data</label>
+                    <input type="date" class="form-control" th:field="*{date}" required/>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Veicolo</label>
+                    <select class="form-select" th:field="*{vehicle.id}">
+                        <option th:each="v : ${vehicles}" th:value="${v.id}"
+                                th:text="${v.brand + ' ' + v.model + ' (' + v.plate + ')'}"></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Carta Carburante</label>
+                    <select class="form-select" th:field="*{fuelCard.id}">
+                        <option value="">- Nessuna -</option>
+                        <option th:each="c : ${fuelCards}" th:value="${c.id}" th:text="${c.cardNumber}"></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Chilometraggio</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" th:field="*{mileage}"/>
+                        <span class="input-group-text">km</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Litri</label>
+                    <div class="input-group">
+                        <input type="number" step="0.01" class="form-control" th:field="*{quantity}"/>
+                        <span class="input-group-text">L</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Importo</label>
+                     <div class="input-group">
+                        <input type="number" step="0.01" class="form-control" th:field="*{amount}"/>
+                         <span class="input-group-text">€</span>
+                    </div>
+                </div>
 
-        <div class="col-12 d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary me-2" th:text="${refuel.id == null ? 'Crea' : 'Aggiorna'}"></button>
-            <a class="btn btn-outline-secondary" th:href="@{/fleet/refuels}">Annulla</a>
+                <div class="col-12 d-flex justify-content-end pt-3">
+                    <a class="btn btn-outline-secondary me-2" th:href="@{/fleet/refuels}">
+                        <i class="bi bi-x-lg me-1"></i>Annulla
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i th:class="${refuel.id == null} ? 'bi bi-check-lg me-1' : 'bi bi-pencil-square me-1'"></i>
+                        <span th:text="${refuel.id == null ? 'Crea Rifornimento' : 'Aggiorna'}"></span>
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </main>
 </body>
 </html>
