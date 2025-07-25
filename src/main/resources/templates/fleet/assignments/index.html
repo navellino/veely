@@ -6,119 +6,137 @@
 </head>
 <body>
 <main class="container my-5 flex-fill">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-semibold">Assegnazioni</h2>
-    <a class="btn btn-primary" th:href="@{/fleet/assignments/new}">
-      <i class="bi bi-plus-lg me-1"></i> Nuova Assegnazione Lunga
-    </a>
-  </div>
 
-  <ul class="nav nav-tabs mb-4" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#longTab" type="button" role="tab">Assegnazioni Lunghe</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shortTab" type="button" role="tab">Assegnazioni Brevi</button>
-    </li>
-  </ul>
+    <div class="card table-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="fw-bold mb-0 fs-4">Assegnazioni</h2>
+            <a class="btn btn-primary" th:href="@{/fleet/assignments/new}">
+                <i class="bi bi-plus-lg me-1"></i> Nuova Assegnazione Lunga
+            </a>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#longTab" type="button" role="tab">
+                        <i class="bi bi-calendar-range me-1"></i> Assegnazioni Lunghe
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shortTab" type="button" role="tab">
+                        <i class="bi bi-calendar-event me-1"></i> Assegnazioni Brevi
+                    </button>
+                </li>
+            </ul>
 
-  <div class="tab-content">
-    <div class="tab-pane fade show active" id="longTab" role="tabpanel">
-      <div class="table-responsive shadow-sm">
-        <table class="table table-hover align-middle sortable">
-          <thead class="table-dark">
-            <tr>
-              <th>Dipendente</th>
-              <th>Veicolo</th>
-              <th>Dal</th>
-              <th>Al</th>
-              <th>Stato</th>
-              <th class="text-center">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="a : ${longAssignments}">
-            		<td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
-	                <td th:text="${a.vehicle.plate}"></td>
-	                <td th:text="${a.startDate}"></td>
-	                <td th:text="${a.endDate}"></td>
-	                <td th:text="${a.status.displayName}"></td>
-	                <td class="text-end">
-                  <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-secondary" title="Modifica">
-                    <i class="bi bi-pencil"></i>
-                  </a>
-                </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="longTab" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Dipendente</th>
+                                    <th>Veicolo</th>
+                                    <th>Dal</th>
+                                    <th>Al</th>
+                                    <th class="text-center">Stato</th>
+                                    <th class="text-end">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : ${longAssignments}">
+                                    <td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
+                                    <td th:text="${a.vehicle.brand + ' ' + a.vehicle.model + ' (' + a.vehicle.plate + ')'}"></td>
+                                    <td th:text="${#temporals.format(a.startDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#temporals.format(a.endDate, 'dd/MM/yyyy')}"></td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill bg-success-subtle border border-success-subtle text-success-emphasis"
+                                              th:text="${a.status.displayName}"></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-light" title="Modifica">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="shortTab" role="tabpanel">
+                    <div class="table-responsive mb-4">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Dipendente</th>
+                                    <th>Veicolo</th>
+                                    <th>Dal</th>
+                                    <th>Al</th>
+                                    <th>Nota</th>
+                                    <th class="text-center">Stato</th>
+                                    <th class="text-end">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : ${shortAssignments}">
+                                    <td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
+                                    <td th:text="${a.vehicle.brand + ' ' + a.vehicle.model + ' (' + a.vehicle.plate + ')'}"></td>
+                                    <td th:text="${#temporals.format(a.startDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#temporals.format(a.endDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${a.note}"></td>
+                                    <td class="text-center">
+                                         <span class="badge rounded-pill bg-success-subtle border border-success-subtle text-success-emphasis"
+                                               th:text="${a.status.displayName}"></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-light" title="Modifica">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 border rounded bg-light">
+                        <h5 class="mb-3 fw-bold">Nuova assegnazione breve</h5>
+                        <form th:object="${newShortAssignment}" th:action="@{/fleet/assignments/short}" method="post" class="row g-3">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <div class="col-md-6">
+                                <label class="form-label">Dipendente</label>
+                                <select class="form-select" th:field="*{employment.id}">
+                                    <option th:each="e : ${employments}" th:value="${e.id}" th:text="${e.employee.lastName + ' ' + e.employee.firstName + ' (Mat: ' + e.matricola + ')'}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Veicolo</label>
+                                <select class="form-select" th:field="*{vehicle.id}">
+                                    <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.brand + ' ' + v.model + ' - ' + v.plate}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Dal</label>
+                                <input type="date" class="form-control" th:field="*{startDate}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Al</label>
+                                <input type="date" class="form-control" th:field="*{endDate}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Nota</label>
+                                <input type="text" class="form-control" th:field="*{note}" placeholder="Es. Sostituzione temporanea">
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg me-1"></i> Salva Assegnazione Breve
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="tab-pane fade" id="shortTab" role="tabpanel">
-      <div class="table-responsive shadow-sm mb-4">
-        <table class="table table-hover align-middle sortable">
-          <thead class="table-dark">
-            <tr>
-              <th>Dipendente</th>
-              <th>Veicolo</th>
-              <th>Dal</th>
-              <th>Al</th>
-              <th>Nota</th>
-              <th>Stato</th>
-              <th class="text-end">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="a : ${shortAssignments}">
-              <td th:text="${a.employment.employee.lastName + ' ' + a.employment.employee.firstName}"></td>
-              <td th:text="${a.vehicle.plate}"></td>
-              <td th:text="${a.startDate}"></td>
-              <td th:text="${a.endDate}"></td>
-              <td th:text="${a.note}"></td>
-              <td th:text="${a.status.displayName}"></td>
-              <td class="text-end">
-                <a th:href="@{|/fleet/assignments/${a.id}/edit|}" class="btn btn-sm btn-secondary" title="Modifica">
-                  <i class="bi bi-pencil"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h5 class="mb-3">Nuova assegnazione breve</h5>
-      <form th:object="${newShortAssignment}" th:action="@{/fleet/assignments/short}" method="post" class="row g-3">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <div class="col-md-3">
-          <label class="form-label">Rapporto</label>
-          <select class="form-select" th:field="*{employment.id}">
-            <option th:each="e : ${employments}" th:value="${e.id}" th:text="${e.matricola + ' - ' + e.employee.lastName}"></option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Veicolo</label>
-          <select class="form-select" th:field="*{vehicle.id}">
-            <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.brand + ' ' + v.model + ' - ' + v.plate}"></option>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Dal</label>
-          <input type="date" class="form-control" th:field="*{startDate}">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Al</label>
-          <input type="date" class="form-control" th:field="*{endDate}">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Nota</label>
-          <input type="text" class="form-control" th:field="*{note}">
-        </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Salva</button>
-        </div>
-      </form>
-    </div>
-  </div>
 </main>
 </body>
 </html>
