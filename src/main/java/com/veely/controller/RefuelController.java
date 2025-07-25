@@ -22,8 +22,18 @@ public class RefuelController {
     private final FuelCardService fuelCardService;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("refuels", refuelService.findAll());
+    public String list(@RequestParam(value = "vehicleId", required = false) Long vehicleId,
+            @RequestParam(value = "cardId", required = false) Long cardId,
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "from", required = false)
+            @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+                    java.time.LocalDate from,
+            @RequestParam(value = "to", required = false)
+            @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+                    java.time.LocalDate to,
+            Model model) {
+		model.addAttribute("refuels", refuelService.search(vehicleId, cardId, year, from, to));
+		addOptions(model);
         return "fleet/refuels/index";
     }
 

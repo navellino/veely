@@ -14,7 +14,42 @@
                 <i class="bi bi-fuel-pump me-1"></i> Nuovo Rifornimento
             </a>
         </div>
-        <div class="card-body p-0">
+        <div class="card-body">
+            <form class="row g-2 align-items-end mb-4" method="get" th:action="@{/fleet/refuels}">
+                <div class="col-md-3">
+                    <label class="form-label">Veicolo</label>
+                    <select name="vehicleId" class="form-select">
+                        <option value="" th:selected="${param.vehicleId == null}">Tutti</option>
+                        <option th:each="v : ${vehicles}" th:value="${v.id}"
+                                th:selected="${param.vehicleId != null and param.vehicleId[0] == v.id}"
+                                th:text="${v.plate + ' - ' + v.brand + ' ' + v.model}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Carta Carburante</label>
+                    <select name="cardId" class="form-select">
+                        <option value="" th:selected="${param.cardId == null}">Tutte</option>
+                        <option th:each="c : ${fuelCards}" th:value="${c.id}"
+                                th:selected="${param.cardId != null and param.cardId[0] == c.id}"
+                                th:text="${c.cardNumber}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Anno</label>
+                    <input type="number" name="year" class="form-control" th:value="${param.year}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Dal</label>
+                    <input type="date" name="from" class="form-control" th:value="${param.from}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Al</label>
+                    <input type="date" name="to" class="form-control" th:value="${param.to}">
+                </div>
+                <div class="col-md-12 col-lg-2 d-grid">
+                    <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> Filtra</button>
+                </div>
+            </form>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 sortable">
                     <thead class="table-light">

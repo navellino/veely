@@ -3,6 +3,8 @@ package com.veely.entity;
 import com.veely.model.*;
 import jakarta.persistence.*;
 import lombok.*;
+import com.veely.entity.Document;
+import java.util.Set;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,5 +47,9 @@ public class Assignment {
     /** Nota operativa per assegnazioni brevi (es. motivo utilizzo). */
     @Column(length = 255)
     private String note;
+    
+    /** Documenti collegati a questa assegnazione (es. verbali di consegna). */
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Document> documents;
 }
 

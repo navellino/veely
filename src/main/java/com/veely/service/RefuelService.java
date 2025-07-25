@@ -71,6 +71,12 @@ public class RefuelService {
     public List<Refuel> findAll() {
         return refuelRepo.findAll();
     }
+    
+    @Transactional(readOnly = true)
+    public List<Refuel> search(Long vehicleId, Long cardId, Integer year,
+                               java.time.LocalDate start, java.time.LocalDate end) {
+        return refuelRepo.search(vehicleId, cardId, year, start, end);
+    }
 
     public void delete(Long id) {
         Refuel r = findByIdOrThrow(id);
