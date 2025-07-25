@@ -5,94 +5,121 @@
     <title>Elenco Rapporti di Lavoro – Veely</title>
 </head>
 <body>
-<main class="container-fluid my-5 flex-fill">
+<main>
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-semibold">Elenco Rapporti di Lavoro</h2>
-    <a th:href="@{/fleet/employments/new}" class="btn btn-primary">
-      <i class="bi bi-plus-lg me-1"></i> Nuovo Rapporto
+    <h1 class="h2 mb-0 text-dark">Rapporti di Lavoro</h1>
+    <a th:href="@{/fleet/employments/new}" class="btn btn-primary shadow-sm">
+      <i class="bi bi-plus-lg me-2"></i>Nuovo Rapporto
     </a>
   </div>
-  <form class="row g-2 mb-4" method="get" th:action="@{/fleet/employments}">
-    <div class="col-auto">
-      <input type="text" name="keyword" th:value="${param.keyword}" class="form-control" placeholder="Cerca…">
+
+  <div class="accordion mb-4" id="accordionFilters">
+    <div class="accordion-item border-0 shadow-sm" style="border-radius: 0.75rem;">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="border-radius: 0.75rem;">
+          <i class="bi bi-funnel-fill me-2"></i>Filtri di Ricerca
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFilters">
+        <div class="accordion-body">
+          <form class="row g-3 align-items-center" method="get" th:action="@{/fleet/employments}">
+            <div class="col-md-6">
+              <label for="keyword" class="visually-hidden">Cerca...</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="keyword" id="keyword" th:value="${param.keyword}" class="form-control" placeholder="Cerca per dipendente...">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="status" class="visually-hidden">Stato</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+                <select name="status" id="status" class="form-select">
+                  <option value="" th:selected="${param.status == null or param.status == ''}">Tutti gli stati</option>
+                  <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${param.status == s.name()}"></option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2 d-grid">
+              <button type="submit" class="btn btn-secondary">Cerca</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="col-auto">
-      <select name="status" class="form-select">
-        <option value="" th:selected="${param.status == null}">Tutti</option>
-        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${param.status == s.name()}"></option>
-      </select>
-    </div>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
-    </div>
-    <div class="col-auto ms-auto">
-      <a class="btn btn-outline-primary" th:href="@{/fleet/employments/export(status=${param.status},keyword=${param.keyword})}">
-        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
-      </a>
-    </div>
-  </form>
-  <div class="table-responsive shadow-sm">
-    <table class="table table-hover align-middle sortable">
-      <thead class="table-dark">
-        <tr>
-          <th>Cognome</th>
-          <th>Nome</th>
-          <th>Matricola</th>
-           <th>Assunzione</th>
-          <th>Scadenza</th>
-          <th>Qualifica</th>
-          <th>Mansione</th>
-          <th>Luogo di Lavoro</th>
-          <th>Livello</th>
-          <th>Sesso</th>
-         <!--  <th>Data nascita</th> -->
-          <th>Cod. fiscale</th>
-          <th>Età</th>
-          <th class="text-end">Azioni</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="e : ${employments}">
-			<td th:text="${e.employee.lastName}">Rossi</td>
-          <td th:text="${e.employee.firstName}">Mario</td>
-          <td th:text="${e.matricola}">M123</td>
-          <td th:text="${e.startDate}">2025-01-01</td>
-          <td th:text="${e.contractType == T(com.veely.model.ContractType).PERMANENT ? '' : e.endDate}">2025-12-31</td>
-          <td th:text="${e.jobTitle != null ? e.jobTitle.displayName : ''}">Operaio</td>
-          <td th:text="${e.jobRole.displayName}">Mansione</td>
-          <td th:text="${e.workplace != null ? e.workplace.siteName : ''}">Sede</td>
-          <td th:text="${e.contractLevel}">Livello</td>
-          <td th:text="${e.employee.gender != null ? e.employee.gender.displayName : ''}">M</td>
-         <!--  <td th:text="${e.employee.birthDate}">1980-01-01</td> -->
-          <td class="text-uppercase" th:text="${e.employee.fiscalCode}">RSSMRA80A01F205X</td>
-          <td th:text="${e.employee.age}">45</td>
-          <td class="text-end">
-            <a th:href="@{|/fleet/employments/${e.id}/edit|}" class="btn btn-sm btn-secondary me-1" title="Modifica">
-              <i class="bi bi-pencil"></i>
-            </a>
-            <form th:action="@{|/fleet/employments/${e.id}/delete|}" method="post" class="d-inline">
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confermi l\'eliminazione?');" title="Elimina">
-                <i class="bi bi-trash"></i>
-              </button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-  <nav th:if="${employments.totalPages > 1}">
-    <ul class="pagination justify-content-center mt-4">
+
+  <div class="card shadow-sm border-0 table-card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="p-3">Dipendente</th>
+              <th class="p-3">Tipo Contratto</th>
+              <th class="p-3">Data Assunzione</th>
+              <th class="p-3">Data Licenziamento</th>
+              <th class="p-3 text-center">Stato</th>
+              <th class="p-3 text-end">Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="e : ${employments.content}">
+              <td class="align-middle" th:text="${e.employee.firstName + ' ' + e.employee.lastName}"></td>
+              
+              <td class="align-middle" th:text="${e.contractType != null ? e.contractType.displayName : '–'}"></td>
+
+              <td class="align-middle" th:text="${#temporals.format(e.startDate, 'dd/MM/yyyy')}"></td>
+              <td class="align-middle" th:text="${e.endDate != null ? #temporals.format(e.endDate, 'dd/MM/yyyy') : '–'}"></td>
+              <td class="text-center align-middle">
+                <span class="badge"
+                      th:classappend="${e.status.name() == 'ACTIVE'} ? 'bg-success-soft text-success' : 'bg-secondary-soft text-secondary'"
+                      th:text="${e.status.displayName}">
+                </span>
+              </td>
+              <td class="text-end align-middle">
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" th:href="@{|/fleet/employments/${e.id}/edit|}">
+                        <i class="bi bi-pencil-fill me-2"></i>Modifica
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <form th:action="@{|/fleet/employments/${e.id}/delete|}" method="post" class="d-inline" onsubmit="return confirm('Confermi l\'eliminazione?');">
+                        <button type="submit" class="dropdown-item text-danger">
+                          <i class="bi bi-trash-fill me-2"></i>Elimina
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <nav th:if="${employments.totalPages > 1}" class="mt-4">
+    <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${!employments.hasPrevious()}? 'disabled'">
         <a class="page-link" th:href="@{/fleet/employments(page=${employments.number-1}, keyword=${param.keyword}, status=${param.status})}">«</a>
       </li>
       <li class="page-item" th:each="i : ${#numbers.sequence(0, employments.totalPages-1)}" th:classappend="${i == employments.number}? 'active'">
-        <a class="page-link" th:href="@{/fleet/employments(page=${i}, keyword=${param.keyword}, status=${param.status})}" th:text="${i+1}">1</a>
+        <a class="page-link" th:href="@{/fleet/employments(page=${i}, keyword=${param.keyword}, status=${param.status})}" th:text="${i+1}"></a>
       </li>
       <li class="page-item" th:classappend="${!employments.hasNext()}? 'disabled'">
         <a class="page-link" th:href="@{/fleet/employments(page=${employments.number+1}, keyword=${param.keyword}, status=${param.status})}">»</a>
       </li>
     </ul>
   </nav>
+
 </main>
 </body>
 </html>

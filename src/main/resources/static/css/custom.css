@@ -191,3 +191,29 @@
 #itemsTable td {
     vertical-align: middle;
 }
+
+/* Stili per i badge di stato */
+.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+.text-success {
+    color: #198754 !important;
+}
+
+.bg-secondary-soft {
+    background-color: rgba(108, 117, 125, 0.1);
+}
+.text-secondary {
+    color: #6c757d !important;
+}
+
+/* Stile generico per le card della tabella */
+.table-card {
+    border-radius: 0.75rem;
+}
+/* Stile per le card del form */
+.form-card .card-header {
+    background-color: #f8f9fa; /* Un grigio molto chiaro per gli header */
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
