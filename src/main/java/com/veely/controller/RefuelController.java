@@ -32,8 +32,9 @@ public class RefuelController {
             @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
                     java.time.LocalDate to,
             Model model) {
-		model.addAttribute("refuels", refuelService.search(vehicleId, cardId, year, from, to));
-		addOptions(model);
+    	model.addAttribute("refuels", refuelService.search(vehicleId, cardId, year, from, to));
+        model.addAttribute("refuel", new Refuel());
+        addOptions(model);
         return "fleet/refuels/index";
     }
 
