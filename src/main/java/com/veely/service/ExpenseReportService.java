@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -121,14 +122,26 @@ public class ExpenseReportService {
         reportRepo.delete(r);
     }
     
-    private java.math.BigDecimal sumItems(List<ExpenseItem> items) {
-        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+    private BigDecimal sumItems(List<ExpenseItem> items) {
+        BigDecimal total = BigDecimal.ZERO;
         for (ExpenseItem i : items) {
             if (i.getAmount() != null) {
                 total = total.add(i.getAmount());
             }
         }
         return total;
+    }
+    
+    public ExpenseReport toggleApproval(Long id) {
+        ExpenseReport r = findByIdOrThrow(id);
+        if (r.getExpenseStatus() == ExpenseStatus.Approved) {
+            r.setExpenseStatus(ExpenseStatus.Draft);
+            r.setFinalApprovalDate(null);
+        } else {
+            r.setExpenseStatus(ExpenseStatus.Approved);
+            r.setFinalApprovalDate(LocalDate.now());
+        }
+        return reportRepo.save(r);
     }
     
     @Transactional(readOnly = true)

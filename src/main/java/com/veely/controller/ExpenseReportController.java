@@ -157,12 +157,7 @@ public class ExpenseReportController {
 
     @PostMapping("/{id}/approve")
     public String toggleApprove(@PathVariable Long id) {
-        ExpenseReport r = reportService.findByIdOrThrow(id);
-        if (r.getExpenseStatus() == ExpenseStatus.Approved) {
-            r.setExpenseStatus(ExpenseStatus.Draft);
-        } else {
-            r.setExpenseStatus(ExpenseStatus.Approved);
-        }
+    	reportService.toggleApproval(id);
         return "redirect:/fleet/expense-reports/" + id + "/edit";
     }
     
